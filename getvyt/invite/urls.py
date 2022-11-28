@@ -4,4 +4,6 @@ from . import views
 
 app_name = 'invite'
 
-urlpatterns = []
+urlpatterns = [
+    path('', views.index, name='index')
+]
