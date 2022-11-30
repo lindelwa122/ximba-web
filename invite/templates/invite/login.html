@@ -6,40 +6,31 @@
 
 <h1>THIS IS THE LOGIN PAGE</h1>
 <!-- Your code goes here -->
-<center>
+<img  class='image' src='logo.png' alt='Slow connection' height='240px' width='190px'>
 
-    <img  class='image' src='logo.png' alt='Slow connection' height='240px' width='190px'>
+<form>
+  <div>
+    <input type='email' placeholder='Enter Email' name='username' required >
+  </div>
+  <br>
+  <div>
+    <input  type='password' placeholder='Password' name='Passsword' required>
+  </div>
+  <br>
+  <div>
+    <button type='button' class='login'>Login</button>
+  </div>
+</form>
+<br>
 
-        <form>
-            <div class='email'>
-                <input type='email' placeholder='Enter Email' name='username' required >
-            </div>
-            <br>
-            <div class='password'>
-                <input  type='password' placeholder='Password' name='Passsword' required>
-            </div>
-            <br>
-            <div class ='login-page'></div>
-                <button type='button' class='login'>Login</button>
-            </div>
-  
-        </form>
-        <br>
-
-        <div class='links'>
-            <a href='#'>Forgot Password?</a>
-        </div>
-        <hr>
-        <div>
-            <form>
-                <button  type='button' class='register'>Register</button>
-            </form>
-        </div>
-        
-        
-            
-</center>
-
-</html>
+<div>
+  <a href='#'>Forgot Password?</a>
+</div>
+<hr>
+<div>
+  <form>
+    <button  type='button' class='register'>Register</button>
+  </form>
+</div>
 
 {% endblock %}
