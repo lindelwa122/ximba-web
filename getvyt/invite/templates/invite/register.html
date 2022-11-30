@@ -4,29 +4,44 @@
 
 {% block body %}
 
-<h1>This is a register page</h1>
-
-<div>
-  <img src='\https://images.unsplash.com/profile-1633364056312-0319b9fc4586image?dpr=1&auto=format&fit=crop&w=150&h=150&q=60&crop=faces&bg=fff'
-        alt=''>
-</div>
-<div>
-  <input type='text' class='first' placeholder='First Name' required>
-  <input type='text' class='last' placeholder='Last Name' required>
-</div>
-<input type='text' class='username' placeholder='Username' required>
-<br>
-<input type='email' class='email' placeholder='Email' required>
-<br>
-<input type='password' class='password' placeholder='Password' required>
-<br>
-<input type='password' class='confirm-password' placeholder='Confirm Password' required>
-<br>
-<button>Register</button>
-
-<hr>
-<button class='login'>Login</button>
-
-<a href='{% url "invite:confirm_email" %}'>Confirm Email</a>
+<div class="container">
+    <form class="form-signup mt-5">
+      <div class="d-flex justify-content-center mb-3">
+          <img src='https://images.unsplash.com/profile-1633364056312-0319b9fc4586image?dpr=1&auto=format&fit=crop&w=150&h=150&q=60&crop=faces&bg=fff' alt='Profile Pic'>
+      </div>
+      <div class="row g-3">
+          <div class="col-lg-6">
+            <input type='text' name="firstname" class='form-control' placeholder='First Name' required>
+          </div>
+          <div class="col-lg-6">
+            <input type='text' name="lastname" class='form-control' placeholder='Last Name' required>
+            <br>
+          </div>
+      </div>
+      <div class="form-group">
+        <input type='text' name='username' class='form-control' placeholder='Username' required>
+        <br>
+      </div>
+      <div class="form-group">
+        <input type='email' name='email' class='form-control' placeholder='Email' required>
+        <br>
+      </div>
+      <div class="form-group">
+        <input type='password' name='password' class='form-control' placeholder='Password' required>
+        <br>
+      </div>
+      <div class="form-group">
+        <input type='password' name='confirm-password' class='form-control' placeholder='Confirm Password' required>
+        <br>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-primary form-control">Register</button>
+      </div>
+      <hr>
+      <div class="text-center">
+      <button type="button" class="btn btn-success btn-">Login</button>
+      </div>
+    </form>
+  </div>
 
 {% endblock %}
