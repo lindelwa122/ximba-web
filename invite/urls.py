@@ -5,5 +5,5 @@ from . import views
 app_name = 'invite'
 
 urlpatterns = [
-    path('', views.login, name='login')
+    path('', views.index, name='index')
 ]
