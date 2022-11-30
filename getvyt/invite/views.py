@@ -6,9 +6,9 @@ def index(request):
 def register_view(request):
     # Your code goes here
 
-    return render(request, 'invite/register.html')
+    return render(request, 'invite/reset_password.html')
 
-def confirm_email(request):
+def new_password(request):
     # Your code goes here
 
     return render(request, 'invite/confirm_email.html')
