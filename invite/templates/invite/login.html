@@ -1,0 +1,40 @@
+{% extends 'invite/layout.html' %}
+
+{% block title %} Login {% endblock %}
+
+{% block body %}
+
+<h1>THIS IS THE LOGIN PAGE</h1>
+<!-- Your code goes here -->
+<img  class='image' src='logo.png' alt='Slow connection' height='240px' width='190px'>
+
+<form>
+  <div class='mb-3'>
+    <input type='email' class='form-control border border-primary' aria-describedby='emailHelp' placeholder='Enter Email' name='username' required>
+  </div>
+  <br>
+  <div class='mb-3>
+    <input  type='password' class='form-control border border-primary' placeholder='Password' name='Passsword' required>
+  </div>
+  <br>
+  <div class='d-grid'>
+    <button type='button' class='login btn btn-primary'>Login</button>
+  </div>
+</form>
+<br>
+
+<div>
+<a class='text-primary' href='#' style='text-align:center;'>Forgot Password?</a>
+</div>
+<hr>
+<div>
+  <form>
+    <div class='d-grid'>
+      <div class='text-center'>                                        
+        <button  type='button' class='register btn btn-success' style='width:150px;'>Register</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
