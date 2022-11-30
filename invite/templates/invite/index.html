@@ -4,6 +4,12 @@
 
 <h1>This is the main page</h1>
 
+<a href='{% url "invite:login" %}'>Login</a>
+<a href='{% url "invite:register" %}'>Register</a>
+<a href='{% url "invite:confirm_email" %}'>Confirm email</a>
+<a href='{% url "invite:new_password" %}'>New password</a>
+<a href='{% url "invite:reset_password" %}'>Reset password</a>
+
 <!-- Set-ExecutionPolicy Unrestricted -Scope Process -->
 
 {% endblock %}
