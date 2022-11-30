@@ -19,7 +19,11 @@
   font-family: "Roboto", sans-serif;
   border: none;
 }
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:disabled {
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:disabled {
   box-shadow: none;
   background-color: var(--primary-color);
   filter: brightness(110%);
@@ -37,7 +41,11 @@
   font-family: "Roboto", sans-serif;
   border: none;
 }
-.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .btn-secondary:disabled {
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active,
+.btn-secondary:disabled {
   box-shadow: none;
   background-color: var(--secondary-color);
   filter: brightness(110%);
@@ -55,7 +63,11 @@
   font-family: "Roboto", sans-serif;
   border-color: var(--primary-color);
 }
-.btn-primary-outline:hover, .btn-primary-outline:focus, .btn-primary-outline:active, .btn-primary-outline:disabled {
+
+.btn-primary-outline:hover,
+.btn-primary-outline:focus,
+.btn-primary-outline:active,
+.btn-primary-outline:disabled {
   box-shadow: none;
   background-color: var(--background-color);
   filter: brightness(110%);
@@ -73,7 +85,11 @@
   font-family: "Roboto", sans-serif;
   border-color: var(--secondary-color);
 }
-.btn-secondary-outline:hover, .btn-secondary-outline:focus, .btn-secondary-outline:active, .btn-secondary-outline:disabled {
+
+.btn-secondary-outline:hover,
+.btn-secondary-outline:focus,
+.btn-secondary-outline:active,
+.btn-secondary-outline:disabled {
   box-shadow: none;
   background-color: var(--background-color);
   filter: brightness(110%);
@@ -92,7 +108,9 @@
   box-shadow: none !important;
   outline: none !important;
 }
-.input-frame:active, .input-frame:focus {
+
+.input-frame:active,
+.input-frame:focus {
   border-color: var(--primary-color);
   outline: none;
 }
