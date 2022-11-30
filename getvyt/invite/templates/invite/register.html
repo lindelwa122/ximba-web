@@ -6,26 +6,26 @@
 
 <h1>This is a register page</h1>
 
-        <div class='logo'>
-        <img src='\https://images.unsplash.com/profile-1633364056312-0319b9fc4586image?dpr=1&auto=format&fit=crop&w=150&h=150&q=60&crop=faces&bg=fff'
-            alt=''>
-    </div>
-    <div class='names'>
-        <input type='text' class='first' placeholder='First Name' required>
-        <input type='text' class='last' placeholder='Last Name' required>
-    </div>
-    <input type='text' class='username' placeholder='Username' required>
-    <br>
-    <input type='email' class='email' placeholder='Email' required>
-    <br>
-    <input type='password' class='password' placeholder='Password' required>
-    <br>
-    <input type='password' class='confirm-password' placeholder='Confirm Password' required>
-    <br>
-    <button class='register'>Register</button>
+<div>
+  <img src='\https://images.unsplash.com/profile-1633364056312-0319b9fc4586image?dpr=1&auto=format&fit=crop&w=150&h=150&q=60&crop=faces&bg=fff'
+        alt=''>
+</div>
+<div>
+  <input type='text' class='first' placeholder='First Name' required>
+  <input type='text' class='last' placeholder='Last Name' required>
+</div>
+<input type='text' class='username' placeholder='Username' required>
+<br>
+<input type='email' class='email' placeholder='Email' required>
+<br>
+<input type='password' class='password' placeholder='Password' required>
+<br>
+<input type='password' class='confirm-password' placeholder='Confirm Password' required>
+<br>
+<button>Register</button>
 
-    <hr>
-    <button class='login'>Login</button>
+<hr>
+<button class='login'>Login</button>
 
 <a href='{% url "invite:confirm_email" %}'>Confirm Email</a>
 
