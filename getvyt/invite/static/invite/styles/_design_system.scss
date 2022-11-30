@@ -1,0 +1,52 @@
+// DESIGN SYSTEM STYLES
+
+// THEME COLORS
+:root {
+  --background-color: #fff;
+  --main-text-color: #fff;
+  --primary-color: #3b44f6;
+  --secondary-color: #3ec70b;
+  --secondary-text-color: #212529;
+  --tertiary-color: #a149fa;
+}
+
+// TYPOGRAPHY
+$font-family-primary: "Roboto", sans-serif;
+$font-family-secondary: "Playfair", serif;
+
+@mixin body {
+  font-family: $font-family-primary;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+@mixin display {
+  font-family: $font-family-secondary;
+  font-size: 36px;
+  line-height: 44px;
+}
+
+@mixin headline {
+  font-family: $font-family-secondary;
+  font-size: 24px;
+  line-height: 32px;
+  text-transform: uppercase;
+}
+
+@mixin label {
+  font-family: $font-family-primary;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+@mixin title {
+  font-family: $font-family-primary;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+// EXTRA
+$body-padding: 25;
+$border-radius: 10px;
