@@ -90,7 +90,7 @@
   border-radius: 10px;
   box-shadow: none !important;
   outline: none !important;
-  padding: 20px 16px;
+  padding: 20px 15px;
 }
 .input-frame:active, .input-frame:focus {
   border-color: var(--primary-color);

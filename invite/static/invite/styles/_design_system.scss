@@ -11,8 +11,8 @@
 }
 
 // TYPOGRAPHY
-$font-family-primary: "Roboto", sans-serif;
-$font-family-secondary: "Playfair", serif;
+$font-family-primary: 'Roboto', sans-serif;
+$font-family-secondary: 'Playfair', serif;
 
 @mixin body {
   font-family: $font-family-primary;
