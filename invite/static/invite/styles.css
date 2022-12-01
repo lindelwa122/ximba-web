@@ -1,97 +1,81 @@
 :root {
-  --primary-color: #3b44f6;
-  --secondary-color: #3ec70b;
-  --tertiary-color: #a149fa;
   --background-color: #fff;
   --main-text-color: #fff;
+  --primary-color: #3b44f6;
+  --secondary-color: #3ec70b;
   --secondary-text-color: #212529;
+  --tertiary-color: #a149fa;
 }
 
 .btn-primary {
-  outline: none;
-  background-color: var(--primary-color);
-  color: var(--main-text-color);
-  border-radius: 10px;
-  padding: 15px 20px;
-  line-height: 16px;
-  font-weight: 500;
-  font-size: 11px;
-  font-family: "Roboto", sans-serif;
   border: none;
-}
-
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:active,
-.btn-primary:disabled {
-  box-shadow: none;
   background-color: var(--primary-color);
-  filter: brightness(110%);
-}
-
-.btn-secondary {
-  outline: none;
-  background-color: var(--secondary-color);
-  color: var(--main-text-color);
   border-radius: 10px;
-  padding: 15px 20px;
-  line-height: 16px;
-  font-weight: 500;
-  font-size: 11px;
+  color: var(--main-text-color);
   font-family: "Roboto", sans-serif;
-  border: none;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  outline: none;
+  padding: 15px 20px;
 }
-
-.btn-secondary:hover,
-.btn-secondary:focus,
-.btn-secondary:active,
-.btn-secondary:disabled {
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:disabled {
+  background-color: var(--primary-color);
   box-shadow: none;
-  background-color: var(--secondary-color);
   filter: brightness(110%);
 }
 
 .btn-primary-outline {
-  outline: none;
-  background-color: var(--background-color);
-  color: var(--secondary-text-color);
-  border-radius: 10px;
-  padding: 15px 20px;
-  line-height: 16px;
-  font-weight: 500;
-  font-size: 11px;
-  font-family: "Roboto", sans-serif;
   border-color: var(--primary-color);
+  background-color: var(--background-color);
+  border-radius: 10px;
+  color: var(--secondary-text-color);
+  font-family: "Roboto", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  outline: none;
+  padding: 15px 20px;
+}
+.btn-primary-outline:hover, .btn-primary-outline:focus, .btn-primary-outline:active, .btn-primary-outline:disabled {
+  background-color: var(--background-color);
+  box-shadow: none;
+  filter: brightness(110%);
 }
 
-.btn-primary-outline:hover,
-.btn-primary-outline:focus,
-.btn-primary-outline:active,
-.btn-primary-outline:disabled {
+.btn-secondary {
+  border: none;
+  background-color: var(--secondary-color);
+  border-radius: 10px;
+  color: var(--main-text-color);
+  font-family: "Roboto", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  outline: none;
+  padding: 15px 20px;
+}
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .btn-secondary:disabled {
+  background-color: var(--secondary-color);
   box-shadow: none;
-  background-color: var(--background-color);
   filter: brightness(110%);
 }
 
 .btn-secondary-outline {
-  outline: none;
-  background-color: var(--background-color);
-  color: var(--secondary-text-color);
-  border-radius: 10px;
-  padding: 15px 20px;
-  line-height: 16px;
-  font-weight: 500;
-  font-size: 11px;
-  font-family: "Roboto", sans-serif;
   border-color: var(--secondary-color);
-}
-
-.btn-secondary-outline:hover,
-.btn-secondary-outline:focus,
-.btn-secondary-outline:active,
-.btn-secondary-outline:disabled {
-  box-shadow: none;
   background-color: var(--background-color);
+  border-radius: 10px;
+  color: var(--secondary-text-color);
+  font-family: "Roboto", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  outline: none;
+  padding: 15px 20px;
+}
+.btn-secondary-outline:hover, .btn-secondary-outline:focus, .btn-secondary-outline:active, .btn-secondary-outline:disabled {
+  background-color: var(--background-color);
+  box-shadow: none;
   filter: brightness(110%);
 }
 
@@ -100,17 +84,15 @@
 }
 
 .input-frame {
-  padding: 20px 15px;
-  line-height: 16px;
-  font-size: 12px;
   font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  line-height: 16px;
   border-radius: 10px;
   box-shadow: none !important;
   outline: none !important;
+  padding: 20px 16px;
 }
-
-.input-frame:active,
-.input-frame:focus {
+.input-frame:active, .input-frame:focus {
   border-color: var(--primary-color);
   outline: none;
 }
