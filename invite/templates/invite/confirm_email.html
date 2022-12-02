@@ -4,24 +4,28 @@
 
 {% block body %}
 
-<section class="d-flex align-items-center flex-column">
+<section class='d-flex align-items-center flex-column justify-content-center'>
 
-  <img class='rounded-circle mb-3'
-    src='https://images.unsplash.com/photo-1669650853522-fe5a4b89a119?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'
-    height='100px' alt='This is a logo'>
+  <div class="d-flex align-content-center flex-column form">
+    <img class='logo rounded-circle mb-3'
+      src='https://images.unsplash.com/photo-1669650853522-fe5a4b89a119?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'
+       alt='This is a logo'>
+  
+    <form>
+  
+      <p class='text-center'>The code has been sent to
+      <em>johndoe123@gmail.com</em></p>
+  
+      <div class='mb-3'>
+        <input type='number' class='form-control input-frame' placeholder='Enter code here'>
+      </div>
+  
+      <div class='mb-3 text-center'>
+        <input type='submit' class='btn btn-primary w-100' value='Confirm Email'>
+      </div>
+    </form>
+  </div>
 
-  <form>
-
-    <p>The code has been sent to johndoe123@gmail.com</p>
-
-    <div class='mb-3'>
-      <input type='number' class='form-control' placeholder='Enter code here'>
-    </div>
-
-    <div class='mb-3 text-center'>
-      <input type='submit' class='btn btn-primary w-100' value='Reset Password'>
-    </div>
-  </form>
 
 </section>
 

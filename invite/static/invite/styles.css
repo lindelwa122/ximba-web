@@ -136,11 +136,11 @@
   font-family: "Roboto", sans-serif;
   font-size: 12px;
   line-height: 16px;
-  border-color: #000;
   border-radius: 10px;
   box-shadow: none !important;
   outline: none !important;
   padding: 20px 15px;
+  width: 100%;
 }
 @media only screen and (min-width: 600px) {
   .input-frame {
@@ -163,8 +163,12 @@
   width: 120px;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 html, body {
-  height: 100%;
+  min-height: 100vh;
   font-family: "Roboto", sans-serif;
   font-size: 12px;
   line-height: 16px;
@@ -207,6 +211,7 @@ a {
 
 section {
   padding: 10px 20px;
+  height: 100vh;
 }
 
 .form {
@@ -222,7 +227,7 @@ section {
     border-radius: 10px;
     box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.15);
     padding: 20px;
-    width: 60%;
+    width: 50%;
   }
 }
 @media only screen and (min-width: 992px) {
