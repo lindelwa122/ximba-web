@@ -1,0 +1,16 @@
+html, body {
+  height: 100%;
+  @include body;
+
+  @include for-tablets {
+    background-color: var(--background-color-lg);
+  }
+}
+
+a {
+  @include body-tiny;
+}
+
+section {
+  padding: $general-padding;
+}

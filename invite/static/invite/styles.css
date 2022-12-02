@@ -1,5 +1,6 @@
 :root {
   --background-color: #fff;
+  --background-color-lg: #fafafa;
   --main-text-color: #fff;
   --primary-color: #3b44f6;
   --secondary-color: #3ec70b;
@@ -19,6 +20,18 @@
   outline: none;
   padding: 15px 20px;
 }
+@media only screen and (min-width: 600px) {
+  .btn-primary {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .btn-primary {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:disabled {
   background-color: var(--primary-color);
   box-shadow: none;
@@ -36,6 +49,18 @@
   line-height: 16px;
   outline: none;
   padding: 15px 20px;
+}
+@media only screen and (min-width: 600px) {
+  .btn-primary-outline {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .btn-primary-outline {
+    font-size: 14px;
+    line-height: 20px;
+  }
 }
 .btn-primary-outline:hover, .btn-primary-outline:focus, .btn-primary-outline:active, .btn-primary-outline:disabled {
   background-color: var(--background-color);
@@ -55,6 +80,18 @@
   outline: none;
   padding: 15px 20px;
 }
+@media only screen and (min-width: 600px) {
+  .btn-secondary {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .btn-secondary {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
 .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .btn-secondary:disabled {
   background-color: var(--secondary-color);
   box-shadow: none;
@@ -73,6 +110,18 @@
   outline: none;
   padding: 15px 20px;
 }
+@media only screen and (min-width: 600px) {
+  .btn-secondary-outline {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .btn-secondary-outline {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
 .btn-secondary-outline:hover, .btn-secondary-outline:focus, .btn-secondary-outline:active, .btn-secondary-outline:disabled {
   background-color: var(--background-color);
   box-shadow: none;
@@ -87,14 +136,100 @@
   font-family: "Roboto", sans-serif;
   font-size: 12px;
   line-height: 16px;
+  border-color: #000;
   border-radius: 10px;
   box-shadow: none !important;
   outline: none !important;
   padding: 20px 15px;
+  width: 100%;
+}
+@media only screen and (min-width: 600px) {
+  .input-frame {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .input-frame {
+    font-size: 24px;
+    line-height: 16px;
+  }
 }
 .input-frame:active, .input-frame:focus {
   border-color: var(--primary-color);
   outline: none;
+}
+
+.logo {
+  width: 120px;
+}
+
+html, body {
+  height: 100%;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+}
+@media only screen and (min-width: 600px) {
+  html, body {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  html, body {
+    font-size: 24px;
+    line-height: 16px;
+  }
+}
+@media only screen and (min-width: 600px) {
+  html, body {
+    background-color: var(--background-color-lg);
+  }
+}
+
+a {
+  font-family: "Roboto", sans-serif;
+  font-size: 8px;
+  line-height: 12px;
+}
+@media only screen and (min-width: 600px) {
+  a {
+    font-size: 10px;
+    line-height: 12px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  a {
+    font-size: 20px;
+    line-height: 22px;
+  }
+}
+
+section {
+  padding: 10px 20px;
+}
+
+.form {
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+@media only screen and (min-width: 600px) {
+  .form {
+    border-radius: 10px;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    width: 60%;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .form {
+    width: 30%;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

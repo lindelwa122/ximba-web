@@ -55,10 +55,16 @@
   box-shadow: none !important;
   outline: none !important;
   padding: 20px 15px;
+  width: 100%;
 
   &:active,
   &:focus {
     border-color: var(--primary-color);
     outline: none;
   }
+}
+
+// LOGO
+.logo {
+  width: 120px;
 }
