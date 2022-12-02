@@ -150,8 +150,8 @@
 }
 @media only screen and (min-width: 992px) {
   .input-frame {
-    font-size: 24px;
-    line-height: 16px;
+    font-size: 16px;
+    line-height: 24px;
   }
 }
 .input-frame:active, .input-frame:focus {
@@ -181,8 +181,8 @@ html, body {
 }
 @media only screen and (min-width: 992px) {
   html, body {
-    font-size: 24px;
-    line-height: 16px;
+    font-size: 16px;
+    line-height: 24px;
   }
 }
 @media only screen and (min-width: 600px) {
@@ -194,7 +194,7 @@ html, body {
 a {
   font-family: "Roboto", sans-serif;
   font-size: 8px;
-  line-height: 12px;
+  line-height: 10px;
 }
 @media only screen and (min-width: 600px) {
   a {
@@ -204,8 +204,8 @@ a {
 }
 @media only screen and (min-width: 992px) {
   a {
-    font-size: 20px;
-    line-height: 22px;
+    font-size: 12px;
+    line-height: 18px;
   }
 }
 
@@ -215,11 +215,11 @@ section {
 }
 
 .form {
+  align-items: center;
   background-color: var(--background-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   width: 100%;
 }
 @media only screen and (min-width: 600px) {

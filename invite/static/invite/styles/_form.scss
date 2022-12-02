@@ -1,10 +1,10 @@
 // Your code goes here
 .form {
+  align-items: center;
   background-color: var(--background-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   width: 100%;
   
   @include for-tablets {

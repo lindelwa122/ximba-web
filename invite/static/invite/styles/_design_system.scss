@@ -35,15 +35,15 @@ $font-family-secondary: 'Playfair', serif;
   }
 
   @include for-desktops {
-    font-size: 24px;
-    line-height: 16px;
+    font-size: 16px;
+    line-height: 24px;
   }
 }
 
 @mixin body-tiny {
   font-family: $font-family-primary;
   font-size: 8px;
-  line-height: 12px;
+  line-height: 10px;
   
   @include for-tablets {
     font-size: 10px;
@@ -51,8 +51,8 @@ $font-family-secondary: 'Playfair', serif;
   }
 
   @include for-desktops {
-    font-size: 20px;
-    line-height: 22px;
+    font-size: 12px;
+    line-height: 18px;
   }
 }
 
