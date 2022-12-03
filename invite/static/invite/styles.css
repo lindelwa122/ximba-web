@@ -1,6 +1,7 @@
 :root {
   --background-color: #fff;
   --background-color-lg: #fafafa;
+  --error-message-color: #f00;
   --main-text-color: #fff;
   --primary-color: #3b44f6;
   --secondary-color: #3ec70b;
@@ -209,9 +210,17 @@ a {
   }
 }
 
+main {
+  min-height: 100vh;
+}
+
 section {
   padding: 10px 20px;
-  height: 100vh;
+  min-height: 100vh;
+}
+
+.error-message {
+  color: var(--error-message-color);
 }
 
 .form {
@@ -233,6 +242,24 @@ section {
 @media only screen and (min-width: 992px) {
   .form {
     width: 30%;
+  }
+}
+
+.form-help {
+  font-family: "Roboto", sans-serif;
+  font-size: 8px;
+  line-height: 10px;
+}
+@media only screen and (min-width: 600px) {
+  .form-help {
+    font-size: 10px;
+    line-height: 12px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .form-help {
+    font-size: 12px;
+    line-height: 18px;
   }
 }
 

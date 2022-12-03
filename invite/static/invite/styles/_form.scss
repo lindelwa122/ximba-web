@@ -1,4 +1,8 @@
 // Your code goes here
+.error-message {
+  color: var(--error-message-color);
+}
+
 .form {
   align-items: center;
   background-color: var(--background-color);
@@ -18,3 +22,8 @@
     width: 30%;
   }
 }
+
+.form-help {
+  @include body-tiny;
+}
+

@@ -13,6 +13,7 @@
 :root {
   --background-color: #fff;
   --background-color-lg: #fafafa;
+  --error-message-color: #f00;
   --main-text-color: #fff;
   --primary-color: #3b44f6;
   --secondary-color: #3ec70b;
@@ -121,7 +122,6 @@ $font-family-secondary: 'Playfair', serif;
     line-height: 28px;
   }
 }
-
 
 // EXTRA
 $general-padding: 10px 20px;
