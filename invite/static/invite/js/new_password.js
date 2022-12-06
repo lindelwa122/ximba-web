@@ -1,39 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   validate_password_strength();
-  validateUsername();
   confirmPassword();
-
-  document.querySelector('form').addEventListener('submit', (event) => {
-    event.preventDefault();
-    validateForm();
-  });
-});
-
-const validateUsername = () => {
-  const username = document.querySelector('.username');
-
-  username.addEventListener('focus', () => {
-    document.querySelector('.username-help').classList.remove('d-none');
-  });
-
-  username.addEventListener('input', () => {
-    username.value = username.value.toLowerCase().trim();
-
-    username.value.length >= 3 && username.value.length <= 16
-      ? (document.querySelector('.user-count').style.color = '#3ec70b')
-      : (document.querySelector('.user-count').style.color = '#212529');
-
-    hasSymbol(username.value)
-      ? (document.querySelector('.user').style.color = '#f00')
-      : (document.querySelector('.user').style.color = '#3ec70b');
-  });
-};
+})
 
 const validateForm = () => {
   const confirmPassword = document.querySelector('.confirm-password');
   const errorContainer = document.querySelector('.error-message');
   const password = document.querySelector('.password');
-  const username = document.querySelector('.username');
   let isFormValid = true;
 
   // Ensure no input field is empty
@@ -89,30 +62,5 @@ const validateForm = () => {
     return false;
   }
 
-  sendFormDataToServer();
-};
-
-const sendFormDataToServer = () => {
-  const aj = new XMLHttpRequest();
-  const data = {};
-  // const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-
-  aj.addEventListener('readystatechange', () => {
-    if (aj.readyState === 4 && aj.status === 200) {
-      window.location('/confirm_email');
-    } else if (aj.readyState === 4 && aj.status !== 200) {
-      // TODO
-    }
-  });
-
-  // Collect form data
-  document.querySelectorAll('.input-frame').forEach((element) => {
-    data[element.classList[0]] = element.value;
-  });
-
-  aj.open('POST', '/register', true);
-  aj.setRequestHeader('Data-type', 'json');
-  aj.setRequestHeader('Content-type', 'application/json');
-  // aj.setRequestHeader('X-CSRFToken', csrfToken);
-  aj.send(JSON.stringify(data));
+  sendFormDataToServer('/new_password', '/index', errorContainer);
 };
