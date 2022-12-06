@@ -81,11 +81,10 @@ const validateForm = () => {
   let isFormValid = true;
 
   // Ensure no input field is empty
-  isFormValid = Array.from(document.querySelectorAll('.input-frame')).every((input) => {
+  document.querySelectorAll('.input-frame').forEach((input) => {
     if (input.value.length === 0) {
-      errorContainer.innerText = 'Every input field is required**';
-      input.style.borderColor = '#f00';
-      return false;
+      formErrorRender(input, errorContainer, 'Every input field is required**');
+      isFormValid = false;
     }
   });
 
@@ -100,11 +99,10 @@ const validateForm = () => {
   ];
 
   // Ensure password is valid
-  isFormValid = isPasswordInvalid.every((element) => {
+  isPasswordInvalid.forEach((element) => {
     if (element === true) {
-      errorContainer.innerText = 'Password is invalid**';
-      password.style.borderColor = '#f00';
-      return false;
+      formErrorRender(password, errorContainer, 'Password is invalid**');
+      isFormValid = false;
     }
   });
 
@@ -113,54 +111,27 @@ const validateForm = () => {
   // I will improve this later
   if (!isFormValid) return;
 
-  console.log(document.querySelectorAll('.input-frame'));
-
   // Ensure username is valid
   if (
     username.value.length < 3 ||
     username.value.length > 16 ||
     hasSymbol(username.value)
   ) {
-    errorContainer.innerText = 'Username is invalid**';
-    username.style.borderColor = '#f00';
+    formErrorRender(username, errorContainer, 'Username is invalid**');
     return false;
   }
 
   // Ensure password matches
   if (password.value !== confirmPassword.value) {
-    errorContainer.innerText = 'Password does not match**';
-    confirmPassword.style.borderColor = '#f00';
+    formErrorRender(
+      confirmPassword,
+      errorContainer,
+      'Password does not match**'
+    );
     return false;
   }
 
-  sendFormDataToServer();
-};
-
-const sendFormDataToServer = () => {
-  console.log('I was called');
-  
-  const aj = new XMLHttpRequest();
-  const data = {};
-  // const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-
-  aj.addEventListener('readystatechange', () => {
-    if (aj.readyState === 4 && aj.status === 200) {
-      window.location('/confirm_email');
-    } else if (aj.readyState === 4 && aj.status !== 200) {
-      // TODO
-    }
-  });
-
-  // Collect form data
-  document.querySelectorAll('.input-frame').forEach((element) => {
-    data[element.classList[0]] = element.value;
-  });
-
-  aj.open('POST', '/register', true);
-  aj.setRequestHeader('Data-type', 'json');
-  aj.setRequestHeader('Content-type', 'application/json');
-  // aj.setRequestHeader('X-CSRFToken', csrfToken);
-  aj.send(JSON.stringify(data));
+  sendFormDataToServer('/register', '/confirm_email', errorContainer);
 };
 
 const isPasswordConfirmed = () => {
