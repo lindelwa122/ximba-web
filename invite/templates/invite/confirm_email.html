@@ -1,24 +1,28 @@
 {% extends 'invite/layout.html' %}
 
+{% load static %}
+
 {% block title %} Confirm Email {% endblock %}
 
 {% block body %}
 
 <section class='d-flex align-items-center flex-column justify-content-center'>
 
-  <div class="d-flex align-content-center flex-column form">
+  <div class='d-flex align-content-center flex-column form'>
     <img class='logo rounded-circle mb-3'
       src='https://images.unsplash.com/photo-1669650853522-fe5a4b89a119?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'
       alt='This is a logo'>
 
     <form>
       <p class='text-center'>The code has been sent to
-        <em>johndoe123@gmail.com</em>
+        <em>johndoe123@gmail.com.</em> <br> The code will expire in 15 minutes.
       </p>
 
       <div class='mb-3'>
-        <input type='number' class='form-control input-frame' placeholder='Enter code here'>
+        <input type='number' name='code' class='code form-control input-frame' placeholder='Enter code here'>
       </div>
+
+      <div class='mb-3 error-message'></div>
 
       <div class='mb-3 text-center'>
         <input type='submit' class='btn btn-primary w-100' value='Confirm Email'>
@@ -26,8 +30,9 @@
     </form>
   </div>
 
-
 </section>
 
+<script src='{% static "invite/js/utils/forms.js" %}'></script>
+<script src='{% static "invite/js/confirm_email.js" %}'></script>
 
 {% endblock %}
