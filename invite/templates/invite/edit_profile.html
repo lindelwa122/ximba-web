@@ -5,5 +5,74 @@
 {% block body %}
 
 <!-- Your code goes here -->
+<!-- page title  -->
+<div style='text-align:center;'>
+    <strong><h1><i class='fa-solid fa-user'></i>Edit Profile</h1></strong>
+</div>
+<br><br><br><br>
+<!-- profile section  -->
+<div class='image' >
+    <img src='https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=800' alt='profile-picture' height='100' width='100'>
+    <br>
+    <br>
+</div>
+
+<form class='Edit-profile'>
+    <!-- edit name  -->
+    <div class='Name'>
+        <aside>
+            <label><i class='fa-solid fa-user-pen'></i>Name</label>
+        
+            <span class=''>
+                <input placeholder='Name' type='text'value='john Doe'>
+            </span>
+            </aside>
+            <hr>
+    </div>
+    <!-- edit Userame  -->
+    <div class='Userame'>
+        <aside>
+            <label> <i class='fa-solid fa-at'></i>Username</label>
+            <span class=''>
+                <input placeholder='Userame' type='text'value='realjohndoe'>
+                </span>
+        </aside>
+        <hr>
+    </div>
+    <!-- edit email  -->
+    <div class='Email'>
+        <aside>
+            <label><i class='fa-solid fa-envelope'></i> Email </label>
+        
+            <span class=''>
+                <input placeholder='Email' type='Email'value='johndoe@gmail.com'>
+            </span>
+        </aside>
+        <hr>	
+    </div>
+    <!-- edit phone no  -->
+    <div class='Phone-no'>
+        <aside>
+            <label><i class='fa-solid fa-phone'></i>Phone</label>
+                <span class='' >
+                <input placeholder='Phone no' type='tel'value='+1 234-567-798'>
+                </span>
+        </aside>
+        <hr>
+    </div>
+    <!-- about page -->
+    <div class='About'>
+        <aside>
+            <label><i class='fa-solid fa-circle-info'></i>About</label>
+                <span class='' >
+                <input placeholder='About' type='text'value='The king of the web'>
+                </span>
+        </aside>		
+        <hr>
+    </div>
+</form>
+
+<script src='https://kit.fontawesome.com/0d461e2d79.js' crossorigin='anonymous'></script>
+</body>
 
 {% endblock %}
