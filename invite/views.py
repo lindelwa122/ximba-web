@@ -1,6 +1,11 @@
 import json
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.db import IntegrityError
+from datetime import datetime
+
+from .utils import *
+from .models import *
 
 # Create your views here.
 
@@ -20,62 +25,41 @@ def login_view(request):
 def new_password(request):
     return render(request, 'invite/new_password.html')
 
-def check_upper(str):
-    for char in str:
-        if char.isupper():
-            return True
-
-    return False
-
-def check_lower(str):
-    for char in str:
-        if char.islower():
-            return True
-
-    return False
-
-def check_digit(str):
-    for char in str:
-        if char.isdigit():
-            return True
-
-    return False
 
 def register_view(request):
     if request.method == 'POST':
-        data = json.load(request.body)
+        data = json.loads(request.body)
         password = data.get('password', '')
 
-        # Ensure firstname is not empty
-        if not data.get('firstname', ''):
-            return JsonResponse({'message': 'First name is required'}, status=204) 
-
-        # Ensure lastname is not empty
-        if not data.get('lastname', ''):
-            return JsonResponse({'message': 'Last name is required'}, status=204) 
-
-        # Ensure username is not empty
-        if not data.get('username', ''):
-            return JsonResponse({'message': 'Username name is required'}, status=204) 
-
-        # Ensure email is not empty
-        if not data.get('email', ''):
-             return JsonResponse({'message': 'Email name is required'}, status=204) 
-
-        # Ensure password is not empty
-        if not password:
-             return JsonResponse({'message': 'Password name is required'}, status=204) 
-
-        # Ensure confirm-email is not empty
-        if not data.get('confirm-email', ''):
-             return JsonResponse({'message': 'You have to confirm your email'}, status=204) 
+        # Ensure form data is not empty
+        for val in data.values():
+            if not val:
+                return JsonResponse({'message': 'No input field must be empty'}, status=400)
 
         # Validate password
         if not (check_upper(password) and check_lower(password) and check_digit(password)):
-            return JsonResponse({'message': 'Password is invalid'}, status=204)
+            return JsonResponse({'message': 'Password is invalid'}, status=400)
 
+        # Ensure that password is the same as confirm-password
+        if password != data.get('confirm-password', ''):
+            return JsonResponse({'message': 'Password must match with confirm password'}, status=400)
 
-        return JsonResponse({'message': 'Congrats, your account has been made'}, status=200)
+        try:
+            user = User.objects.create_user(
+                first_name=data.get('firstname', '').capitalize(),
+                last_name=data.get('lastname', '').capitalize(),
+                username=data.get('username', '').lower(),
+                email=data.get('email', ''),
+                password=password,
+                email_code=generate_code(),
+                code_generation_date=datetime.now(),
+            )
+            user.save()
+
+        except IntegrityError:
+            return JsonResponse({'message': 'Username is already taken. Try a different one'})
+
+        return JsonResponse({}, status=200)
 
     else:
         return render(request, 'invite/register.html')

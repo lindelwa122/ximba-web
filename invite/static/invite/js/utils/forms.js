@@ -13,13 +13,13 @@ const sendFormDataToServer = (
 ) => {
   const aj = new XMLHttpRequest();
   const data = {};
-  // const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+  const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
   aj.addEventListener('readystatechange', () => {
     if (aj.readyState === 4 && aj.status === 200) {
-      window.location(routeNext);
+      window.location.href = routeNext;
     } else if (aj.readyState === 4 && aj.status !== 200) {
-      // TODO
+      errorContainer.innerText = JSON.parse(aj.response).message;
     }
   });
 
@@ -31,6 +31,6 @@ const sendFormDataToServer = (
   aj.open(method, routeTo, true);
   aj.setRequestHeader('Data-type', 'json');
   aj.setRequestHeader('Content-type', 'application/json');
-  // aj.setRequestHeader('X-CSRFToken', csrfToken);
+  aj.setRequestHeader('X-CSRFToken', csrfToken);
   aj.send(JSON.stringify(data));
 };

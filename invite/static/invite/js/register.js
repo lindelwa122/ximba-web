@@ -131,7 +131,7 @@ const validateForm = () => {
     return false;
   }
 
-  sendFormDataToServer('/register', '/confirm_email', errorContainer);
+  sendFormDataToServer('/register', '/confirm', errorContainer);
 };
 
 const isPasswordConfirmed = () => {

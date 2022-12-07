@@ -15,6 +15,8 @@
 
     <form class='w-100'>
 
+      {% csrf_token %}
+
       <div class='row mb-3'>
         <div class='col-6'>
           <input type='text' name='firstname' class='firstname form-control input-frame' placeholder='First Name' required>
