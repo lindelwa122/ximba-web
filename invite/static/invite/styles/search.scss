@@ -1,0 +1,19 @@
+.mainsearch{
+    display: flex;
+    width: 50%;
+    margin-left: 25%;
+    border: 1px solid gray;
+    .pcontain{
+        margin-top: 1em;
+        background-color: rgb(237, 237, 237);
+        .recentsearch{
+            margin-bottom: 2em;
+            padding-left: 10%;
+        }
+
+        .card123{
+            border-bottom: 1px solid black;
+            margin-top: 1em;
+        }
+    }
+}

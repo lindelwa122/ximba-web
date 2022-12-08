@@ -263,4 +263,23 @@ section {
   }
 }
 
+.mainsearch {
+  display: flex;
+  width: 50%;
+  margin-left: 25%;
+  border: 1px solid gray;
+}
+.mainsearch .pcontain {
+  margin-top: 1em;
+  background-color: #ededed;
+}
+.mainsearch .pcontain .recentsearch {
+  margin-bottom: 2em;
+  padding-left: 10%;
+}
+.mainsearch .pcontain .card123 {
+  border-bottom: 1px solid black;
+  margin-top: 1em;
+}
+
 /*# sourceMappingURL=styles.css.map */
