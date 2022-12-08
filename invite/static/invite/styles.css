@@ -263,41 +263,75 @@ section {
   }
 }
 
+@media only screen and (max-width: 599px) {
+  .mainsearch {
+    width: 100%;
+    margin-left: 0px;
+  }
+  .mainsearch .card123 {
+    margin-top: 2em;
+  }
+  .mainsearch .card123 .cname {
+    font-size: 12px;
+  }
+  .mainsearch .card123 .rname {
+    font-size: 10px;
+    margin-left: 1em;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .mainsearch {
+    width: 60%;
+    margin-left: 20%;
+  }
+  .mainsearch .card123 {
+    margin-top: 2em;
+  }
+  .mainsearch .card123 .cname {
+    margin-top: 0.5em;
+    font-size: 16px;
+  }
+  .mainsearch .card123 .rname {
+    margin-top: 0.5em;
+    font-size: 12px;
+    margin-left: 2em;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .mainsearch {
+    width: 40%;
+    margin-left: 30%;
+  }
+  .mainsearch .card123 .cname {
+    margin-top: 0.5em;
+    font-size: 16px;
+  }
+  .mainsearch .card123 .rname {
+    margin-top: 0.5em;
+    font-size: 12px;
+    margin-left: 2em;
+  }
+}
 .mainsearch {
   background-color: #f9f9f9;
   display: flex;
-  width: 40%;
-  margin-left: 30%;
   box-shadow: 2px 2px 5px 3px #c6c6c6;
   border-radius: 1%;
 }
 .mainsearch .pcontain {
   margin-top: 1em;
 }
-.mainsearch .pcontain .recentsearch {
-  background-color: white;
-  margin-bottom: 2em;
-  padding-left: 10%;
-  border: 1px solid black;
-  border-radius: 10px;
-  padding-top: 5px;
-}
 .mainsearch .pcontain .card123 {
-  border-bottom: 5px solid black;
+  border-bottom: 1px solid black;
+  border-radius: 5%;
 }
 .mainsearch .pcontain .card123 .cname {
-  margin-top: 0.5em;
   margin-left: 5%;
-  font-size: 1.5em;
+  line-height: 20px;
+  font-weight: bold;
 }
 .mainsearch .pcontain .card123 .rname {
-  margin-left: 2em;
-  margin-top: 0.5em;
-  font-size: 1em;
   color: #626262;
-}
-.mainsearch .ppsearch {
-  margin-bottom: 20%;
 }
 
 /*# sourceMappingURL=styles.css.map */
