@@ -1,19 +1,36 @@
 .mainsearch{
+    background-color: rgb(249, 249, 249);
     display: flex;
-    width: 50%;
-    margin-left: 25%;
-    border: 1px solid gray;
+    width: 40%;
+    margin-left: 30%;
+    box-shadow: 2px 2px 5px 3px rgb(198, 198, 198);
+    border-radius: 1%;
     .pcontain{
         margin-top: 1em;
-        background-color: rgb(237, 237, 237);
         .recentsearch{
+            background-color: white;
             margin-bottom: 2em;
             padding-left: 10%;
+            border: 1px solid black;
+            border-radius: 10px;
+            padding-top: 5px;
         }
-
         .card123{
-            border-bottom: 1px solid black;
-            margin-top: 1em;
+            border-bottom: 5px solid black;
+            .cname{
+                margin-top: 0.5em;
+                margin-left: 5%;
+                font-size: 1.5em;
+            }
+            .rname{
+                margin-left: 2em;
+                margin-top: 0.5em;
+                font-size: 1em;
+                color: rgb(98, 98, 98);
+            }
         }
+    }
+    .ppsearch{
+        margin-bottom: 20%;
     }
 }

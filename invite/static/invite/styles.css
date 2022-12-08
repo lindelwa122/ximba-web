@@ -264,22 +264,40 @@ section {
 }
 
 .mainsearch {
+  background-color: #f9f9f9;
   display: flex;
-  width: 50%;
-  margin-left: 25%;
-  border: 1px solid gray;
+  width: 40%;
+  margin-left: 30%;
+  box-shadow: 2px 2px 5px 3px #c6c6c6;
+  border-radius: 1%;
 }
 .mainsearch .pcontain {
   margin-top: 1em;
-  background-color: #ededed;
 }
 .mainsearch .pcontain .recentsearch {
+  background-color: white;
   margin-bottom: 2em;
   padding-left: 10%;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding-top: 5px;
 }
 .mainsearch .pcontain .card123 {
-  border-bottom: 1px solid black;
-  margin-top: 1em;
+  border-bottom: 5px solid black;
+}
+.mainsearch .pcontain .card123 .cname {
+  margin-top: 0.5em;
+  margin-left: 5%;
+  font-size: 1.5em;
+}
+.mainsearch .pcontain .card123 .rname {
+  margin-left: 2em;
+  margin-top: 0.5em;
+  font-size: 1em;
+  color: #626262;
+}
+.mainsearch .ppsearch {
+  margin-bottom: 20%;
 }
 
 /*# sourceMappingURL=styles.css.map */
