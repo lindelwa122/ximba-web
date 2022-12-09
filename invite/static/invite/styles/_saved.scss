@@ -1,0 +1,49 @@
+// General
+section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-heading {
+  padding-bottom: 1rem;
+}
+
+.close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Menu
+.bottom-menu {
+  margin-top: auto;
+  width: 100%;
+  border-top: 1px solid var(--secondary-text-color);
+  padding-block: 1rem 0;
+  ul {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    padding-inline: 1rem;
+
+    li {
+      cursor: pointer;
+      i {
+        font-size: 2rem;
+      }
+    }
+    @include for-tablets {
+      justify-content: space-around;
+    }
+  }
+}
+
+// For Mobile
+@media (max-width: 420px) {
+  .btn-primary {
+    padding: 7.5px 10px;
+  }
+}
