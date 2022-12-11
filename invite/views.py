@@ -57,7 +57,7 @@ def register_view(request):
             user.save()
 
         except IntegrityError:
-            return JsonResponse({'message': 'Username is already taken. Try a different one'})
+            return JsonResponse({'message': 'Username is already taken. Try a different one'}, status=409)
 
         return JsonResponse({}, status=200)
 
