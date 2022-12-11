@@ -25,3 +25,11 @@ def register_view(request):
 
 def reset_password(request):
     return render(request, 'invite/reset_password.html')
+
+
+def profile(request):
+    return render(request, 'invite/profile.html')
+    
+
+def edit_profile(request):
+    return render(request, 'invite/edit_profile.html')
