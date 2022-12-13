@@ -25,3 +25,6 @@ def register_view(request):
 
 def reset_password(request):
     return render(request, 'invite/reset_password.html')
+
+def find_friends(request):
+    return render(request, 'invite/find_friends.html')
