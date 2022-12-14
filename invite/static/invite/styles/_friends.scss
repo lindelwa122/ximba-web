@@ -2,7 +2,26 @@
 
 //TABLET
 @include for-tablets{
-
+    .fgeneral{
+        width: 60%;
+        margin-left: 20%;
+        .fcard{
+            .flink{
+                font-size: 14px;
+                position: relative;
+                top: 0.5em;
+            }
+            .fname{
+                margin-top: 0.5em;
+                font-size: 12px;
+                margin-left: 1em;
+            }
+            img{
+                width: 5em;
+                height: 5em;
+            }
+        }
+    }
 }
 //DESKTOP
 @include for-desktops{
@@ -30,15 +49,20 @@
 //GENERAL
 .fgeneral{
     box-shadow: 2px 2px 5px 3px rgb(198, 198, 198);
-    border-radius: 1%;    
+    border-radius: 1%; 
+    .ftitle{
+        margin-top: 0.75em;
+        margin-left: 1em;
+    }   
 }
 .fcard{
     border-bottom: 1px solid black;
     border-radius: 5%;
+    font-weight: 500;
     .flink{
+        padding-top: 1em;
         margin-left: 5%;
         line-height: 20px;
-        font-weight: bold;
     }
     .fname{
         color: rgb(98, 98, 98);

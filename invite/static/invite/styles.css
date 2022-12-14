@@ -263,6 +263,26 @@ section {
   }
 }
 
+@media only screen and (min-width: 600px) {
+  .fgeneral {
+    width: 60%;
+    margin-left: 20%;
+  }
+  .fgeneral .fcard .flink {
+    font-size: 14px;
+    position: relative;
+    top: 0.5em;
+  }
+  .fgeneral .fcard .fname {
+    margin-top: 0.5em;
+    font-size: 12px;
+    margin-left: 1em;
+  }
+  .fgeneral .fcard img {
+    width: 5em;
+    height: 5em;
+  }
+}
 @media only screen and (min-width: 992px) {
   .fgeneral {
     width: 40%;
@@ -290,15 +310,20 @@ section {
   box-shadow: 2px 2px 5px 3px #c6c6c6;
   border-radius: 1%;
 }
+.fgeneral .ftitle {
+  margin-top: 0.75em;
+  margin-left: 1em;
+}
 
 .fcard {
   border-bottom: 1px solid black;
   border-radius: 5%;
+  font-weight: 500;
 }
 .fcard .flink {
+  padding-top: 1em;
   margin-left: 5%;
   line-height: 20px;
-  font-weight: bold;
 }
 .fcard .fname {
   color: #626262;
