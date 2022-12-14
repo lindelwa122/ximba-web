@@ -263,6 +263,24 @@ section {
   }
 }
 
+@media only screen and (max-width: 599px) {
+  .fgeneral {
+    width: 100%;
+  }
+  .fgeneral .ftitle {
+    font-size: 20px !important;
+  }
+  .fgeneral .fcard .flink {
+    font-size: 14px;
+  }
+  .fgeneral .fcard img {
+    width: 3em;
+    height: 3em;
+  }
+  .fgeneral .fbtn {
+    padding: 5px 10px !important;
+  }
+}
 @media only screen and (min-width: 600px) {
   .fgeneral {
     width: 60%;

@@ -1,5 +1,21 @@
 //MOBILE
-
+@media only screen and (max-width: 599px){
+    .fgeneral{
+        width: 100%;
+        .fcard{
+            .flink{
+                font-size: 14px;
+            }
+            img{
+                width: 3em;
+                height: 3em;
+            }
+        }
+        .fbtn{
+            padding: 5px 10px !important;
+        }
+    }
+}
 //TABLET
 @include for-tablets{
     .fgeneral{
