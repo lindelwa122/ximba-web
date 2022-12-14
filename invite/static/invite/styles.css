@@ -263,11 +263,45 @@ section {
   }
 }
 
+@media only screen and (min-width: 992px) {
+  .fgeneral {
+    width: 40%;
+    margin-left: 30%;
+  }
+
+  .fcard {
+    padding: 1em;
+  }
+  .fcard .flink {
+    margin-top: 1em;
+    font-size: 16px;
+  }
+  .fcard .fname {
+    margin-top: 0.5em;
+    font-size: 12px;
+    margin-left: 1em;
+  }
+  .fcard img {
+    width: 5em;
+    height: 5em;
+  }
+}
 .fgeneral {
-  width: 40%;
-  margin-left: 30%;
   box-shadow: 2px 2px 5px 3px #c6c6c6;
   border-radius: 1%;
+}
+
+.fcard {
+  border-bottom: 1px solid black;
+  border-radius: 5%;
+}
+.fcard .flink {
+  margin-left: 5%;
+  line-height: 20px;
+  font-weight: bold;
+}
+.fcard .fname {
+  color: #626262;
 }
 
 /*# sourceMappingURL=styles.css.map */
