@@ -263,4 +263,11 @@ section {
   }
 }
 
+.fgeneral {
+  width: 40%;
+  margin-left: 30%;
+  box-shadow: 2px 2px 5px 3px #c6c6c6;
+  border-radius: 1%;
+}
+
 /*# sourceMappingURL=styles.css.map */
