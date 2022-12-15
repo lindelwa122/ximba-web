@@ -1,0 +1,32 @@
+{% extends 'invite/layout.html' %}
+
+{% block title %} New Event {% endblock %}
+
+{% block body %}
+
+<!-- Your code goes here -->
+<section>
+  <form>
+    <input type='text' name='title' placeholder='Event Title'>
+    <textarea placeholder='Short Description'></textarea>
+    <input type='file' name='image'>
+    <input type='location' name='Add Location' placeholder='Add Location'>
+    <input type='date' name='date'>
+    <input type='time' name='time'>
+    <select>
+      <option>Private</option>
+      <option>Public</option>
+    </select>
+    <input type='text' name='Limit' placeholder='Attandance Limit'>
+    <select>
+      <option>Without QR Code</option>
+      <option>With QR Code</option>
+    </select>
+    <div>
+      <button>Add More Info</button>
+      <input type='submit' value='Publish'>
+    </div>
+  </form>
+</section>
+
+{% endblock %}
