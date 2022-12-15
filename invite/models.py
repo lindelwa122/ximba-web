@@ -3,6 +3,6 @@ from django.db import models
 
 # Create your models here.
 class User(AbstractUser):
-  email_code = models.IntegerField()
-  code_generation_date = models.DateTimeField(auto_created=True)
+  email_code = models.IntegerField(null=True)
+  code_generation_date = models.DateTimeField(auto_created=True, null=True)
   is_email_confirmed = models.BooleanField(default=False)
