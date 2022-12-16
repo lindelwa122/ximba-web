@@ -25,3 +25,7 @@ def register_view(request):
 
 def reset_password(request):
     return render(request, 'invite/reset_password.html')
+
+
+def notifications(request):
+    return render(request, 'invite/notifications.html')
