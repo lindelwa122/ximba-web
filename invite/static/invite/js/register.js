@@ -87,5 +87,5 @@ const validateForm = () => {
     return false;
   }
 
-  sendFormDataToServer();
+  sendFormDataToServer('/register', '/confirm', errorContainer);
 };

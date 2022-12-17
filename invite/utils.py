@@ -1,4 +1,5 @@
-import random
+from random import randint, choices
+from string import hexdigits
 
 def check_upper(str):
     for char in str:
@@ -19,4 +20,11 @@ def check_digit(str):
     return False
 
 def generate_code():
-    return random.randint(100000, 999999)
+    return randint(100000, 999999)
+
+def generate_hash(n: int):
+    hash_ls = choices(hexdigits, k=n)
+    hash = ''
+    for char in hash_ls:
+        hash += char
+    return hash

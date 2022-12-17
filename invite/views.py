@@ -1,14 +1,14 @@
 import json
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.http import JsonResponse
-from django.shortcuts import render
 from django.db import IntegrityError
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 from django.utils.timezone import localtime
 
-from .utils import *
 from .models import *
-
-# Create your views here.
+from .utils import *
 
 
 def index(request):
@@ -49,8 +49,35 @@ def login_view(request):
     return render(request, 'invite/login.html')
 
 
-def new_password(request):
-    return render(request, 'invite/new_password.html')
+def new_password(request, username, access):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        password = data.get('password', '')
+
+        # Ensure form data is not empty
+        for val in data.values():
+            if not val:
+                return JsonResponse({'message': 'No input field must be empty'}, status=400)
+
+        # Validate password
+        if not (check_upper(password) and check_lower(password) and check_digit(password)):
+            return JsonResponse({'message': 'Password is invalid'}, status=400)
+
+        # Ensure that password is the same as confirm-password
+        if password != data.get('confirm-password', ''):
+            return JsonResponse({'message': 'Password must match with confirm password'}, status=400)
+
+        user = User.objects.get(username=username)
+        user.set_password(password)
+        user.reset_password = generate_hash(20)
+        user.save()
+
+        return JsonResponse({}, status=200)
+
+    else:
+        if User.objects.get(username=username).reset_password != access:
+            return HttpResponse('<h1>Broken Link</h1>')
+        return render(request, 'invite/new_password.html')
 
 
 def register_view(request):
@@ -71,6 +98,9 @@ def register_view(request):
         # Ensure that password is the same as confirm-password
         if password != data.get('confirm-password', ''):
             return JsonResponse({'message': 'Password must match with confirm password'}, status=400)
+
+        if User.objects.filter(email=data.get('email', '')).exists():
+            return JsonResponse({'message': 'This email is already registered. Try logging in.'}, status=409)
 
         try:
             user = User.objects.create_user(
@@ -104,4 +134,27 @@ def register_view(request):
 
 
 def reset_password(request):
-    return render(request, 'invite/reset_password.html')
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email', '')
+
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist:
+            return JsonResponse({'message': 'Email is not found in our database'}, status=404)
+
+        user.reset_password = generate_hash(20)
+        user.save()
+
+        send_mail(
+            'Reset Password',
+            f'Click here: http://127.0.0.1:8000/new_password/{user.username}/{User.objects.get(email=email).reset_password} to reset your password.',
+            'portfolio@livingdreams.com',
+            [email],
+            fail_silently=False,
+        )
+
+        return JsonResponse({'message': 'A link has been sent to your email, use it to reset your password'}, status=400)
+
+    else:
+        return render(request, 'invite/reset_password.html')
