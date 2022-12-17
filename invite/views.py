@@ -12,7 +12,11 @@ def confirm_email(request):
 
 
 def login_view(request):
-    return render(request, 'invite/login.html')
+    if request.method == 'POST':
+        pass
+
+    else:
+        return render(request, 'invite/login.html')
 
 
 def new_password(request):
