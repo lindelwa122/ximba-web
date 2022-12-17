@@ -13,7 +13,7 @@ const validateForm = () => {
     formErrorRender(
       code,
       errorContainer,
-      "Code mustn't be empty check your emails for a code"
+      'Code mustn\'t be empty check your emails for a code'
     );
     return false;
   }
@@ -36,5 +36,5 @@ const validateForm = () => {
     return false;
   }
 
-  sendFormDataToServer('/confirm_email', '/index', errorContainer);
+  sendFormDataToServer('/confirm', '/', errorContainer);
 };

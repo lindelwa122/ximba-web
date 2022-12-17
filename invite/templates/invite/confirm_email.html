@@ -14,8 +14,8 @@
       alt='This is a logo'>
 
     <form>
-      <p class='text-center'>The code has been sent to
-        <em>johndoe123@gmail.com.</em> <br> The code will expire in 15 minutes.
+      {% csrf_token %}
+      <p class='text-center'>The code has been sent to your email. The code will expire in 15 minutes.
       </p>
 
       <div class='mb-3'>
