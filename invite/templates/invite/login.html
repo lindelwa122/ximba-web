@@ -6,38 +6,39 @@
 
 <!-- Your code goes here -->
 
-<section class='align-items-center d-flex flex-column justify-content-center'>
+<section class="align-items-center d-flex flex-column justify-content-center">
+  <div class="align-items-center d-flex flex-column form">
+    <img class="logo mb-3 rounded-circle"
+      src="https://images.unsplash.com/photo-1516876902004-79f4bd1cb0dc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bG9nb3xlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60"
+      alt="This is a logo" />
 
-  <div class='align-items-center d-flex flex-column form'>
-
-    <img class='logo mb-3 rounded-circle'
-      src='https://images.unsplash.com/photo-1516876902004-79f4bd1cb0dc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bG9nb3xlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60'
-      alt='This is a logo'>
-
-    <form class='w-100'>
-      <div class='mb-3'>
-        <input type='email' class='form-control input-frame' placeholder='Enter Email' name='username' required>
+    <form class="w-100">
+      <div class="mb-3">
+        <input type="email" class="form-control input-frame" placeholder="Enter Email" name="username" required />
       </div>
 
-      <div class='mb-3'>
-        <input type='password' class='form-control input-frame' placeholder='Password' name='Passsword' required>
+      <div class="mb-3">
+        <input type="password" class="form-control input-frame" placeholder="Password" name="Passsword" required />
       </div>
 
+<<<<<<< HEAD
       <div class='error-message'></div>
 
       <div class='mb-3'>
         <input type='submit' value='Login' class='btn btn-primary w-100'>
+=======
+      <div class="mb-3">
+        <input type="submit" value="Login" class="btn btn-primary w-100" />
+>>>>>>> main
       </div>
     </form>
 
-    <a class='text-primary' href='#'>Forgot Password?</a>
+    <a class="text-primary" href='{% url "invite:reset_password" %}'>Forgot Password?</a>
 
-    <hr class='w-100'>
+    <hr class="w-100" />
 
-    <a type='button' class='btn btn-secondary w-50'>Register</a>
-
+    <a type="button" class="btn btn-secondary w-50" href='{% url "invite:register" %}'>Register</a>
   </div>
-
 </section>
 
 {% endblock %}
