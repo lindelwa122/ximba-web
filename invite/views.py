@@ -1,26 +1,27 @@
-import json
+from json import loads
 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.http import JsonResponse
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
 from django.db import IntegrityError
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.urls import reverse
 from django.utils.timezone import localtime
 
 from .models import *
 from .utils import *
 
 
+@login_required(login_url='/login')
 def index(request):
     return render(request, 'invite/index.html')
 
 
 def confirm_email(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = loads(request.body)
         user = User.objects.get(username=request.session['username'])
 
         if int(data.get('code', '')) != user.email_code:
@@ -42,6 +43,8 @@ def confirm_email(request):
         user.is_email_confirmed = True
         user.save()
 
+        login(request, user)
+
         return JsonResponse({}, status=200)
 
     else:
@@ -50,13 +53,15 @@ def confirm_email(request):
 
 def login_view(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = loads(request.body)
 
-        user = authenticate(request, username=data.get('username', ''), password=data.get('password', ''))
+        user = authenticate(request, username=data.get(
+            'username', ''), password=data.get('password', '')
+        )
 
         if user is None:
             return JsonResponse({'message': 'Username/Password is incorrect. Try resetting your password.'}, status=403)
-            
+
         login(request, user)
         return JsonResponse({}, status=200)
 
@@ -66,7 +71,7 @@ def login_view(request):
 
 def new_password(request, username, access):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = loads(request.body)
         password = data.get('password', '')
 
         # Ensure form data is not empty
@@ -97,7 +102,7 @@ def new_password(request, username, access):
 
 def register_view(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = loads(request.body)
         password = data.get('password', '')
         username = data.get('username', '')
 
@@ -132,9 +137,11 @@ def register_view(request):
         except IntegrityError:
             return JsonResponse({'message': 'Username is already taken. Try a different one'}, status=409)
 
+        confirm_account_code = User.objects.get(username=username).email_code
+
         send_mail(
             'Welcome to GetVyt',
-            f'Hello, {username}. Use this code: {User.objects.get(username=username).email_code} to confirm your email.',
+            f'Hello, {username}. Use this code: {confirm_account_code} to confirm your email.',
             'portfolio@livingdreams.com',
             [data.get('email', '')],
             fail_silently=False,
@@ -150,7 +157,7 @@ def register_view(request):
 
 def reset_password(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = loads(request.body)
         email = data.get('email', '')
 
         try:
@@ -161,9 +168,11 @@ def reset_password(request):
         user.reset_password = generate_hash(20)
         user.save()
 
+        reset_password = User.objects.get(email=email).reset_password
+
         send_mail(
             'Reset Password',
-            f'Click here: http://127.0.0.1:8000/new_password/{user.username}/{User.objects.get(email=email).reset_password} to reset your password.',
+            f'Click here: http://127.0.0.1:8000/new_password/{user.username}/{reset_password} to reset your password.',
             'portfolio@livingdreams.com',
             [email],
             fail_silently=False,
@@ -173,3 +182,8 @@ def reset_password(request):
 
     else:
         return render(request, 'invite/reset_password.html')
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('invite:index'))
