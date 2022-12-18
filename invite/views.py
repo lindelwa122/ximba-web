@@ -2,6 +2,9 @@ import json
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.contrib.auth import authenticate, login
 from django.db import IntegrityError
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -46,7 +49,19 @@ def confirm_email(request):
 
 
 def login_view(request):
-    return render(request, 'invite/login.html')
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        user = authenticate(request, username=data.get('username', ''), password=data.get('password', ''))
+
+        if user is None:
+            return JsonResponse({'message': 'Username/Password is incorrect. Try resetting your password.'}, status=403)
+            
+        login(request, user)
+        return JsonResponse({}, status=200)
+
+    else:
+        return render(request, 'invite/login.html')
 
 
 def new_password(request, username, access):
