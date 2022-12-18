@@ -172,7 +172,7 @@ def reset_password(request):
 
         send_mail(
             'Reset Password',
-            f'Click here: http://127.0.0.1:8000/new_password/{user.username}/{reset_password} to reset your password.',
+            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{user.username}/{reset_password} to reset your password.',
             'portfolio@livingdreams.com',
             [email],
             fail_silently=False,

@@ -136,4 +136,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Csrf settings
-CSRF_TRUSTED_ORIGINS = ['https://portfolio-production-34d5.up.railway.app', 'http://127.0.0.1:8000']
+CSRF_TRUSTED_ORIGINS = ['https://getvyt-web-production.up.railway.app/', 'http://127.0.0.1:8000']
