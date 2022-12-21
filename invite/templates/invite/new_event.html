@@ -5,28 +5,106 @@
 {% block body %}
 
 <!-- Your code goes here -->
-<section>
-  <form>
-    <input type='text' name='title' placeholder='Event Title'>
-    <textarea placeholder='Short Description'></textarea>
-    <input type='file' name='image'>
-    <input type='location' name='Add Location' placeholder='Add Location'>
-    <input type='date' name='date'>
-    <input type='time' name='time'>
-    <select>
-      <option>Private</option>
-      <option>Public</option>
-    </select>
-    <input type='text' name='Limit' placeholder='Attandance Limit'>
-    <select>
-      <option>Without QR Code</option>
-      <option>With QR Code</option>
-    </select>
-    <div>
-      <button>Add More Info</button>
-      <input type='submit' value='Publish'>
-    </div>
-  </form>
-</section>
+<section class='align-items-center d-flex flex-column justify-content-center'>
+      <header class='header'>
+          <span>
+            <img src='/HTML/Practice/Pluralsight/logo.jpg' alt='Logo' width='80' height='80'>
+            <strong>New Event</strong>
+          </span>
+      </header>
+      <div class='d-flex mt-5 align-items-center flex-column form'>
+        <div class='form'>
+          <div class='mb-4'>
+            <input class='form-control form-control-lg bg-light border border-secondary' type='text' name='title' placeholder='Event Title'>
+          </div>
+          <div class='mb-3'>
+            <textarea class='form-control form-control-lg bg-light border border-secondary' 
+            placeholder='Short Description' rows='3' maxlength='200'></textarea>
+          </div>
+          <div class='mb-3'>
+            <input class='form-control form-control-lg bg-light border border-secondary' type='file' name='image' multiple>
+          </div>
+  
+          <div class='mb-3'>
+            <input class='form-control form-control-lg bg-light border border-secondary' type='location' name='Add Location' placeholder='Add Location'>
+          </div>
+          <div class='row row-col-2 g-3 mb-3'>
+            <div class='col'>
+              <input class='form-control form-control-lg bg-light border border-secondary'
+              type='date' name='date'
+              >
+            </div>
+            <div class='col'>
+              <input class='form-control form-control-lg bg-light border border-secondary' 
+              type='time' name='time'>
+            </div>
+          </div>
+          <div class='form-control-lg mb-3 col-6 form-check form-check-inline'>
+            <input class='form-check-input bg-light border border-primary' type='radio' name='radio' id='private'>
+            <label class='form-check-label' for='private'>
+              Private
+            </label>
+          </div>
+          <div class='form-control-lg mb-3 form-check form-check-inline'>
+            <input class='form-check-input bg-light border border-primary' type='radio' name='radio' id='public'>
+            <label class='form-check-label' for='public'>
+              Public
+            </label>
+          </div>       
+          <div class='mb-3'>
+            <input class='form-control form-control-lg bg-light border border-secondary' type='text' name='Limit' placeholder='Attandance Limit (Optional)'>
+          </div>
+          <div class='form-control-lg mb-3 form-check form-check-inline'>
+            <input class='form-check-input bg-light border border-primary' type='radio' name='radio' id='withoutQr'>
+            <label class='form-check-label' for='withoutQr'>
+              Without QR Code
+            </label>
+          </div>
+          <div class='form-control-lg mb-3 form-check form-check-inline'>
+            <input class='form-check-input bg-light border border-primary' type='radio' name='radio' id='withQr'>
+            <label class='form-check-label' for='withQr'>
+              With QR Code
+            </label>
+          </div>
+          <div class='row g-2 row-col-2 mb-5'>
+            <div class='col'>
+              <button class='form-control btn  btn-lg border border-primary'>Add More</button>
+            </div>
+            <div class='col'>
+              <input type='submit' class='form-control btn btn-primary btn-lg border border-secondary' value='Publish'>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class='footer'>
+        <div class='row row-col-5 g-5'>
+          <div class='col'>
+            <a href='#/home'>
+              <img src='img/home.png' alt='Home' width='45px' height='45px'>
+            </a>
+          </div>
+          <div class='col'>
+            <a href='#/search'>
+              <img src='img/search.png' alt='Search'>
+            </a>
+          </div>
+          <div class='col'>
+            <a href='#/add'>
+              <img src='img/add.png' alt='Add'>
+            </a>
+          </div>
+          <div class='col'>
+            <a href='#/bookmark'>
+              <img src='img/bookmark.png' alt='Bookmark'>
+            </a>
+          </div>
+          <div class='col'>
+            <a href='#/profile'>
+              <img src='img/Profile.png' alt='Profile'>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </section>
 
 {% endblock %}
