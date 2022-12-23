@@ -300,8 +300,8 @@ section {
     margin-left: 0px;
   }
   .mainsearch .nimg {
-    width: 1em;
-    height: 1em;
+    width: 10px !important;
+    height: 10px !important;
   }
 }
 @media only screen and (min-width: 600px) and (max-width: 992px) {
