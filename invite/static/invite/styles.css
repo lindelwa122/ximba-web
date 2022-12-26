@@ -41,7 +41,7 @@
 
 .btn-primary-outline {
   border-color: var(--primary-color);
-  background-color: var(--background-color);
+  background-color: var(--background-lg-color);
   border-radius: 10px;
   color: var(--secondary-text-color);
   font-family: "Roboto", sans-serif;
@@ -64,7 +64,7 @@
   }
 }
 .btn-primary-outline:hover, .btn-primary-outline:focus, .btn-primary-outline:active, .btn-primary-outline:disabled {
-  background-color: var(--background-color);
+  background-color: var(--background-lg-color);
   box-shadow: none;
   filter: brightness(110%);
 }
@@ -101,7 +101,7 @@
 
 .btn-secondary-outline {
   border-color: var(--secondary-color);
-  background-color: var(--background-color);
+  background-color: var(--background-lg-color);
   border-radius: 10px;
   color: var(--secondary-text-color);
   font-family: "Roboto", sans-serif;
@@ -124,7 +124,7 @@
   }
 }
 .btn-secondary-outline:hover, .btn-secondary-outline:focus, .btn-secondary-outline:active, .btn-secondary-outline:disabled {
-  background-color: var(--background-color);
+  background-color: var(--background-lg-color);
   box-shadow: none;
   filter: brightness(110%);
 }
@@ -162,6 +162,61 @@
 
 .logo {
   width: 120px;
+}
+
+.font-body {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+}
+@media only screen and (min-width: 600px) {
+  .font-body {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .font-body {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.font-title {
+  font-family: "Roboto", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 20px;
+}
+@media only screen and (min-width: 600px) {
+  .font-title {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .font-title {
+    font-size: 22px;
+    line-height: 28px;
+  }
+}
+
+.font-headline {
+  font-family: "Playfair", serif;
+  font-size: 24px;
+  line-height: 32px;
+}
+@media only screen and (min-width: 600px) {
+  .font-headline {
+    font-size: 28px;
+    line-height: 36px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .font-headline {
+    font-size: 32px;
+    line-height: 40px;
+  }
 }
 
 * {
@@ -261,6 +316,147 @@ section {
     font-size: 12px;
     line-height: 18px;
   }
+}
+
+.events-list {
+  width: 100%;
+}
+@media only screen and (min-width: 600px) {
+  .events-list {
+    background-color: var(--background-color);
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 10px;
+    width: 60%;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .events-list {
+    width: 40%;
+  }
+}
+
+.event-post {
+  padding: 10px 20px;
+}
+.event-post .bi-three-dots-vertical {
+  font-size: 20px;
+}
+
+.post-img-wrapper {
+  aspect-ratio: 1;
+  overflow: hidden;
+  max-width: 10%;
+}
+
+.profile-container {
+  padding: 0;
+}
+
+.profile-ratings {
+  display: flex;
+  gap: 2px;
+}
+@media only screen and (min-width: 600px) {
+  .profile-ratings {
+    display: none;
+  }
+}
+
+.top-profile-wrapper .counts {
+  justify-content: space-between;
+}
+.top-profile-wrapper .counts div {
+  flex-direction: column;
+}
+@media only screen and (min-width: 600px) {
+  .top-profile-wrapper .counts div {
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .top-profile-wrapper .counts {
+    justify-content: flex-start;
+    gap: 50px;
+  }
+}
+.top-profile-wrapper img {
+  aspect-ratio: 1;
+  max-width: 220px;
+  width: 30%;
+}
+@media only screen and (min-width: 600px) {
+  .top-profile-wrapper img {
+    width: 23%;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .top-profile-wrapper img {
+    width: 15%;
+  }
+}
+.top-profile-wrapper .side-profile {
+  margin-left: 40px;
+  gap: 20px;
+}
+.top-profile-wrapper .side-profile i {
+  color: var(--secondary-color);
+  font-size: 30px;
+}
+.top-profile-wrapper .side-profile .profile-ratings {
+  display: none;
+}
+@media only screen and (min-width: 600px) {
+  .top-profile-wrapper .side-profile .profile-ratings {
+    display: flex;
+    gap: 5px;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .top-profile-wrapper .side-profile {
+    margin-left: 80px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .top-profile-wrapper .side-profile {
+    margin-left: 100px;
+  }
+}
+
+.user-events {
+  flex: 1;
+}
+@media only screen and (min-width: 600px) {
+  .user-events {
+    padding: 0 20px;
+  }
+}
+
+.user-info {
+  gap: 5px;
+}
+.user-info i {
+  color: var(--secondary-color);
+  font-size: 20px;
+}
+
+.user-profile {
+  gap: 10px;
+  padding: 10px 20px;
+}
+.user-profile .buttons-wrapper {
+  gap: 20px;
+}
+@media only screen and (min-width: 600px) {
+  .user-profile .buttons-wrapper {
+    width: 40%;
+  }
+}
+
+.user-profile > div {
+  padding: 10px 0;
 }
 
 /*# sourceMappingURL=styles.css.map */

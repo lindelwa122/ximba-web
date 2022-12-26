@@ -30,7 +30,7 @@
 
 .btn-primary-outline {
   border-color: var(--primary-color);
-  @include button(var(--background-color), var(--secondary-text-color));
+  @include button(var(--background-lg-color), var(--secondary-text-color));
 }
 
 .btn-secondary {
@@ -40,7 +40,7 @@
 
 .btn-secondary-outline {
   border-color: var(--secondary-color);
-  @include button(var(--background-color), var(--secondary-text-color));
+  @include button(var(--background-lg-color), var(--secondary-text-color));
 }
 
 .btn-small {
@@ -67,4 +67,17 @@
 // LOGO
 .logo {
   width: 120px;
+}
+
+// TYPOGRAPHY
+.font-body {
+  @include body;
+}
+
+.font-title {
+  @include title;
+}
+
+.font-headline {
+  @include headline;
 }
