@@ -293,15 +293,22 @@ section {
     width: 40%;
     margin-left: 30%;
   }
+  .nmain img {
+    width: 4em;
+    height: 4em;
+  }
 }
 @media only screen and (max-width: 599px) {
-  .mainsearch {
+  .nmain {
     width: 100%;
     margin-left: 0px;
   }
-  .mainsearch .nimg {
-    width: 10px !important;
-    height: 10px !important;
+  .nmain .nimg {
+    width: 4.5em;
+    height: 4.5em;
+  }
+  .nmain .nbtn {
+    padding: 1em;
   }
 }
 @media only screen and (min-width: 600px) and (max-width: 992px) {
