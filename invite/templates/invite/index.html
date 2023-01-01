@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<h1>This is the main page</h1>
+<h1>You are logged in. This is the main page</h1>
 
 <a href='{% url "invite:login" %}'>Login</a>
 <a href='{% url "invite:register" %}'>Register</a>
@@ -11,6 +11,7 @@
 <a href='{% url "invite:reset_password" %}'>Reset password</a>
 <a href='{% url "invite:profile" %}'>Profile</a>
 <a href='{% url "invite:edit_profile" %}'>Edit Profile</a>
+<a href='{% url "invite:logout" %}'>Logout</a>
 
 <!-- Set-ExecutionPolicy Unrestricted -Scope Process -->
 
