@@ -102,7 +102,7 @@ def get_user_bio(request):
 
 def get_user_profile_image(request):
     if request.user.is_authenticated:
-        return JsonResponse({'bio': Profile.objects.get(user=request.user).profile_img}, status=200)
+        return JsonResponse({'imagePath': Profile.objects.get(user=request.user).profile_img}, status=200)
 
     else:
         return JsonResponse({'message': 'User is not authenticated'}, status=403)
