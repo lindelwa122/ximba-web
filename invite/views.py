@@ -149,6 +149,8 @@ def register_view(request):
 
         request.session['username'] = username
 
+        Profile.objects.create(user=User.objects.get(username=username))
+
         return JsonResponse({}, status=200)
 
     else:
@@ -159,12 +161,11 @@ def reset_password(request):
     return render(request, 'invite/reset_password.html')
 
 
-def profile(request):
+def profile(request, username):
     return render(request, 'invite/profile.html')
     
 
 def edit_profile(request):
-    return render(request, 'invite/edit_profile.html')
     if request.method == 'POST':
         data = loads(request.body)
         email = data.get('email', '')
@@ -196,3 +197,35 @@ def edit_profile(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('invite:index'))
+
+
+def main(request):
+    return render(request, 'invite/main.html')
+
+
+def get_profile_count(request):
+    if request.user.is_authenticated:
+        friends = Friend.objects.filter(user=request.user).count()
+        following = Following.objects.filter(user=request.user).count()
+        followers = Following.objects.filter(following=request.user).count()
+
+        return JsonResponse({'friendsCount': friends, 'followingCount': following, 'followersCount': followers}, status=200)
+
+    else:
+        return JsonResponse({'message': 'User not authenticated.'}, status=403)
+
+
+def get_user_bio(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'bio': Profile.objects.get(user=request.user).bio}, status=200)
+
+    else:
+        return JsonResponse({'message': 'User is not authenticated'}, status=403)
+
+
+def get_user_profile_image(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'bio': Profile.objects.get(user=request.user).profile_img}, status=200)
+
+    else:
+        return JsonResponse({'message': 'User is not authenticated'}, status=403)

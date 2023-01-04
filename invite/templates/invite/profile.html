@@ -1,14 +1,17 @@
-{% extends 'invite/layout.html' %} {% block font-title %} Profile {% endblock %}
-{% block body %}
+{% extends 'invite/main.html' %}
+{% load static %}
+
+{% block title %} {{ user.username }} {% endblock %}
+{% block page-icon %} <i class='bi bi-person-fill'></i> {% endblock %}
+{% block page-title %} @{{ user.username }} {% endblock %}
+{% block page-icon-extra %} <i class='bi bi-gear-fill'></i>{% endblock %}
+
+{% block main %}
 
 <section class='d-flex flex-column profile-container'>
   <div class='mb-2 d-flex flex-column user-profile'>
     <div class='d-flex top-profile-wrapper'>
-      <img
-        class='rounded-circle'
-        src='https://images.unsplash.com/photo-1519084278803-b94f11e1c63b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTB8fHBlcnNvbnxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60'
-        width='150px'
-      />
+      <img class='rounded-circle profile-img skeleton' src='' width='150px' alt='Profile image'/>
 
       <div class='d-flex flex-column justify-content-center side-profile w-100'>
         <div class='align-items-center profile-ratings'>
@@ -22,15 +25,15 @@
 
         <div class='d-flex align-items-center counts w-100'>
           <div class='text-center d-flex'>
-            <div class='font-headline'>415K</div>
+            <div class='font-headline followers-count skeleton skeleton-text count'></div>
             <div class='font-title'>followers</div>
           </div>
           <div class='text-center d-flex'>
-            <div class='font-headline'>18</div>
+            <div class='font-headline following-count skeleton skeleton-text count'></div>
             <div class='font-title'>following</div>
           </div>
           <div class='text-center d-flex'>
-            <div class='font-headline'>25</div>
+            <div class='font-headline friends-count skeleton skeleton-text count'></div>
             <div class='font-title'>friends</div>
           </div>
         </div>
@@ -38,8 +41,8 @@
     </div>
 
     <div class='d-flex flex-column user-info'>
-      <div class='font-headline'>Emma Watson</div>
-      <div class='font-title'>Queen of the web</div>
+      <div class='font-headline'>{{ user.first_name }} {{ user.last_name }}</div>
+      <div class='font-title bio'></div>
       <div class='mb-4 align-items-center profile-ratings'>
         <i class='bi bi-star-fill'></i>
         <i class='bi bi-star-fill'></i>
@@ -61,20 +64,13 @@
       EVENTS (47)
     </div>
 
-    <div
-      class='d-flex flex-column align-items-center w-100 flex-grow-1 flex-shrink-1'
-    >
+    <div class='d-flex flex-column align-items-center w-100 flex-grow-1 flex-shrink-1'>
       <div class='d-flex flex-column flex-grow-1 flex-shrink-1 events-list'>
-        <div
-          class='d-flex align-items-center justify-content-between border-bottom border-dark event-post'
-        >
+        <div class='d-flex align-items-center justify-content-between border-bottom border-dark event-post'>
           <div class='overflow-hidden'>
             <div class='d-flex align-items-center mb-2'>
               <div class='post-img-wrapper'>
-                <img
-                  class='h-100'
-                  src='https://tse2.mm.bing.net/th?id=OIP.U8KQimQkVNUTTJU_QjlPFQHaEo&pid=Api&P=0'
-                />
+                <img class='h-100' class='skeleton' src='https://tse2.mm.bing.net/th?id=OIP.U8KQimQkVNUTTJU_QjlPFQHaEo&pid=Api&P=0' />
               </div>
               <span class='ms-2 font-title ms-3'>My 21st birthday party</span>
             </div>
@@ -84,24 +80,19 @@
                 brother is coming home on Wednesday. It's gonna b... (see more)
               </p>
             </div>
-            <small class='d-flex align-items-center'
-              ><i class='bi bi-clock'></i>
-              <span class='ms-1'>5 Jun 2025, 8:30</span>0</small
-            >
+            <small class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1'>5 Jun 2025, 8:30</span>
+            </small>
           </div>
           <i class='bi bi-three-dots-vertical'></i>
         </div>
 
-        <div
-          class='d-flex align-items-center justify-content-between event-post border-bottom border-dark'
-        >
+        <div class='d-flex align-items-center justify-content-between event-post border-bottom border-dark'>
           <div class='overflow-hidden'>
             <div class='d-flex align-items-center mb-2'>
               <div class='post-img-wrapper'>
-                <img
-                  class='h-100'
-                  src='https://tse2.mm.bing.net/th?id=OIP.xIKx6KnCCTCOG6f_emeO4wHaJl&pid=Api&P=0'
-                />
+                <img class='h-100' class='skeleton' src='https://tse2.mm.bing.net/th?id=OIP.xIKx6KnCCTCOG6f_emeO4wHaJl&pid=Api&P=0' />
               </div>
               <span class='ms-2 font-title ms-3'>Soccer Tournament</span>
             </div>
@@ -111,10 +102,10 @@
                 compared 'o the last tournament. The ele... (see more)
               </p>
             </div>
-            <small class='d-flex align-items-center'
-              ><i class='bi bi-clock'></i>
-              <span class='ms-1'>5 Jun 2025, 8:30</span>0</small
-            >
+            <small class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1'>5 Jun 2025, 8:30</span>
+            </small>
           </div>
           <i class='bi bi-three-dots-vertical'></i>
         </div>
@@ -122,5 +113,7 @@
     </div>
   </div>
 </section>
+
+<script src='{% static "invite/js/profile.js" %}'></script>
 
 {% endblock %}

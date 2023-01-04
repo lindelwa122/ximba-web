@@ -1,1 +1,75 @@
 {% extends 'invite/layout.html' %}
+
+{% load static %}
+
+{% block body %}
+
+<div class='body'>
+  <div class='nav-lg-wrapper'>
+    <nav class='nav-lg'>
+      <div class='icon'>
+        <i class='bi bi-house-door'></i>
+      </div>
+      <div class='icon'>
+        <i class='bi bi-search'></i>
+      </div>
+      <div class='icon'>
+        <i class='bi bi-person-add'></i>
+      </div>
+      <div class='icon'>
+        <i class='bi bi-bookmark'></i>
+      </div>
+      <div class='icon'>
+        <i class='bi bi-person'></i>
+      </div>
+      <div class='nav-controller-lg'>
+        <i class='bi bi-arrow-up'></i>
+      </div>
+    </nav>
+  </div>
+
+  <main>
+    <div class='push-notification'></div>
+    <div class='top-nav'>
+      <div>
+        <span>{% block page-icon %}{% endblock %}</span>
+        <span class='font-headline'>{% block page-title %}{% endblock %}</span>
+      </div>
+      <div>
+        {% block page-icon-extra %}{% endblock %}
+      </div>
+    </div>
+
+    {% block main %}{% endblock %}
+
+    <div class='nav-sm-wrapper'>
+      <nav class='nav-sm'>
+        <div class='icon'>
+          <i class='bi bi-house-door'></i>
+        </div>
+        <div class='icon'>
+          <i class='bi bi-search'></i>
+        </div>
+        <div class='icon'>
+          <i class='bi bi-person-add'></i>
+        </div>
+        <div class='icon'>
+          <i class='bi bi-bookmark'></i>
+        </div>
+        <div class='icon'>
+          <i class='bi bi-person'></i>
+        </div>
+        <div class='nav-controller'>
+          <i class='bi bi-arrow-left'></i>
+        </div>
+      </nav>
+    </div>
+  </main>
+
+</div>
+
+</div>
+
+<script src='{% static "invite/js/main.js" %}'></script>
+
+{% endblock %}
