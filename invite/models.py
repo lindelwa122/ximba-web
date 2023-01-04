@@ -18,5 +18,5 @@ class Following(models.Model):
 
 class Profile(models.Model):
   user = models.ForeignKey(User, models.CASCADE, related_name='profile_user')
-  profile_img = models.ImageField(upload_to='invite/static/invite/images/profiles', default='/static/images/profiles/default.png')
+  profile_img = models.ImageField(upload_to='invite/static/invite/images/profiles', default='/static/invite/images/profiles/default.png')
   bio = models.TextField(max_length=200, blank=True, null=True)
