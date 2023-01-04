@@ -16,5 +16,5 @@ urlpatterns = [
     path('profile_image', views.get_user_profile_image, name='user_profile_img'),
     path('main', views.main, name='main'),
     path('logout', views.logout_view, name='logout'),
-    path('<str:username>', views.profile, name='profile'),
+    path('<str:username>', views.profile, name='profile')
 ]

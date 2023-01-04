@@ -16,7 +16,7 @@ from .utils import *
 
 @login_required(login_url='/login')
 def index(request):
-    return render(request, 'invite/index.html')
+    return HttpResponseRedirect(reverse('invite:profile', kwargs={'username': request.user.username}))
 
 
 def confirm_email(request):
@@ -51,6 +51,63 @@ def confirm_email(request):
         return render(request, 'invite/confirm_email.html')
 
 
+def edit_profile(request):
+    if request.method == 'POST':
+        data = loads(request.body)
+        email = data.get('email', '')
+
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist:
+            return JsonResponse({'message': 'Email is not found in our database'}, status=404)
+
+        user.reset_password = generate_hash(20)
+        user.save()
+
+        reset_password = User.objects.get(email=email).reset_password
+
+        send_mail(
+            'Reset Password',
+            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{user.username}/{reset_password} to reset your password.',
+            'portfolio@livingdreams.com',
+            [email],
+            fail_silently=False,
+        )
+
+        return JsonResponse({'message': 'A link has been sent to your email, use it to reset your password'}, status=400)
+
+    else:
+        return render(request, 'invite/reset_password.html')
+
+
+def get_profile_count(request):
+    if request.user.is_authenticated:
+        friends = Friend.objects.filter(user=request.user).count()
+        following = Following.objects.filter(user=request.user).count()
+        followers = Following.objects.filter(following=request.user).count()
+
+        return JsonResponse({'friendsCount': friends, 'followingCount': following, 'followersCount': followers}, status=200)
+
+    else:
+        return JsonResponse({'message': 'User not authenticated.'}, status=403)
+
+
+def get_user_bio(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'bio': Profile.objects.get(user=request.user).bio}, status=200)
+
+    else:
+        return JsonResponse({'message': 'User is not authenticated'}, status=403)
+
+
+def get_user_profile_image(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'bio': Profile.objects.get(user=request.user).profile_img}, status=200)
+
+    else:
+        return JsonResponse({'message': 'User is not authenticated'}, status=403)
+
+
 def login_view(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -67,6 +124,15 @@ def login_view(request):
 
     else:
         return render(request, 'invite/login.html')
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('invite:index'))
+
+
+def main(request):
+    return render(request, 'invite/main.html')
 
 
 def new_password(request, username, access):
@@ -98,6 +164,10 @@ def new_password(request, username, access):
         if User.objects.get(username=username).reset_password != access:
             return HttpResponse('<h1>Broken Link</h1>')
         return render(request, 'invite/new_password.html')
+
+
+def profile(request, username):
+    return render(request, 'invite/profile.html')
 
 
 def register_view(request):
@@ -158,14 +228,6 @@ def register_view(request):
 
 
 def reset_password(request):
-    return render(request, 'invite/reset_password.html')
-
-
-def profile(request, username):
-    return render(request, 'invite/profile.html')
-    
-
-def edit_profile(request):
     if request.method == 'POST':
         data = loads(request.body)
         email = data.get('email', '')
@@ -178,11 +240,9 @@ def edit_profile(request):
         user.reset_password = generate_hash(20)
         user.save()
 
-        reset_password = User.objects.get(email=email).reset_password
-
         send_mail(
             'Reset Password',
-            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{user.username}/{reset_password} to reset your password.',
+            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{user.username}/{User.objects.get(email=email).reset_password} to reset your password.',
             'portfolio@livingdreams.com',
             [email],
             fail_silently=False,
@@ -192,40 +252,3 @@ def edit_profile(request):
 
     else:
         return render(request, 'invite/reset_password.html')
-
-
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse('invite:index'))
-
-
-def main(request):
-    return render(request, 'invite/main.html')
-
-
-def get_profile_count(request):
-    if request.user.is_authenticated:
-        friends = Friend.objects.filter(user=request.user).count()
-        following = Following.objects.filter(user=request.user).count()
-        followers = Following.objects.filter(following=request.user).count()
-
-        return JsonResponse({'friendsCount': friends, 'followingCount': following, 'followersCount': followers}, status=200)
-
-    else:
-        return JsonResponse({'message': 'User not authenticated.'}, status=403)
-
-
-def get_user_bio(request):
-    if request.user.is_authenticated:
-        return JsonResponse({'bio': Profile.objects.get(user=request.user).bio}, status=200)
-
-    else:
-        return JsonResponse({'message': 'User is not authenticated'}, status=403)
-
-
-def get_user_profile_image(request):
-    if request.user.is_authenticated:
-        return JsonResponse({'bio': Profile.objects.get(user=request.user).profile_img}, status=200)
-
-    else:
-        return JsonResponse({'message': 'User is not authenticated'}, status=403)
