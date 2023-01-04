@@ -31,6 +31,6 @@ const fetchProfileImage = () => {
   fetch(`/profile_image`)
     .then((response) => response.json())
     .then((data) => {
-      document.querySelector('.profile-img').textContent = data.imagePath;
+      document.querySelector('.profile-img').src = data.imagePath;
     });
 };
