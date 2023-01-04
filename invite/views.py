@@ -94,7 +94,8 @@ def get_profile_count(request):
 
 def get_user_bio(request):
     if request.user.is_authenticated:
-        return JsonResponse({'bio': Profile.objects.get(user=request.user).bio}, status=200)
+        bio = Profile.objects.get(user=request.user).bio
+        return JsonResponse({'bio': bio}, status=200)
 
     else:
         return JsonResponse({'message': 'User is not authenticated'}, status=403)
@@ -102,7 +103,9 @@ def get_user_bio(request):
 
 def get_user_profile_image(request):
     if request.user.is_authenticated:
-        return JsonResponse({'imagePath': Profile.objects.get(user=request.user).profile_img}, status=200)
+        image = Profile.objects.get(user=request.user).profile_img
+        image_url = image.url
+        return JsonResponse({'imagePath': image_url}, status=200)
 
     else:
         return JsonResponse({'message': 'User is not authenticated'}, status=403)
