@@ -31,6 +31,10 @@
 .btn-primary-outline {
   border-color: var(--primary-color);
   @include button(var(--background-lg-color), var(--secondary-text-color));
+
+  &:hover {
+    border-color: var(--secondary-color);
+  }
 }
 
 .btn-secondary {
@@ -41,6 +45,10 @@
 .btn-secondary-outline {
   border-color: var(--secondary-color);
   @include button(var(--background-lg-color), var(--secondary-text-color));
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
 }
 
 .btn-small {
