@@ -31,8 +31,8 @@ $font-family-secondary: 'Playfair', serif;
   line-height: 12px;
   
   @include for-tablets {
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 12px;
+    line-height: 18px;
   }
 
   @include for-desktops {
@@ -43,12 +43,12 @@ $font-family-secondary: 'Playfair', serif;
 
 @mixin body-tiny {
   font-family: $font-family-primary;
-  font-size: 8px;
-  line-height: 10px;
+  font-size: 4px;
+  line-height: 6px;
   
   @include for-tablets {
-    font-size: 10px;
-    line-height: 12px;
+    font-size: 6px;
+    line-height: 8px;
   }
 
   @include for-desktops {
@@ -76,11 +76,11 @@ $font-family-secondary: 'Playfair', serif;
 @mixin headline {
   font-family: $font-family-secondary;
   font-size: 16px;
-  line-height: 30px;
+  line-height: 20px;
   
   @include for-tablets {
-    font-size: 28px;
-    line-height: 36px;
+    font-size: 24px;
+    line-height: 28px;
   }
   
   @include for-desktops {
@@ -96,8 +96,8 @@ $font-family-secondary: 'Playfair', serif;
   line-height: 12px;
   
   @include for-tablets {
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 10px;
+    line-height: 14px;
   }
 
   @include for-desktops {
@@ -113,8 +113,8 @@ $font-family-secondary: 'Playfair', serif;
   line-height: 16px;
   
   @include for-tablets {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 14px;
+    line-height: 22px;
   }
 
   @include for-desktops {

@@ -112,8 +112,6 @@
 }
 
 .user-info {
-  gap: 5px;
-
   i {
     color: var(--secondary-color);
     font-size: 20px;
@@ -121,6 +119,7 @@
 }
 
 .user-profile {
+  gap: 5px;
   padding: $general-padding;
 
   .buttons-wrapper {
