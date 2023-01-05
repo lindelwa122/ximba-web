@@ -22,6 +22,12 @@
   }
 }
 
+.event-post:first-child {
+  @include for-tablets {
+    padding: 0;
+  }
+}
+
 .post-img-wrapper {
   aspect-ratio: 1;
   overflow: hidden;
@@ -132,5 +138,6 @@
 }
 
 .user-profile > div {
+  gap: 3px;
   padding: 5px 0;
 }

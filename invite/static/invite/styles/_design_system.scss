@@ -27,12 +27,12 @@ $font-family-secondary: 'Playfair', serif;
 
 @mixin body {
   font-family: $font-family-primary;
-  font-size: 8px;
-  line-height: 12px;
+  font-size: 12px;
+  line-height: 16px;
   
   @include for-tablets {
-    font-size: 12px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 20px;
   }
 
   @include for-desktops {
@@ -43,12 +43,12 @@ $font-family-secondary: 'Playfair', serif;
 
 @mixin body-tiny {
   font-family: $font-family-primary;
-  font-size: 4px;
-  line-height: 6px;
+  font-size: 8px;
+  line-height: 10px;
   
   @include for-tablets {
-    font-size: 6px;
-    line-height: 8px;
+    font-size: 10px;
+    line-height: 12px;
   }
 
   @include for-desktops {
@@ -75,29 +75,29 @@ $font-family-secondary: 'Playfair', serif;
 
 @mixin headline {
   font-family: $font-family-secondary;
-  font-size: 16px;
-  line-height: 20px;
+  font-size: 18px;
+  line-height: 26px;
   
   @include for-tablets {
-    font-size: 24px;
-    line-height: 28px;
+    font-size: 22px;
+    line-height: 30px;
   }
   
   @include for-desktops {
-    font-size: 32px;
-    line-height: 40px;
+    font-size: 26px;
+    line-height: 34px;
   }
 }
 
 @mixin label {
   font-family: $font-family-primary;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 500;
-  line-height: 12px;
+  line-height: 16px;
   
   @include for-tablets {
-    font-size: 10px;
-    line-height: 14px;
+    font-size: 12px;
+    line-height: 16px;
   }
 
   @include for-desktops {
@@ -108,13 +108,13 @@ $font-family-secondary: 'Playfair', serif;
 
 @mixin title {
   font-family: $font-family-primary;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 500;
-  line-height: 16px;
+  line-height: 20px;
   
   @include for-tablets {
-    font-size: 14px;
-    line-height: 22px;
+    font-size: 16px;
+    line-height: 24px;
   }
 
   @include for-desktops {
