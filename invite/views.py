@@ -16,6 +16,9 @@ from .utils import *
 
 @login_required(login_url='/login')
 def index(request):
+    if User.objects.get(username=request.user.username).is_email_confirmed == False:
+            return HttpResponseRedirect(reverse('invite:confirm_email'))
+
     return HttpResponseRedirect(reverse('invite:profile', kwargs={'username': request.user.username}))
 
 
@@ -121,9 +124,6 @@ def login_view(request):
 
         if user is None:
             return JsonResponse({'message': 'Username/Password is incorrect. Try resetting your password.'}, status=403)
-
-        if User.objects.get(username=user.get_username()).is_email_confirmed == False:
-            return HttpResponseRedirect(reverse('invite:confirm_email'))
 
         login(request, user)
         return JsonResponse({}, status=200)
