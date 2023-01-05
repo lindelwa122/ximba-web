@@ -258,3 +258,4 @@ def reset_password(request):
 
     else:
         return render(request, 'invite/reset_password.html')
+
