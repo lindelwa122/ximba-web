@@ -22,7 +22,7 @@
   }
 }
 
-.event-post:first-child {
+.font-headline.event-post {
   @include for-tablets {
     padding: 0;
   }
