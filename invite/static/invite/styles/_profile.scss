@@ -64,7 +64,7 @@
   img {
     aspect-ratio: 1;
     max-width: 220px;
-    width: 30%;
+    width: 20%;
 
     @include for-tablets {
       width: 23%;
@@ -121,11 +121,10 @@
 }
 
 .user-profile {
-  gap: 10px;
   padding: $general-padding;
 
   .buttons-wrapper {
-    gap: 20px;
+    gap: 20px !important;
 
     @include for-tablets {
       width: 40%;
@@ -134,5 +133,5 @@
 }
 
 .user-profile > div {
-  padding: 10px 0;
+  padding: 5px 0;
 }
