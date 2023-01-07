@@ -37,28 +37,3 @@ assert "No results found." not in driver.page_source
 time.sleep(120)
 driver.quit()
 
-#Django tests
-from django.test import TestCase
-from .models import MyModel
-from .views import MyView
-
-class MyViewTestCase(TestCase):
-    def setUp(self):
-        # create some test data to use in the tests
-        MyModel.objects.create(name="Test Model 1")
-        MyModel.objects.create(name="Test Model 2")
-
-    def test_my_view(self):
-        # send a request to the view
-        response = self.client.get('https://getvyt-web-production.up.railway.app/')
-
-        # check that the response status code is correct
-        self.assertEqual(response.status_code, 200)
-
-        # check that the rendered context contains the correct number of models
-        self.assertEqual(len(response.context['models']), 2)
-
-        # check that the rendered HTML contains the correct text
-        self.assertContains(response, "Test Model 1")
-        self.assertContains(response, "Test Model 2")
-
