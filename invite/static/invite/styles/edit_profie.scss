@@ -1,0 +1,35 @@
+.rounded-circle {
+  position: relative;
+  img {
+    opacity: 90%;
+    filter: brightness(90%);
+    border-radius: 50%;
+  }
+
+  i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--primary-color);
+    font-size: 30px;
+  }
+}
+.bi-pencil-fill {
+  color: var(--primary-color);
+  font-size: 20px;
+  cursor: pointer;
+}
+.bi:not(.bi-pencil-fill) {
+  font-size: 44px;
+  margin-right: 14px;
+}
+.stack {
+  padding-block: 14px;
+
+  .imp {
+    font-size: large;
+    font-weight: 500;
+    padding-top: 6px;
+  }
+}

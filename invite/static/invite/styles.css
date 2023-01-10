@@ -514,8 +514,8 @@ main {
   font-size: 30px;
 }
 .top-nav div:first-child {
-  display: flex;
   align-items: center;
+  display: flex;
 }
 .top-nav span:first-child {
   margin-right: 5px;
@@ -709,6 +709,43 @@ main {
 
 .user-profile > div {
   padding: 10px 0;
+}
+
+.rounded-circle {
+  position: relative;
+}
+.rounded-circle img {
+  opacity: 90%;
+  filter: brightness(90%);
+  border-radius: 50%;
+}
+.rounded-circle i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--primary-color);
+  font-size: 30px;
+}
+
+.bi-pencil-fill {
+  color: var(--primary-color);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.bi:not(.bi-pencil-fill) {
+  font-size: 44px;
+  margin-right: 14px;
+}
+
+.stack {
+  padding-block: 14px;
+}
+.stack .imp {
+  font-size: large;
+  font-weight: 500;
+  padding-top: 6px;
 }
 
 /*# sourceMappingURL=styles.css.map */
