@@ -166,32 +166,7 @@ def profile(request, username):
     
 
 def edit_profile(request):
-    if request.method == 'POST':
-        data = loads(request.body)
-        email = data.get('email', '')
-
-        try:
-            user = User.objects.get(email=email)
-        except ObjectDoesNotExist:
-            return JsonResponse({'message': 'Email is not found in our database'}, status=404)
-
-        user.reset_password = generate_hash(20)
-        user.save()
-
-        reset_password = User.objects.get(email=email).reset_password
-
-        send_mail(
-            'Reset Password',
-            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{user.username}/{reset_password} to reset your password.',
-            'portfolio@livingdreams.com',
-            [email],
-            fail_silently=False,
-        )
-
-        return JsonResponse({'message': 'A link has been sent to your email, use it to reset your password'}, status=400)
-
-    else:
-        return render(request, 'invite/reset_password.html')
+        return render(request, 'invite/edit_profile.html')
 
 
 def logout_view(request):
