@@ -159,7 +159,7 @@ const changeAbout = (textarea, token) => {
 
 const editAbout = (modalTitle, modalPage) => {
   document.querySelector('.edit-about').addEventListener('click', () => {
-    modalTitle.forEach((title) => (title.textContent = 'Set an Profile'));
+    modalTitle.forEach((title) => (title.textContent = 'Set an About'));
     modalPage.style.padding = '10px';
     modalPage.innerHTML = aboutForm();
 
@@ -374,3 +374,5 @@ const pushNotification = () => {
       }
     });
 };
+
+'Set an Profile'
