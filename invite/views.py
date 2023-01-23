@@ -170,8 +170,9 @@ def get_user_profile_image(request, username):
     # Create a list
     image_url_array = image.url.split('/')
 
-    # Delete the second element (invite)
-    del image_url_array[1]
+    if image_url_array[-1] is not 'default.png':
+        # Delete the second element (invite)
+        del image_url_array[1]
 
     # Join the list
     image_url = '/'.join(image_url_array)
