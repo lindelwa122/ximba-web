@@ -55,6 +55,19 @@
   padding: 7.5px 10px;
 }
 
+// COLOR
+.primary-color {
+  color: var(--primary-color) !important;
+}
+
+.secondary-color {
+  color: var(--secondary-color) !important;
+}
+
+.tertiary-color {
+  color: var(--tertiary-color) !important;
+}
+
 // INPUT
 
 .input-frame {

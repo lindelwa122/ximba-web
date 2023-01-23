@@ -29,7 +29,9 @@
   </div>
 
   <main>
-    <div class='push-notification'></div>
+    <div class='push-notification'>
+      
+    </div>
     <div class='top-nav'>
       <div>
         <span>{% block page-icon %}{% endblock %}</span>
@@ -68,6 +70,25 @@
 
 </div>
 
+<div class='modal-page'>
+  {% csrf_token %}
+  <div class='header-sm top-nav'>
+    <div>
+      <span class='modal-icon'></span>
+      <span class='font-headline modal-page-title'></span>
+    </div>
+    <div class='modal-extra-icon'></div>
+  </div>
+  
+  <div class='header border-bottom border-dark p-2 d-flex justify-content-between align-items-center font-title'>
+    <span class='modal-page-title'></span>
+    <span class='modal-page-cancel'> 
+      <i class='bi bi-x-lg'></i>
+    </span>
+  </div>
+
+  <div class='modal-page-content'>
+  </div>
 </div>
 
 <script src='{% static "invite/js/main.js" %}'></script>

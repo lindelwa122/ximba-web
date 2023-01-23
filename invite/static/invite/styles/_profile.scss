@@ -118,6 +118,16 @@
 }
 
 .user-info {
+  .bio {
+    @include for-tablets {
+      font-weight: 500;
+      overflow-wrap: break-word;
+      width: 45%;
+      word-break: break-all; 
+      @include body;
+    }
+  }
+  
   i {
     color: var(--secondary-color);
     font-size: 15px;

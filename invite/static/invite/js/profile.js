@@ -20,7 +20,8 @@ const fetchCount = () => {
 };
 
 const fetchBio = () => {
-  fetch(`/bio`)
+  const username = window.location.pathname.split('/')[1]
+  fetch(`/bio/${username}`)
     .then((response) => response.json())
     .then((data) => {
       document.querySelector('.bio').textContent = data.bio;
@@ -28,9 +29,12 @@ const fetchBio = () => {
 };
 
 const fetchProfileImage = () => {
-  fetch(`/profile_image`)
+  const username = window.location.pathname.split('/')[1]
+  fetch(`/profile_image/${username}`)
     .then((response) => response.json())
     .then((data) => {
-      document.querySelector('.profile-img').src = data.imagePath;
+      const img = document.querySelector('.profile-img');
+      img.src = data.imagePath;
+      img.addEventListener('load', () => img.classList.remove('skeleton'));
     });
 };

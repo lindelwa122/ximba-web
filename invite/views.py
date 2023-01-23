@@ -1,8 +1,16 @@
+import tempfile
+import os
+
+from io import BytesIO
 from json import loads
+from PIL import Image
+from uuid import uuid4
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files import File
+from django.core.files.storage import default_storage
 from django.core.mail import send_mail
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -46,6 +54,8 @@ def confirm_email(request):
         user.is_email_confirmed = True
         user.save()
 
+        ProfileSetUp.objects.create(user=user)
+
         login(request, user)
 
         return JsonResponse({}, status=200)
@@ -54,34 +64,77 @@ def confirm_email(request):
         return render(request, 'invite/confirm_email.html')
 
 
+def edit_about(request):
+    data = loads(request.body)
+    about = data.get('about', )
+
+    user_profile = Profile.objects.get(user=request.user)
+
+    if len(about) > 200:
+        return JsonResponse({}, status=400)
+
+    user_profile.bio = about
+    user_profile.save()
+
+    profile_set_up = ProfileSetUp.objects.get(user=request.user)
+
+    if not profile_set_up.bio_setup:
+        profile_set_up.bio_setup = True
+        profile_set_up.save()
+
+    return JsonResponse({'message': about}, status=200)
+
+
 def edit_profile(request):
+    return render(request, 'invite/edit_profile.html')
+
+
+def edit_profile_img(request):
     if request.method == 'POST':
-        data = loads(request.body)
-        email = data.get('email', '')
+        x = 0 if (int(float(request.POST.get('x'))) < 0) else int(float(request.POST.get('x')))
+        y = 0 if (int(float(request.POST.get('y'))) < 0) else int(float(request.POST.get('y')))
+        width = int(float(request.POST.get('width')))
+        height = int(float(request.POST.get('height')))
+        image_file = request.FILES['image']
 
-        try:
-            user = User.objects.get(email=email)
-        except ObjectDoesNotExist:
-            return JsonResponse({'message': 'Email is not found in our database'}, status=404)
+        # get the file extension
+        file_ext = image_file.name.split('.')[-1]
 
-        user.reset_password = generate_hash(20)
-        user.save()
+        with tempfile.TemporaryFile(dir='invite/static/invite/images/temp', suffix=file_ext, delete=False) as temp:
+            temp.write(image_file.file.read())
+            temp.seek(0)
 
-        reset_password = User.objects.get(email=email).reset_password
+            with default_storage.open(temp.name, 'rb') as f:
+                image = Image.open(f)
 
-        send_mail(
-            'Reset Password',
-            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{user.username}/{reset_password} to reset your password.',
-            'portfolio@livingdreams.com',
-            [email],
-            fail_silently=False,
-        )
+                # Crop image
+                cropped_image = image.crop((x, y, x + width, y + height))
 
-        return JsonResponse({'message': 'A link has been sent to your email, use it to reset your password'}, status=400)
+                # Create a BytesIO object
+                image_io = BytesIO()
 
-    else:
-        return render(request, 'invite/reset_password.html')
+                # Save the image to the BytesIO object
+                cropped_image.save(image_io, format='JPEG')
 
+                # Seek to the beginning of the file
+                image_io.seek(0)
+                
+                # Save cropped image
+                profile = Profile.objects.get(user=request.user)
+                # generate a random hash for the image name
+                random_hash = uuid4().hex
+                # rename the file
+                new_file_name = f'{random_hash}.{file_ext}'
+                profile.profile_img.save(new_file_name, File(image_io), save=False)
+                profile.save()
+
+        profile_set_up = ProfileSetUp.objects.get(user=request.user)
+
+        if not profile_set_up.profile_img_setup:
+            profile_set_up.profile_img_setup = True
+            profile_set_up.save()
+
+        return JsonResponse({}, status=200)
 
 def get_profile_count(request):
     if request.user.is_authenticated:
@@ -95,23 +148,36 @@ def get_profile_count(request):
         return JsonResponse({'message': 'User not authenticated.'}, status=403)
 
 
-def get_user_bio(request):
-    if request.user.is_authenticated:
-        bio = Profile.objects.get(user=request.user).bio
-        return JsonResponse({'bio': bio}, status=200)
+def get_user_bio(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'User does not exist'}, status=404)
 
-    else:
-        return JsonResponse({'message': 'User is not authenticated'}, status=403)
+    profile = Profile.objects.get(user=user)
+    return JsonResponse({'bio': profile.bio}, status=200)
 
 
-def get_user_profile_image(request):
-    if request.user.is_authenticated:
-        image = Profile.objects.get(user=request.user).profile_img
-        image_url = image.url
-        return JsonResponse({'imagePath': image_url}, status=200)
+def get_user_profile_image(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'User does not exist'}, status=404)
 
-    else:
-        return JsonResponse({'message': 'User is not authenticated'}, status=403)
+    profile = Profile.objects.get(user=user)
+    image = profile.profile_img
+
+    # Create a list
+    image_url_array = image.url.split('/')
+
+    # Delete the second element (invite)
+    del image_url_array[1]
+
+    # Join the list
+    image_url = '/'.join(image_url_array)
+
+    print(image_url)
+    return JsonResponse({'imagePath': image_url}, status=200)
 
 
 def login_view(request):
@@ -173,7 +239,29 @@ def new_password(request, username, access):
 
 
 def profile(request, username):
-    return render(request, 'invite/profile.html')
+    username = username.strip()
+    user = User.objects.get(username=username)
+    authenticated = username == request.user.username
+    return render(request, 'invite/profile.html', {
+        'user': user,
+        'authenticated': authenticated
+    })
+
+
+def push_top_notification(request):
+    if request.user.is_authenticated:
+
+        setup = ProfileSetUp.objects.get(user=request.user)
+
+        if not (setup.bio_setup and setup.profile_img_setup):
+            return JsonResponse({'currentStatus': 'profileNotComplete', 'imageSetUp': setup.profile_img_setup, 'bioSetUp': setup.bio_setup}, status=200)
+
+        else:
+            return JsonResponse({'currentStatus': 'profileComplete'}, status=200)
+
+    else:
+        return JsonResponse({'currentStatus': 'notLoggedIn'}, status=200)
+
 
 
 def register_view(request):

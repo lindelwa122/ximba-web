@@ -24,3 +24,7 @@ section {
   padding: $general-padding;
   min-height: 100vh;
 }
+
+section.form-section {
+  min-height: calc(100vh - 20px);
+}
