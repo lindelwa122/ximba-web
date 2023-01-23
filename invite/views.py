@@ -100,7 +100,7 @@ def edit_profile_img(request):
         # get the file extension
         file_ext = image_file.name.split('.')[-1]
 
-        with tempfile.TemporaryFile(dir='invite/static/invite/images/temp', suffix=file_ext, delete=False) as temp:
+        with tempfile.TemporaryFile(dir='invite/static/invite/images/temp', suffix=file_ext) as temp:
             temp.write(image_file.file.read())
             temp.seek(0)
 
