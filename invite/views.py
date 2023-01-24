@@ -24,10 +24,10 @@ from .utils import *
 
 @login_required(login_url='/login')
 def index(request):
-    if User.objects.get(username=request.user.username).is_email_confirmed == False:
-            return HttpResponseRedirect(reverse('invite:confirm_email'))
-
-    request.session['username'] = request.user.username
+    user = User.objects.get(username=request.user.username)
+    if user.is_email_confirmed == False:
+        request.session['username'] = request.user.username
+        return HttpResponseRedirect(reverse('invite:confirm_email'))
 
     return HttpResponseRedirect(reverse('invite:profile'))
 
