@@ -26,6 +26,9 @@ from .utils import *
 def index(request):
     user = User.objects.get(username=request.user.username)
     if not user.is_email_confirmed:
+        user.email_code = generate_code()
+        user.code_generation_date = localtime()
+        user.save()
         send_mail(
             'Welcome to GetVyt',
             f'Hello, {user.username}. Use this code: {user.email_code} to confirm your email.',
