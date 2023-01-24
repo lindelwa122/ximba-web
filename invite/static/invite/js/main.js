@@ -374,5 +374,3 @@ const pushNotification = () => {
       }
     });
 };
-
-'Set an Profile'
