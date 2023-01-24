@@ -27,7 +27,9 @@ def index(request):
     if User.objects.get(username=request.user.username).is_email_confirmed == False:
             return HttpResponseRedirect(reverse('invite:confirm_email'))
 
-    return HttpResponseRedirect(reverse('invite:profile', kwargs={'username': request.user.username}))
+    request.session['username'] = request.user.username
+
+    return HttpResponseRedirect(reverse('invite:profile'))
 
 
 def confirm_email(request):
