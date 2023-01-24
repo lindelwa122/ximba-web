@@ -25,7 +25,14 @@ from .utils import *
 @login_required(login_url='/login')
 def index(request):
     user = User.objects.get(username=request.user.username)
-    if user.is_email_confirmed == False:
+    if not user.is_email_confirmed:
+        send_mail(
+            'Welcome to GetVyt',
+            f'Hello, {user.username}. Use this code: {user.email_code} to confirm your email.',
+            'portfolio@livingdreams.com',
+            [user.email],
+            fail_silently=False,
+        )
         request.session['username'] = request.user.username
         return HttpResponseRedirect(reverse('invite:confirm_email'))
 
