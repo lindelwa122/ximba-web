@@ -39,7 +39,7 @@ def index(request):
         request.session['username'] = request.user.username
         return HttpResponseRedirect(reverse('invite:confirm_email'))
 
-    return HttpResponseRedirect(reverse('invite:profile'))
+    return HttpResponseRedirect(reverse('invite:profile', kwargs={'username': request.user.username}))
 
 
 def confirm_email(request):
