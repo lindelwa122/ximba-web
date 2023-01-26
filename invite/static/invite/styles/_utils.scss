@@ -4,7 +4,7 @@
   $theme,
   $color,
   $borderRadius: $border-radius,
-  $padding: 15px 20px
+  $padding: 15px 0
   ) {
   background-color: $theme;
   border-radius: $border-radius;
@@ -31,6 +31,10 @@
 .btn-primary-outline {
   border-color: var(--primary-color);
   @include button(var(--background-lg-color), var(--secondary-text-color));
+
+  &:hover {
+    border-color: var(--secondary-color);
+  }
 }
 
 .btn-secondary {
@@ -41,10 +45,27 @@
 .btn-secondary-outline {
   border-color: var(--secondary-color);
   @include button(var(--background-lg-color), var(--secondary-text-color));
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
 }
 
 .btn-small {
   padding: 7.5px 10px;
+}
+
+// COLOR
+.primary-color {
+  color: var(--primary-color) !important;
+}
+
+.secondary-color {
+  color: var(--secondary-color) !important;
+}
+
+.tertiary-color {
+  color: var(--tertiary-color) !important;
 }
 
 // INPUT

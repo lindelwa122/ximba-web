@@ -22,6 +22,12 @@
   }
 }
 
+.font-headline.event-post {
+  @include for-tablets {
+    padding: 0;
+  }
+}
+
 .post-img-wrapper {
   aspect-ratio: 1;
   overflow: hidden;
@@ -64,7 +70,7 @@
   img {
     aspect-ratio: 1;
     max-width: 220px;
-    width: 30%;
+    width: 20%;
 
     @include for-tablets {
       width: 23%;
@@ -112,20 +118,28 @@
 }
 
 .user-info {
-  gap: 5px;
-
+  .bio {
+    @include for-tablets {
+      font-weight: 500;
+      overflow-wrap: break-word;
+      width: 45%;
+      word-break: break-all; 
+      @include body;
+    }
+  }
+  
   i {
     color: var(--secondary-color);
-    font-size: 20px;
+    font-size: 15px;
   }
 }
 
 .user-profile {
-  gap: 10px;
+  gap: 5px;
   padding: $general-padding;
 
   .buttons-wrapper {
-    gap: 20px;
+    gap: 20px !important;
 
     @include for-tablets {
       width: 40%;
@@ -134,5 +148,6 @@
 }
 
 .user-profile > div {
-  padding: 10px 0;
+  gap: 3px;
+  padding: 5px 0;
 }

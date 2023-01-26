@@ -174,7 +174,7 @@ main {
 
     .bi {
       color: var(--background-color);
-      font-size: 30px;
+      font-size: 20px;
     }
   }
 }
@@ -212,12 +212,84 @@ main {
   display: flex;
   justify-content: flex-end;
   padding: 5px 20px;
-  position: absolute;
+  position: fixed;
   right: 0;
   width: 100%;
 
   @include for-tablets {
     display: none;
+  }
+}
+
+.modal-page {
+  background-color: var(--background-color);
+  bottom: 0;
+  display: none;
+  left: 0;
+  margin: auto;
+  min-height: 100vh;
+  overflow-y: auto;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+
+  @include for-tablets {
+    border: 1px solid var(--bs-black);
+    border-radius: 10px;
+    max-height: 600px;
+    min-height: 400px;
+    width: 60%;
+  }
+
+  @include for-desktops {
+    width: 30%;
+  }
+
+  .header {
+    display: none !important;
+
+    @include for-tablets {
+      display: flex !important;
+    }
+  }
+
+  .modal-page-content {
+    div {
+      padding: 0 20px;
+
+      @include for-tablets {
+        padding: 0;
+      }
+
+      &:hover {
+        background-color: var(--background-color-lg);
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.push-notification {
+  align-items: center;
+  color: var(--main-text-color);
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  display: none;
+  margin: 10px;
+  padding: 10px 20px;
+
+  p {
+    margin-bottom: 0;
+  }
+
+  span {
+    color: var(--secondary-color);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--main-text-color);
+    }
   }
 }
 
