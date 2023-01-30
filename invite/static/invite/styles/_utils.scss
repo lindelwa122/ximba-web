@@ -121,6 +121,10 @@
   @include body;
 }
 
+.font-body-tiny {
+  @include body-tiny;
+}
+
 .font-title {
   @include title;
 }

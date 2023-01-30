@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     shrinkExpandAnimationForLargeDevices();
     showHideAnimation();
   });
+
+  document.querySelector('.edit-btn').addEventListener('click', () => {
+    editProfile();
+  })
 });
 
 // ANIMATION
@@ -158,17 +162,15 @@ const changeAbout = (textarea, token) => {
 };
 
 const editAbout = (modalTitle, modalPage) => {
-  document.querySelector('.edit-about').addEventListener('click', () => {
-    modalTitle.forEach((title) => (title.textContent = 'Set an About'));
-    modalPage.style.padding = '10px';
-    modalPage.innerHTML = aboutForm();
+  modalTitle.forEach((title) => (title.textContent = 'Set an About'));
+  modalPage.style.padding = '10px';
+  modalPage.innerHTML = aboutForm();
 
-    // Disable submit button
-    document.querySelector('.submit-about').disabled = true;
+  // Disable submit button
+  document.querySelector('.submit-about').disabled = true;
 
-    aboutKeyUpHandler();
-    aboutFormHandler();
-  });
+  aboutKeyUpHandler();
+  aboutFormHandler();
 
   pushNotification();
 };
@@ -255,40 +257,38 @@ const cropImage = () => {
 };
 
 const editProfileImg = (modalTitle, modalPage) => {
-  document.querySelector('.edit-profile-img').addEventListener('click', () => {
-    modalTitle.textContent = 'Set Profile Image';
-    modalPage.style.padding = '10px';
-    modalPage.innerHTML = profileImgForm();
+  modalTitle.textContent = 'Set Profile Image';
+  modalPage.style.padding = '10px';
+  modalPage.innerHTML = profileImgForm();
 
-    cropImage();
+  cropImage();
 
-    document
-      .querySelector('.submit-profile-img')
-      .addEventListener('submit', (event) => {
-        event.preventDefault();
+  document
+    .querySelector('.submit-profile-img')
+    .addEventListener('submit', (event) => {
+      event.preventDefault();
 
-        // Get crop data
-        const imageFile = document.querySelector('#file-input').files[0];
-        const x = document.querySelector('#x-axis').value;
-        const y = document.querySelector('#y-axis').value;
-        const width = document.querySelector('#width').value;
-        const height = document.querySelector('#height').value;
+      // Get crop data
+      const imageFile = document.querySelector('#file-input').files[0];
+      const x = document.querySelector('#x-axis').value;
+      const y = document.querySelector('#y-axis').value;
+      const width = document.querySelector('#width').value;
+      const height = document.querySelector('#height').value;
 
-        // Send data to server
-        const formData = new FormData();
-        formData.append('image', imageFile);
-        formData.append('x', x);
-        formData.append('y', y);
-        formData.append('width', width);
-        formData.append('height', height);
+      // Send data to server
+      const formData = new FormData();
+      formData.append('image', imageFile);
+      formData.append('x', x);
+      formData.append('y', y);
+      formData.append('width', width);
+      formData.append('height', height);
 
-        const csrfToken = document.querySelector(
-          'input[name="csrfmiddlewaretoken"]'
-        ).value;
+      const csrfToken = document.querySelector(
+        'input[name="csrfmiddlewaretoken"]'
+      ).value;
 
-        changeProfileImg(csrfToken, formData);
-      });
-  });
+      changeProfileImg(csrfToken, formData);
+    });
 
   pushNotification();
 };
@@ -354,11 +354,15 @@ const pushNotification = () => {
               : '';
 
             if (!data.bioSetUp) {
-              editAbout(modalTitle, modalPage);
+              document.querySelector('.edit-about').addEventListener('click', () => {
+                editAbout(modalTitle, modalPage);
+              });
             }
 
             if (!data.imageSetUp) {
-              editProfileImg(modalTitle, modalPage);
+              document.querySelector('.edit-profile-img').addEventListener('click', () => {
+                editProfileImg(modalTitle, modalPage);
+              });
             }
 
             document
@@ -374,3 +378,95 @@ const pushNotification = () => {
       }
     });
 };
+
+// EDIT PROFILE
+const editProfile = () => {
+  document.querySelector('.modal-page').style.display =
+  'inline-block';
+  const modalTitle = document.querySelectorAll('.modal-page-title');
+  const modalPage = document.querySelector('.modal-page-content');
+  modalTitle.forEach(
+    (title) => (title.textContent = 'Edit Profile')
+  );
+  document.querySelector('.modal-icon').innerHTML =
+    "<i class='bi bi-person'></i>";
+
+  document
+  .querySelector('.modal-page-cancel')
+  .addEventListener('click', () => {
+    modalPage.innerHTML = '';
+    document.querySelector('.modal-page').style.display = 'none';
+  });
+
+  modalPage.append(editProfileSection());
+}
+
+const editProfileResponseHandler = (response) => {
+  if (response.status !== 200) {
+    throw new Error('Request was unsuccessful, the user might not be authenticated. Try again later');
+  }
+  return response.json();
+}
+
+const editProfileGetErrorHandler = (error, subject) => {
+  console.log(error);
+  return `${subject} Not Found (try reloading the page)`;
+}
+
+const getDataForEditProfile = async (route) => {
+  try {
+    const response = await fetch(route);
+    return editProfileResponseHandler(response);
+  } catch (error) {
+    return editProfileGetErrorHandler(error, 'Name');
+  }
+}
+
+const editProfileContent = [
+  {icon: 'bi bi-person', title: 'Name', content: getDataForEditProfile, route: '/get/name'},
+  {icon: 'bi bi-at', title: 'Username', content: getDataForEditProfile, route: '/get/username'},
+  {icon: 'bi bi-info', title: 'About', content: getDataForEditProfile, route: '/get/about'},
+  {icon: 'bi bi-envelope-at', title: 'Email', content: getDataForEditProfile, route: '/get/email'}
+]
+
+const editProfileSection = () => {
+  const section = document.createElement('section');
+  section.className = 'edit-profile';
+  section.innerHTML = `
+  <div class='text-center'>
+    <div class="rounded-circle">
+      <img class='rounded-circle'
+        src='https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=800'
+        alt='profile-picture' height='100'>
+      <i class='bi bi-pencil-fill'></i>
+    </div>
+  </div>
+  `
+
+  for (let object of editProfileContent) {
+    section.innerHTML += `
+    <div class='border-bottom border-dark d-flex align-items-center justify-content-between stack'>
+        <div class='d-flex align-items-center'>
+          <div>
+            <i class='${object.icon}'></i>
+          </div>
+          <div class='d-flex flex-column '>
+            <span class='font-body-tiny'>${object.title}</span>
+            <span class='imp font-body'>${(async () => {
+              return getDataForEditProfile(object.route)
+                .then((data) => {
+                  console.log(data.data);
+                  return data.data;
+                });
+            })()}</span>
+          </div>
+        </div>
+        <div>
+          <i class='bi bi-pencil-fill'></i>
+        </div>
+    </div>
+    `
+  }
+
+  return section;
+}

@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('bio/<str:username>', views.get_user_bio, name='User bio'),
     path('confirm', views.confirm_email, name='confirm_email'),
+    path('get/<str:get_query>', views.get_data, name='get_data'),
     path('login', views.login_view, name='login'),
     path('new_password/<str:username>/<str:access>', views.new_password, name='new_password'),
     path('notification/push/top', views.push_top_notification, name='push_top_notification'),

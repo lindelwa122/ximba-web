@@ -148,6 +148,34 @@ def edit_profile_img(request):
 
         return JsonResponse({}, status=200)
 
+
+def get_data(request, get_query):
+    user = request.user
+    if user.is_authenticated:
+        profile = Profile.objects.get(user=user)
+
+        if get_query == 'about':
+            return JsonResponse({'data': profile.bio}, status=200)
+
+        elif get_query == 'email':
+            return JsonResponse({'data': user.email}, status=200)
+
+        elif get_query == 'name':
+            return JsonResponse({'data': f'{user.first_name} {user.last_name}'}, status=200)
+
+        elif get_query == 'profile_img':
+            return JsonResponse({'data': get_img_url(profile.profile_img)}, status=200)
+
+        elif get_query == 'username':
+            return JsonResponse({'data': user.username}, status=200)
+
+        else:
+            return JsonResponse({'error': 'Data not found'}, status=404)
+
+    else:
+        return JsonResponse({'error': 'User not authenticated'}, status=409)
+        
+
 def get_profile_count(request):
     if request.user.is_authenticated:
         friends = Friend.objects.filter(user=request.user).count()
@@ -177,20 +205,8 @@ def get_user_profile_image(request, username):
         return JsonResponse({'error': 'User does not exist'}, status=404)
 
     profile = Profile.objects.get(user=user)
-    image = profile.profile_img
-
-    # Create a list
-    image_url_array = image.url.split('/')
-
-    if image_url_array[-1] != 'default.png':
-        # Delete the second element (invite)
-        del image_url_array[1]
-
-    # Join the list
-    image_url = '/'.join(image_url_array)
-
-    print(image_url)
-    return JsonResponse({'imagePath': image_url}, status=200)
+    
+    return JsonResponse({'imagePath': get_img_url(profile.profile_img)}, status=200)
 
 
 def login_view(request):
@@ -335,17 +351,6 @@ def register_view(request):
 
 
 def reset_password(request):
-<<<<<<< HEAD
-    return render(request, 'invite/reset_password.html')
-
-
-def profile(request, username):
-    return render(request, 'invite/profile.html')
-    
-
-def edit_profile(request):
-        return render(request, 'invite/edit_profile.html')
-=======
     if request.method == 'POST':
         data = loads(request.body)
         email = data.get('email', '')
@@ -370,5 +375,4 @@ def edit_profile(request):
 
     else:
         return render(request, 'invite/reset_password.html')
->>>>>>> main
 

@@ -1,0 +1,40 @@
+section.edit-profile {
+  min-height: 100%;
+  padding: 10px 0;
+
+  .bi:not(.bi-pencil-fill) {
+    font-size: 30px;
+    margin-right: 3px;
+  }
+
+  .bi-pencil-fill {
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 25px;
+  }
+  
+  .rounded-circle {
+    position: relative;
+
+    i {
+      color: var(--primary-color);
+      font-size: 40px;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    img {
+      border-radius: 50%;
+      filter: brightness(90%);
+      height: 100%;
+      opacity: 90%;
+      width: 25%;
+    }
+  }
+}
+
+.stack {
+  padding: $general-padding !important;
+}

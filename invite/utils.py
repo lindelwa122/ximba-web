@@ -28,3 +28,14 @@ def generate_hash(n: int):
     for char in hash_ls:
         hash += char
     return hash
+
+def get_img_url(image):
+    # Create a list
+    image_url_array = image.url.split('/')
+
+    if image_url_array[-1] != 'default.png':
+        # Delete the second element (invite)
+        del image_url_array[1]
+
+    # Join the list
+    return '/'.join(image_url_array)

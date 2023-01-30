@@ -254,18 +254,16 @@ main {
     }
   }
 
-  .modal-page-content {
-    div {
-      padding: 0 20px;
+  .modal-page-content > div {
+    padding: 0 20px;
 
-      @include for-tablets {
-        padding: 0;
-      }
+    @include for-tablets {
+      padding: 0;
+    }
 
-      &:hover {
-        background-color: var(--background-color-lg);
-        cursor: pointer;
-      }
+    &:hover {
+      background-color: var(--background-color-lg);
+      cursor: pointer;
     }
   }
 }
