@@ -42,8 +42,8 @@ def reset_password(request):
 
 def search(request):
     if request.method == 'GET':
-   
         query = request.GET['search']
+        # 'names' variable is equal to saved Names in Database.
         result = search_items(names, query)
 
         if result:
