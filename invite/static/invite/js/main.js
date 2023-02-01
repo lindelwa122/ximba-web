@@ -704,7 +704,7 @@ const editEmailFormHandler = () => {
       })
       .catch((error) => {
         errorMessageContainer.textContent = error;
-      })
+      });
   })
 }
 
