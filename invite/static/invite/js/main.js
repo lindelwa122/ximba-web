@@ -682,9 +682,9 @@ const editEmailFormHandler = () => {
       .then((response) => {
         if (response.status === 200) {
           errorMessageContainer.textContent = `
-          The code has been sent to your email.
+          The code will been sent to your email.
           Reload the page to confirm your email.
-          NOTE: Before reloading the page, ensure you have received the code, otherwise reset your email.
+          NOTE: Before reloading the page, ensure you have input the right email, otherwise reset your email.
           `;
 
           const parent = document.querySelector('form');
@@ -692,7 +692,7 @@ const editEmailFormHandler = () => {
           resetEmail.onclick = editEmail;
           resetEmail.style.color = '#3ec70b';
           resetEmail.style.textAlign = 'center';
-          resetEmail.textContent = 'Reset Password';
+          resetEmail.textContent = 'Reset Email';
           resetEmail.className = 'mb-30';
 
           const lastChild = parent.lastChild;
