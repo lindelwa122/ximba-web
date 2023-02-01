@@ -689,7 +689,7 @@ const editEmailFormHandler = () => {
 
           const parent = document.querySelector('form');
           const resetEmail = document.createElement('div');
-          resetEmail.onclick = editEmail();
+          resetEmail.onclick = editEmail;
           resetEmail.style.color = '#3ec70b';
           resetEmail.style.textAlign = 'center';
           resetEmail.textContent = 'Reset Password';
