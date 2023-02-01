@@ -647,6 +647,13 @@ section.edit-profile .bi-pencil-fill {
   cursor: pointer;
   font-size: 25px;
 }
+section.edit-profile .imp {
+  overflow: hidden;
+  padding-right: 10px;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  word-wrap: break-word;
+}
 section.edit-profile .rounded-circle {
   position: relative;
 }
@@ -836,12 +843,16 @@ section.edit-profile .rounded-circle img {
   }
 }
 
+.user-info .bio {
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 @media only screen and (min-width: 600px) {
   .user-info .bio {
     font-weight: 500;
-    overflow-wrap: break-word;
     width: 45%;
-    word-break: break-all;
     font-family: "Roboto", sans-serif;
     font-size: 12px;
     line-height: 16px;

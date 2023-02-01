@@ -107,10 +107,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Email configuration
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'postmaster@livingdreams.rocks'
-EMAIL_HOST_PASSWORD = '2872e013a779422c370c2e6160b08f04-d117dd33-e01092b8'
+EMAIL_HOST = environ['HOST']
+EMAIL_PORT = environ['EMAIL_PORT']
+EMAIL_HOST_USER = environ['USER']
+EMAIL_HOST_PASSWORD = environ['PASSWORD']
 EMAIL_USE_TLS = True
 
 # Internationalization

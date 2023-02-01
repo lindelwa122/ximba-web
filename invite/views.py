@@ -97,6 +97,51 @@ def edit_about(request):
     return JsonResponse({'message': about}, status=200)
 
 
+def edit_email(request):
+    if request.method == 'POST':
+        data = loads(request.body)
+        email = data.get('email', '').strip()
+
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'Email already exists'}, status=409)
+
+        user = User.objects.get(username=request.user.username)
+        user.code_generation_date = localtime()
+        user.email = email
+        user.email_code = generate_code()
+        user.is_email_confirmed = False
+        user.save()
+
+        return JsonResponse({}, status=200)
+
+
+def edit_fullname(request):
+    if request.method == 'POST':
+        data = loads(request.body)
+
+        user = User.objects.get(username=request.user.username)
+        user.first_name = data.get('firstName', '').capitalize()
+        user.last_name = data.get('lastName', '').capitalize()
+        user.save()
+
+        return JsonResponse({}, status=200)
+
+
+def edit_username(request):
+    if request.method == 'POST':
+        data = loads(request.body)
+        username = data.get('username', '')
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'error': 'Username already exists. Try a different one.'}, status=409)
+        
+        user = User.objects.get(username=request.user.username)
+        user.username = username
+        user.save()
+
+        return JsonResponse({}, status=200)
+
+
 def edit_profile(request):
     return render(request, 'invite/edit_profile.html')
 
@@ -268,14 +313,15 @@ def new_password(request, username, access):
 
 
 def profile(request, username):
-    username = username.strip()
-    user = User.objects.get(username=username)
-    authenticated = username == request.user.username
-    return render(request, 'invite/profile.html', {
-        'user': user,
-        'authenticated': authenticated
-    })
-
+    if request.user.is_email_confirmed:
+        username = username.strip()
+        authenticated = username == request.user.username
+        return render(request, 'invite/profile.html', {
+            'user': request.user,
+            'authenticated': authenticated
+        })
+    else:
+        return HttpResponseRedirect(reverse('invite:index'))
 
 def push_top_notification(request):
     if request.user.is_authenticated:

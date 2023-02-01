@@ -119,11 +119,14 @@
 
 .user-info {
   .bio {
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     @include for-tablets {
       font-weight: 500;
-      overflow-wrap: break-word;
       width: 45%;
-      word-break: break-all; 
       @include body;
     }
   }

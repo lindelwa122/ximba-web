@@ -12,6 +12,14 @@ section.edit-profile {
     cursor: pointer;
     font-size: 25px;
   }
+
+  .imp {
+    overflow: hidden;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    word-wrap: break-word;
+  }
   
   .rounded-circle {
     position: relative;
