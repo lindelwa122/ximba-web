@@ -692,6 +692,7 @@ const editEmailFormHandler = () => {
           resetEmail.onclick = editEmail;
           resetEmail.style.color = '#3ec70b';
           resetEmail.style.textAlign = 'center';
+          resetEmail.style.cursor = 'pointer';
           resetEmail.textContent = 'Reset Email';
           resetEmail.className = 'mb-30';
 
