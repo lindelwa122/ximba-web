@@ -313,15 +313,18 @@ def new_password(request, username, access):
 
 
 def profile(request, username):
-    if request.user.is_email_confirmed:
-        username = username.strip()
-        authenticated = username == request.user.username
-        return render(request, 'invite/profile.html', {
-            'user': request.user,
-            'authenticated': authenticated
-        })
-    else:
+    username = username.strip()
+    authenticated = username == request.user.username
+    user = User.objects.get(username=username)
+
+    if user.is_authenticated and not user.is_email_confirmed:
         return HttpResponseRedirect(reverse('invite:index'))
+    
+    return render(request, 'invite/profile.html', {
+        'user': user,
+        'authenticated': authenticated
+    })
+
 
 def push_top_notification(request):
     if request.user.is_authenticated:
