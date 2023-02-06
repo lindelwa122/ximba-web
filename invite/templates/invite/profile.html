@@ -4,17 +4,17 @@
 {% block title %} {{ user.username }} {% endblock %}
 {% block page-icon %} <i class='bi bi-person-fill'></i> {% endblock %}
 {% block page-title %} @{{ user.username }} {% endblock %}
-{% block page-icon-extra %} <i class='bi bi-gear-fill'></i>{% endblock %}
+{% block page-icon-extra %} <i class='bi bi-list'></i> {% endblock %}
 
 {% block main %}
 
 <section class='d-flex flex-column profile-container'>
   <div class='mb-2 d-flex flex-column user-profile'>
     <div class='d-flex top-profile-wrapper'>
-      <img class='rounded-circle profile-img skeleton' src='' alt='Profile image'/>
+      <img class='profile-img skeleton' src='' alt='Profile image'/>
 
-      <div class='d-flex flex-column justify-content-center side-profile w-100'>
-        
+      <div class='d-flex flex-column side-profile'>
+
         {% if authenticated %}
           <div class='align-items-center profile-ratings'>
             <i class='bi bi-star-fill'></i>
@@ -22,7 +22,7 @@
             <i class='bi bi-star-fill'></i>
             <i class='bi bi-star-half'></i>
             <i class='bi bi-star'></i>
-            <span class='font-body'>3.5 (171 K)</span>
+            <span class='font-body-tiny'>3.5 (171 K)</span>
           </div>
         {% else %}
           <div class='align-items-center profile-ratings'>
@@ -31,54 +31,38 @@
             <i class='bi bi-star-fill tertiary-color'></i>
             <i class='bi bi-star-half tertiary-color'></i>
             <i class='bi bi-star tertiary-color'></i>
-            <span class='font-body'>3.5 (171 K)</span>
+            <span class='font-body-tiny'>3.5 (171 K)</span>
           </div>
         {% endif %}
 
-        <div class='d-flex align-items-center counts w-100'>
-          <div class='text-center d-flex'>
-            <div class='font-headline followers-count skeleton skeleton-text count'></div>
-            <div class='font-title'>followers</div>
-          </div>
-          <div class='text-center d-flex'>
-            <div class='font-headline following-count skeleton skeleton-text count'></div>
-            <div class='font-title'>following</div>
-          </div>
-          <div class='text-center d-flex'>
-            <div class='font-headline friends-count skeleton skeleton-text count'></div>
-            <div class='font-title'>friends</div>
-          </div>
-        </div>
+        <div class='font-title bio'></div>
       </div>
     </div>
 
     <div class='d-flex flex-column user-info'>
       <div class='font-headline full-name'>{{ user.first_name }} {{ user.last_name }}</div>
-      <div class='font-title bio'></div>
-      {% if authenticated %}
-        <div class='align-items-center profile-ratings'>
-          <i class='bi bi-star-fill'></i>
-          <i class='bi bi-star-fill'></i>
-          <i class='bi bi-star-fill'></i>
-          <i class='bi bi-star-half'></i>
-          <i class='bi bi-star'></i>
-          <span class='font-body'>3.5 (171 K)</span>
+      <div class='d-flex align-items-center justify-content-between counts font-title'>
+        <div class='text-center d-flex align-items-center'>
+          <div class='followers-count skeleton skeleton-text count'></div>
+          <div class='normal-font-weight'>followers</div>
         </div>
-      {% else %}
-        <div class='align-items-center profile-ratings'>
-          <i class='bi bi-star-fill tertiary-color'></i>
-          <i class='bi bi-star-fill tertiary-color'></i>
-          <i class='bi bi-star-fill tertiary-color'></i>
-          <i class='bi bi-star-half tertiary-color'></i>
-          <i class='bi bi-star tertiary-color'></i>
-          <span class='font-body'>3.5 (171 K)</span>
+        <div class='text-center d-flex align-items-center'>
+          <div class='following-count skeleton skeleton-text count'></div>
+          <div class='normal-font-weight'>following</div>
         </div>
-      {% endif %}
+        <div class='text-center d-flex align-items-center'>
+          <div class='friends-count skeleton skeleton-text count'></div>
+          <div class='normal-font-weight'>friends</div>
+        </div>
+      </div>      
     </div>
 
     <div class='d-flex buttons-wrapper'>
       {% if authenticated %}
-        <button class='btn btn-secondary-outline flex-fill edit-btn'>Edit Profile</button>
+        <button class='btn btn-secondary-outline flex-fill edit-btn'>
+          <span class='text-btn'>Edit Profile</span>
+          <span class='spinner'></span>
+        </button>
         <button class='btn btn-primary flex-fill'>Friend's List</button>
       {% else %}
         <button class='btn btn-secondary flex-fill'>Follow</button>
@@ -145,5 +129,6 @@
 </section>
 
 <script src='{% static "invite/js/profile.js" %}'></script>
+<script src='{% static "invite/js/edit_profile.js" %}'></script>
 
 {% endblock %}

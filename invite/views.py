@@ -1,11 +1,9 @@
-import tempfile
-import os
-
 from io import BytesIO
 from json import loads
-from PIL import Image
+from tempfile import NamedTemporaryFile
 from uuid import uuid4
 
+from PIL import Image
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -31,7 +29,7 @@ def index(request):
         user.save()
         send_mail(
             'Welcome to GetVyt',
-            f'Hello, {user.username}. Use this code: {user.email_code} to confirm your email.',
+            f'Hello, {user.first_name}. Use this code: {user.email_code} to confirm your email.',
             'portfolio@livingdreams.com',
             [user.email],
             fail_silently=False,
@@ -56,7 +54,7 @@ def confirm_email(request):
             user.save()
             send_mail(
                 'Welcome to GetVyt',
-                f'Hello, {user.username}. Use this code: {user.email_code} to confirm your email.',
+                f'Hello, {user.first_name}. Use this code: {user.email_code} to confirm your email.',
                 'portfolio@livingdreams.com',
                 [user.email],
                 fail_silently=False,
@@ -66,7 +64,8 @@ def confirm_email(request):
         user.is_email_confirmed = True
         user.save()
 
-        ProfileSetUp.objects.create(user=user)
+        if not ProfileSetUp.objects.filter(user=user).exists():
+            ProfileSetUp.objects.create(user=user)
 
         login(request, user)
 
@@ -134,7 +133,7 @@ def edit_username(request):
 
         if User.objects.filter(username=username).exists():
             return JsonResponse({'error': 'Username already exists. Try a different one.'}, status=409)
-        
+
         user = User.objects.get(username=request.user.username)
         user.username = username
         user.save()
@@ -148,8 +147,10 @@ def edit_profile(request):
 
 def edit_profile_img(request):
     if request.method == 'POST':
-        x = 0 if (int(float(request.POST.get('x'))) < 0) else int(float(request.POST.get('x')))
-        y = 0 if (int(float(request.POST.get('y'))) < 0) else int(float(request.POST.get('y')))
+        x = 0 if (int(float(request.POST.get('x'))) < 0) else int(
+            float(request.POST.get('x')))
+        y = 0 if (int(float(request.POST.get('y'))) < 0) else int(
+            float(request.POST.get('y')))
         width = int(float(request.POST.get('width')))
         height = int(float(request.POST.get('height')))
         image_file = request.FILES['image']
@@ -157,7 +158,7 @@ def edit_profile_img(request):
         # get the file extension
         file_ext = image_file.name.split('.')[-1]
 
-        with tempfile.NamedTemporaryFile(dir='invite/static/invite/images/temp', suffix=file_ext, delete=False) as temp:
+        with NamedTemporaryFile(dir='invite/static/invite/images/temp', suffix=file_ext, delete=False) as temp:
             temp.write(image_file.file.read())
             temp.seek(0)
 
@@ -175,14 +176,15 @@ def edit_profile_img(request):
 
                 # Seek to the beginning of the file
                 image_io.seek(0)
-                
+
                 # Save cropped image
                 profile = Profile.objects.get(user=request.user)
                 # generate a random hash for the image name
                 random_hash = uuid4().hex
                 # rename the file
                 new_file_name = f'{random_hash}.{file_ext}'
-                profile.profile_img.save(new_file_name, File(image_io), save=False)
+                profile.profile_img.save(
+                    new_file_name, File(image_io), save=False)
                 profile.save()
 
         profile_set_up = ProfileSetUp.objects.get(user=request.user)
@@ -219,7 +221,7 @@ def get_data(request, get_query):
 
     else:
         return JsonResponse({'error': 'User not authenticated'}, status=409)
-        
+
 
 def get_profile_count(request):
     if request.user.is_authenticated:
@@ -250,7 +252,7 @@ def get_user_profile_image(request, username):
         return JsonResponse({'error': 'User does not exist'}, status=404)
 
     profile = Profile.objects.get(user=user)
-    
+
     return JsonResponse({'imagePath': get_img_url(profile.profile_img)}, status=200)
 
 
@@ -319,7 +321,7 @@ def profile(request, username):
 
     if user.is_authenticated and not user.is_email_confirmed:
         return HttpResponseRedirect(reverse('invite:index'))
-    
+
     return render(request, 'invite/profile.html', {
         'user': user,
         'authenticated': authenticated
@@ -339,7 +341,6 @@ def push_top_notification(request):
 
     else:
         return JsonResponse({'currentStatus': 'notLoggedIn'}, status=200)
-
 
 
 def register_view(request):
@@ -424,4 +425,3 @@ def reset_password(request):
 
     else:
         return render(request, 'invite/reset_password.html')
-

@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('Form is being submitted');
+  console.log(document.querySelector('form'));
   document.querySelector('form').addEventListener('submit', (event) => {
     event.preventDefault();
     let invalid = false;
@@ -15,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (!invalid) {
+      startBtnLoadingAnimation(event.submitter);
       sendFormDataToServer('/login', '/', errorContainer);
     }
   });

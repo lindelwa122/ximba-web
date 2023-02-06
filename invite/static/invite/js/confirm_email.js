@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('form').addEventListener('submit', (event) => {
     event.preventDefault();
-    validateForm();
+    validateForm(event);
   });
 });
 
-const validateForm = () => {
+const validateForm = (e) => {
   const code = document.querySelector('.code');
   const errorContainer = document.querySelector('.error-message');
 
@@ -36,5 +36,6 @@ const validateForm = () => {
     return false;
   }
 
+  startBtnLoadingAnimation(e.submitter);
   sendFormDataToServer('/confirm', '/', errorContainer);
 };

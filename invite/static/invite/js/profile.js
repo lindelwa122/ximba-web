@@ -20,7 +20,7 @@ const fetchCount = () => {
 };
 
 const fetchBio = () => {
-  const username = window.location.pathname.split('/')[1]
+  const username = window.location.pathname.split('/')[1];
   fetch(`/bio/${username}`)
     .then((response) => response.json())
     .then((data) => {
@@ -29,7 +29,7 @@ const fetchBio = () => {
 };
 
 const fetchProfileImage = () => {
-  const username = window.location.pathname.split('/')[1]
+  const username = window.location.pathname.split('/')[1];
   fetch(`/profile_image/${username}`)
     .then((response) => response.json())
     .then((data) => {

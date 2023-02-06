@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     showHideAnimation();
   });
 
-  document.querySelector('.edit-btn').addEventListener('click', () => {
-    editProfile();
-  })
+  document.querySelector('.edit-btn').addEventListener('click', (event) => {
+    editProfile(event);
+  });
 });
 
 // ANIMATION
@@ -84,14 +84,23 @@ const shrinkExpandAnimationForLargeDevices = () => {
 // ABOUT COMPONENT
 
 const aboutForm = () => {
-  return `
+  const htmlString = `
     <form>
       <div class='mb-2 text-end'><span class='about-count'>0</span>/200</div>
       <textarea class='mb-3 about form-control input-frame' placeholder='Write a short description about you or your events' name='about'></textarea>
       <div class='mb-3 error-message'></div>
-      <input type='submit' value='Add an About' class='btn btn-primary w-100 submit-about'>
+      <div class='mb-3'>
+        <input type='submit' value='Add an About' class='btn btn-primary w-100 submit-about'>
+        <button class='btn btn-primary w-100 d-none' disabled>
+          <span class='spinner'></span>
+        </button>
+      </div>
     </form>
   `;
+
+  const container = document.createElement('div');
+  container.innerHTML = htmlString;
+  return container;
 };
 
 const aboutFormHandler = () => {
@@ -114,7 +123,7 @@ const aboutFormHandler = () => {
       return false;
     }
 
-    changeAbout(aboutTextArea, csrfToken);
+    changeAbout(aboutTextArea, csrfToken, event);
   });
 };
 
@@ -138,10 +147,12 @@ const aboutKeyUpHandler = () => {
   });
 };
 
-const changeAbout = (textarea, token) => {
+const changeAbout = (textarea, token, e) => {
+  startBtnLoadingAnimation(e.submitter);
+  
   fetch(`/profile/add/about`, {
     method: 'POST',
-    body: JSON.stringify({about: textarea.value}),
+    body: JSON.stringify({ about: textarea.value }),
     headers: {
       'X-CSRFToken': token,
     },
@@ -158,16 +169,12 @@ const changeAbout = (textarea, token) => {
     })
     .catch((error) => {
       document.querySelector('.error-message').textContent = error;
-    });
+    })
+    .finally(stopBtnLoadingAnimation);
 };
 
 const editAbout = () => {
-  const modalTitle = document.querySelectorAll('.modal-page-title');
-  const modalPage = document.querySelector('.modal-page-content');
-  modalTitle.forEach((title) => (title.textContent = 'Set an About'));
-
-  modalPage.style.padding = '10px';
-  modalPage.innerHTML = aboutForm();
+  addToMainModalHistory('Set an About', aboutForm, '10px');
 
   // Disable submit button
   document.querySelector('.submit-about').disabled = true;
@@ -180,7 +187,9 @@ const editAbout = () => {
 
 // PROFILE IMAGE COMPONENT
 
-const changeProfileImg = (csrfToken, form) => {
+const changeProfileImg = (csrfToken, form, e) => {
+  startBtnLoadingAnimation(e.submitter);
+  
   fetch('/profile/add/image', {
     method: 'POST',
     body: form,
@@ -200,7 +209,8 @@ const changeProfileImg = (csrfToken, form) => {
     })
     .catch(
       (error) => (document.querySelector('.error-message').textContent = error)
-    );
+    )
+    .finally(stopBtnLoadingAnimation);
 };
 
 const cropImage = () => {
@@ -260,14 +270,7 @@ const cropImage = () => {
 };
 
 const editProfileImg = () => {
-  const modalTitle = document.querySelectorAll('.modal-page-title');
-  const modalPage = document.querySelector('.modal-page-content');
-  modalTitle.forEach(
-    (title) => (title.textContent = 'Set Profile Image')
-  );
-
-  modalPage.style.padding = '10px';
-  modalPage.innerHTML = profileImgForm();
+  addToMainModalHistory('Set Profile Image', profileImgForm, '10px');
 
   cropImage();
 
@@ -295,14 +298,14 @@ const editProfileImg = () => {
         'input[name="csrfmiddlewaretoken"]'
       ).value;
 
-      changeProfileImg(csrfToken, formData);
+      changeProfileImg(csrfToken, formData, event);
     });
 
   pushNotification();
 };
 
 const profileImgForm = () => {
-  return `
+  const htmlString = `
     <form class='submit-profile-img' action='/post' method='post' enctype='multipart/form-data'>
       <div class='mb-3'>
         <input type='file' class='form-control input-frame' accept='.png, .jpg, .jpeg' name='image' id='file-input'>
@@ -313,10 +316,25 @@ const profileImgForm = () => {
       <input type='hidden' name='height' id='height'>
       <div class='result mb-3'></div>
       <div class='error-message'></div>
-      <input type='submit' class='btn btn-primary w-100 submit-profile-img' value='Add profile image'>
+      <div class='mb-3'>
+        <input type='submit' class='btn btn-primary w-100 submit-profile-img' value='Add profile image'>
+        <button class='btn btn-primary w-100 d-none' disabled>
+          <span class='spinner'></span>
+        </button>
+      </div>
     </form>
   `;
+
+  const container = document.createElement('div');
+  container.innerHTML = htmlString;
+  return container;
 };
+
+// TOP BAR NOTIFICATION
+
+const pushNotificationContent = (bioSetUp, imageSetUp) => {
+
+}
 
 const pushNotification = () => {
   const pushTopNotification = document.querySelector('.push-notification');
@@ -339,8 +357,6 @@ const pushNotification = () => {
             modalTitle.forEach(
               (title) => (title.textContent = 'Complete profile setup')
             );
-            document.querySelector('.modal-icon').innerHTML =
-              "<i class='bi bi-person'></i>";
 
             // Clean up modalPage main content
             modalPage.innerHTML = '';
@@ -362,15 +378,19 @@ const pushNotification = () => {
               : '';
 
             if (!data.bioSetUp) {
-              document.querySelector('.edit-about').addEventListener('click', () => {
-                editAbout();
-              });
+              document
+                .querySelector('.edit-about')
+                .addEventListener('click', () => {
+                  editAbout();
+                });
             }
 
             if (!data.imageSetUp) {
-              document.querySelector('.edit-profile-img').addEventListener('click', () => {
-                editProfileImg();
-              });
+              document
+                .querySelector('.edit-profile-img')
+                .addEventListener('click', () => {
+                  editProfileImg();
+                });
             }
 
             document
@@ -388,348 +408,3 @@ const pushNotification = () => {
       }
     });
 };
-
-// EDIT PROFILE
-const editProfile = () => {
-  document.querySelector('.modal-page').style.display =
-  'inline-block';
-  const modalTitle = document.querySelectorAll('.modal-page-title');
-  const modalPage = document.querySelector('.modal-page-content');
-  modalTitle.forEach(
-    (title) => (title.textContent = 'Edit Profile')
-  );
-  document.querySelector('.modal-icon').innerHTML =
-    "<i class='bi bi-person'></i>";
-
-  modalPage.innerHTML = '';
-
-  document
-  .querySelector('.modal-page-cancel')
-  .addEventListener('click', () => {
-    modalPage.innerHTML = '';
-    document.querySelector('.modal-page').style.display = 'none';
-  });
-
-  modalPage.append(editProfileSection());
-}
-
-const editProfileResponseHandler = (response) => {
-  if (response.status !== 200) {
-    throw new Error('Request was unsuccessful, the user might not be authenticated. Try again later');
-  }
-  return response.json();
-}
-
-const editProfileGetErrorHandler = (error) => {
-  console.log(error);
-  return 'Error 404 (try reloading the page)';
-}
-
-const getDataForEditProfile = async (route) => {
-  try {
-    const response = await fetch(route);
-    return editProfileResponseHandler(response);
-  } catch (error) {
-    return editProfileGetErrorHandler(error);
-  }
-}
-
-const editProfileSection = () => {
-  const editIcon = document.createElement('i');
-  const img = document.createElement('img');
-  const imgDiv = document.createElement('div');
-  const imgWrapper = document.createElement('div');
-  const section = document.createElement('section');
-
-  img.classList = 'rounded-circle skeleton';
-  imgDiv.className = 'rounded-circle';
-  imgWrapper.className = 'text-center';
-  editIcon.classList = 'bi bi-pencil-fill';
-  section.className = 'edit-profile';
-
-  
-  (async () => {
-    const data = await getDataForEditProfile('/get/profile_img');
-    img.src = data.data;
-    img.addEventListener('load', () => img.classList.remove('skeleton'));
-  })();
-  
-  editIcon.addEventListener('click', editProfileImg);
-
-  imgDiv.append(img);
-  imgDiv.append(editIcon);
-  imgWrapper.append(imgDiv);
-  
-  section.append(imgWrapper);
-
-  for (let object of editProfileContent) {
-    const wrapper = document.createElement('div');
-    const outerDiv = document.createElement('div');
-    const iconWrapper = document.createElement('div');
-    const contentWrapper = document.createElement('div');
-    const title = document.createElement('span');
-    const content = document.createElement('span');
-    const editPencilWrapper = document.createElement('div');
-
-    wrapper.classList = 'border-bottom border-dark d-flex align-items-center justify-content-between stack';
-    outerDiv.classList = 'd-flex align-items-center';
-    contentWrapper.classList = 'd-flex flex-column';
-    title.classList = 'font-body-tiny';
-    content.classList = 'imp font-body edit-profile-data';
-
-    iconWrapper.innerHTML = `<i class='${object.icon}'></i>`;
-    editPencilWrapper.innerHTML = `<i class='bi bi-pencil-fill'></i>`
-    title.textContent = object.title;
-    (async () => {
-      const data = await getDataForEditProfile(object.route);
-      content.textContent = data.data;
-    })();
-
-    editPencilWrapper.addEventListener('click', object.action);
-
-    contentWrapper.append(title);
-    contentWrapper.append(content);
-    outerDiv.append(iconWrapper);
-    outerDiv.append(contentWrapper);
-    wrapper.append(outerDiv);
-    wrapper.append(editPencilWrapper);
-
-    section.append(wrapper);
-  }
-
-  return section;
-}
-
-// EDIT NAME COMPONENT
-const editFullNameForm = () => {
-  return `
-  <form>
-    <input type='text' class='form-control input-frame mb-3 firstname' name='firstname' placeholder='First Name'>
-    <input type='text' class='form-control input-frame mb-3 lastname' name='lastname' placeholder='Last Name'>
-    <div class='error-message mb-3'></div>
-    <input type='submit' class='btn btn-primary fullname-submit w-100' value='Edit Name'>
-  </form>
-  `
-}
-
-const editFullNameFormHandler = () => {
-  const firstName = document.querySelector('.firstname');
-  const lastName = document.querySelector('.lastname');
-  const csrfToken = document.querySelector(
-    'input[name="csrfmiddlewaretoken"]'
-  ).value;
-
-  document.querySelector('.firstname').addEventListener('input', () => {
-    firstName.value = firstName.value.charAt(0).toUpperCase() + firstName.value.slice(1).toLowerCase().trim();
-  })
-
-  document.querySelector('.lastname').addEventListener('input', () => {
-    lastName.value = lastName.value.charAt(0).toUpperCase() + lastName.value.slice(1).toLowerCase().trim();
-  })
-
-  document.querySelector('form').addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    if (firstName.value.length < 3 || lastName.value.length < 3){
-      document.querySelector('.error-message').textContent = 'First/Last name should have 3 or more characters.';
-      return false;
-    }
-
-    fetch('/profile/edit/fullname', {
-      method: 'POST',
-      body: JSON.stringify({firstName: firstName.value, lastName: lastName.value}),
-      headers: {
-        'X-CSRFToken': csrfToken,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          document.querySelector('.modal-page').style.display = 'none';
-          document.querySelector('.full-name').textContent = `${firstName.value} ${lastName.value}`;
-        } else {
-          throw new Error('Error: Request was unsuccessful, please try again later');
-        }
-      })
-      .catch((error) => {
-        document.querySelector('.error-message').textContent = error;
-      })
-  })
-}
-
-const editFullName = () => {
-  document.querySelector('.modal-page').style.display = 'inline-block';
-  
-  const modalTitle = document.querySelectorAll('.modal-page-title');
-  const modalPage = document.querySelector('.modal-page-content');
-  modalTitle.forEach((title) => (title.textContent = 'Edit Full Name'));
-
-  modalPage.style.padding = '10px';
-  modalPage.innerHTML = editFullNameForm();
-
-  (async () => {
-    const data = await getDataForEditProfile('/get/name');
-    const fullName = data.data.split(' ');
-    document.querySelector('.firstname').value = fullName[0];
-    document.querySelector('.lastname').value = fullName[1];
-  })();
-
-  editFullNameFormHandler();
-}
-
-// EDIT USERNAME COMPONENT 
-const editUsernameForm = () => {
-  return `
-  <form>
-    <input type='text' class='form-control input-frame mb-3 username-input' name='username' placeholder='username'>
-    <div class='error-message mb-3'></div>
-    <input type='submit' class='btn btn-primary w-100 username-submit' value='Edit Username'>
-  </form>
-  `
-}
-
-const editUsernameFormHandler = () => {
-  const csrfToken = document.querySelector(
-    'input[name="csrfmiddlewaretoken"]'
-  ).value;
-  const errorMessageContainer = document.querySelector('.error-message');
-  const username = document.querySelector('.username-input');
-  
-  document.querySelector('.username-input').addEventListener('input', () => {
-    username.value = username.value.toLowerCase().trim();
-
-    if (username.value.length <= 3 || username.value.length >= 16) {
-      document.querySelector('.username-submit').disabled = true;
-    }
-    else {
-      document.querySelector('.username-submit').disabled = false;
-    }
-  })
-  
-  document.querySelector('form').addEventListener('submit', (event) => {
-    event.preventDefault();
-    
-    if (username.value.length <= 3 || username.value.length >= 16) {
-      errorMessageContainer.textContent = 'Username length must be between 3 and 16 characters.';
-      return false;
-    }
-
-    fetch('/profile/edit/username', {
-      method: 'POST',
-      body: JSON.stringify({username: username.value}),
-      headers: {
-        'X-CSRFToken': csrfToken,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          window.location.replace(`/${username.value}`);
-        } else {
-          throw new Error('Username is taken, try a different one.');
-        }
-      })
-      .catch((error) => {
-        errorMessageContainer.textContent = error;
-      })
-  })
-}
-
-const editUsername = () => {
-  document.querySelector('.modal-page').style.display = 'inline-block';
-  
-  const modalTitle = document.querySelectorAll('.modal-page-title');
-  const modalPage = document.querySelector('.modal-page-content');
-  modalTitle.forEach((title) => (title.textContent = 'Edit Username'));
-
-  modalPage.style.padding = '10px';
-  modalPage.innerHTML = editUsernameForm();
-
-  (async () => {
-    const data = await getDataForEditProfile('/get/username');
-    document.querySelector('.username-input').value = data.data;
-  })();
-
-  editUsernameFormHandler();
-}
-
-// EDIT EMAIL COMPONENT
-const editEmailForm = () => {
-  return `
-  <form>
-    <input type='email' class='form-control input-frame email-input mb-3' required>
-    <div class='error-message mb-3'></div>
-    <input type='submit' class='btn btn-primary w-100 mb-3' value='Edit Email'>
-  </form>
-  `
-}
-
-const editEmailFormHandler = () => {
-  const csrfToken = document.querySelector(
-    'input[name="csrfmiddlewaretoken"]'
-  ).value;
-  const email = document.querySelector('.email-input');
-  const errorMessageContainer = document.querySelector('.error-message');
-
-  document.querySelector('form').addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    fetch('/profile/edit/email', {
-      method: 'POST',
-      body: JSON.stringify({email: email.value}),
-      headers: {
-        'X-CSRFToken': csrfToken,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          errorMessageContainer.textContent = `
-          The code will been sent to your email.
-          Reload the page to confirm your email.
-          NOTE: Before reloading the page, ensure you have input the right email, otherwise reset your email.
-          `;
-
-          const parent = document.querySelector('form');
-          const resetEmail = document.createElement('div');
-          resetEmail.onclick = editEmail;
-          resetEmail.style.color = '#3ec70b';
-          resetEmail.style.textAlign = 'center';
-          resetEmail.style.cursor = 'pointer';
-          resetEmail.textContent = 'Reset Email';
-          resetEmail.className = 'mb-30';
-
-          const lastChild = parent.lastChild;
-          parent.insertBefore(resetEmail, lastChild);
-        } else {
-          throw new Error('Email is taken, try using another one.');
-        }
-      })
-      .catch((error) => {
-        errorMessageContainer.textContent = error;
-      });
-  })
-}
-
-const editEmail = () => {
-  document.querySelector('.modal-page').style.display = 'inline-block';
-  
-  const modalTitle = document.querySelectorAll('.modal-page-title');
-  const modalPage = document.querySelector('.modal-page-content');
-  modalTitle.forEach((title) => (title.textContent = 'Edit email'));
-
-  modalPage.style.padding = '10px';
-  modalPage.innerHTML = editEmailForm();
-
-  (async () => {
-    const data = await getDataForEditProfile('/get/email');
-    document.querySelector('.email-input').value = data.data;
-  })();
-
-  editEmailFormHandler();
-}
-
-//////////////
-const editProfileContent = [
-  {icon: 'bi bi-person', title: 'Name', content: getDataForEditProfile, route: '/get/name', action: editFullName},
-  {icon: 'bi bi-at', title: 'Username', content: getDataForEditProfile, route: '/get/username', action: editUsername},
-  {icon: 'bi bi-info', title: 'About', content: getDataForEditProfile, route: '/get/about', action: editAbout},
-  {icon: 'bi bi-envelope-at', title: 'Email', content: getDataForEditProfile, route: '/get/email', action: editEmail}
-]

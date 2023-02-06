@@ -30,47 +30,21 @@
 
 .post-img-wrapper {
   aspect-ratio: 1;
-  overflow: hidden;
   max-width: 10%;
+  overflow: hidden;
 }
 
 .profile-container {
   padding: 0;
 }
 
-.profile-ratings {
-  display: flex;
-  gap: 2px;
-
-  @include for-tablets {
-    display: none;
-  }
-}
-
 .top-profile-wrapper {
-  .counts {
-    justify-content: space-between;
-
-    div {
-      flex-direction: column;
-
-      @include for-tablets {
-        align-items: center;
-        flex-direction: row;
-        gap: 10px;
-      }
-    }
-
-    @include for-tablets {
-      justify-content: flex-start;
-      gap: 50px;
-    }
-  }
-
+  align-items: flex-start;
+  
   img {
     aspect-ratio: 1;
     max-width: 220px;
-    width: 20%;
+    width: 30%;
 
     @include for-tablets {
       width: 23%;
@@ -82,30 +56,47 @@
   }
 
   .side-profile {
-    margin-left: 40px;
-    gap: 20px;
+    gap: 10px;
+    margin-left: 10px;
 
-    i {
-      color: var(--secondary-color);
-      font-size: 30px;
-    }
-
-    .profile-ratings {
-      display: none;
-
+    .bio {
       @include for-tablets {
-        display: flex;
-        gap: 5px;
+        font-weight: 500;
+        @include body;
       }
     }
 
+    i {
+      color: var(--secondary-color);
+      font-size: 20px;
+
+      @include for-tablets {
+        font-size: 25px;
+      }
+
+      @include for-desktops {
+        font-size: 30px;
+      }
+    }
+
+    .profile-ratings {
+      display: flex;
+      gap: 5px;
+    }
+
     @include for-tablets {
+      justify-content: center;
+      gap: 20px;
       margin-left: 80px;
     }
 
     @include for-desktops {
       margin-left: 100px;
     }
+  }
+
+  @include for-tablets {
+    align-items: center;
   }
 }
 
@@ -118,16 +109,21 @@
 }
 
 .user-info {
-  .bio {
-    word-wrap: break-word;
-    word-break: break-all;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .counts {
+    .count {
+      margin-right: 5px;
+    }
+
+    .normal-font-weight {
+      font-weight: 400 !important;
+    }
 
     @include for-tablets {
-      font-weight: 500;
-      width: 45%;
-      @include body;
+      width: 70%;
+    }
+
+    @include for-desktops {
+      width: 50%;
     }
   }
   

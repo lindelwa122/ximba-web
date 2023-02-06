@@ -79,28 +79,39 @@ const sendFormDataToServer = (
   errorContainer,
   method = 'POST'
 ) => {
-  const aj = new XMLHttpRequest();
   const data = {};
   const csrfToken = document.querySelector(
     'input[name="csrfmiddlewaretoken"]'
   ).value;
-
-  aj.addEventListener('readystatechange', () => {
-    if (aj.readyState === 4 && aj.status === 200) {
-      window.location.href = routeNext;
-    } else if (aj.readyState === 4 && aj.status !== 200) {
-      errorContainer.innerText = JSON.parse(aj.response).message;
-    }
-  });
 
   // Collect form data
   document.querySelectorAll('.input-frame').forEach((element) => {
     data[element.classList[0]] = element.value;
   });
 
-  aj.open(method, routeTo, true);
-  aj.setRequestHeader('Data-type', 'json');
-  aj.setRequestHeader('Content-type', 'application/json');
-  aj.setRequestHeader('X-CSRFToken', csrfToken);
-  aj.send(JSON.stringify(data));
+  fetch(routeTo, {
+    method: method,
+    body: JSON.stringify(data),
+    headers: {
+      'X-CSRFToken': csrfToken,
+    },
+  })
+    .then((response) => {
+      // Remove the loading animation
+      stopBtnLoadingAnimation();
+
+      if (response.status === 200) {
+        window.location.href = routeNext;
+        return;
+      } else {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      throw new Error(data.message);
+    })
+    .catch((error) => {
+      errorContainer.innerText = error;
+      console.error(error)
+    })
 };

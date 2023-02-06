@@ -20,8 +20,8 @@ section.edit-profile {
     word-break: break-all;
     word-wrap: break-word;
   }
-  
-  .rounded-circle {
+
+  .img-container {
     position: relative;
 
     i {
@@ -34,11 +34,16 @@ section.edit-profile {
     }
 
     img {
-      border-radius: 50%;
+      border-radius: 10px;
       filter: brightness(90%);
       height: 100%;
       opacity: 90%;
       width: 25%;
+    }
+
+    .skeleton {
+      width: 25%;
+      aspect-ratio: 1;
     }
   }
 }
