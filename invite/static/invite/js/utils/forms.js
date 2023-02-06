@@ -103,9 +103,8 @@ const sendFormDataToServer = (
       if (response.status === 200) {
         window.location.href = routeNext;
         return;
-      } else {
-        return response.json();
       }
+      return response.json();
     })
     .then((data) => {
       throw new Error(data.message);
