@@ -2,11 +2,15 @@
 
 // MEDIA QUERIES
 @mixin for-tablets {
-  @media only screen and (min-width: 600px) { @content; }
+  @media only screen and (min-width: 600px) {
+    @content;
+  }
 }
 
 @mixin for-desktops {
-  @media only screen and (min-width: 992px) { @content; }
+  @media only screen and (min-width: 992px) {
+    @content;
+  }
 }
 
 // THEME COLORS
@@ -29,7 +33,7 @@ $font-family-secondary: 'Playfair', serif;
   font-family: $font-family-primary;
   font-size: 12px;
   line-height: 16px;
-  
+
   @include for-tablets {
     font-size: 14px;
     line-height: 20px;
@@ -45,7 +49,7 @@ $font-family-secondary: 'Playfair', serif;
   font-family: $font-family-primary;
   font-size: 8px;
   line-height: 10px;
-  
+
   @include for-tablets {
     font-size: 10px;
     line-height: 12px;
@@ -61,7 +65,7 @@ $font-family-secondary: 'Playfair', serif;
   font-family: $font-family-secondary;
   font-size: 36px;
   line-height: 44px;
-  
+
   @include for-tablets {
     font-size: 45px;
     line-height: 52px;
@@ -75,17 +79,17 @@ $font-family-secondary: 'Playfair', serif;
 
 @mixin headline {
   font-family: $font-family-secondary;
-  font-size: 24px;
-  line-height: 32px;
-  
+  font-size: 18px;
+  line-height: 26px;
+
   @include for-tablets {
-    font-size: 28px;
-    line-height: 36px;
+    font-size: 22px;
+    line-height: 30px;
   }
-  
+
   @include for-desktops {
-    font-size: 32px;
-    line-height: 40px;
+    font-size: 26px;
+    line-height: 34px;
   }
 }
 
@@ -94,7 +98,7 @@ $font-family-secondary: 'Playfair', serif;
   font-size: 11px;
   font-weight: 500;
   line-height: 16px;
-  
+
   @include for-tablets {
     font-size: 12px;
     line-height: 16px;
@@ -108,10 +112,10 @@ $font-family-secondary: 'Playfair', serif;
 
 @mixin title {
   font-family: $font-family-primary;
-  font-size: 16px;
+  font-size: 11px;
   font-weight: 500;
   line-height: 20px;
-  
+
   @include for-tablets {
     font-size: 16px;
     line-height: 24px;

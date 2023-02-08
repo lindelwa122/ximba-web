@@ -1,0 +1,1 @@
+web: gunicorn getvyt.wsgi --log-file -

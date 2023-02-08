@@ -1,0 +1,26 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100vh;
+  @include body;
+
+  @include for-tablets {
+    background-color: var(--background-color-lg);
+  }
+}
+
+
+a {
+  @include body-tiny;
+}
+
+main {
+  min-height: 100vh;
+}
+
+section {
+  padding: $general-padding;
+  min-height: 100vh;
+}

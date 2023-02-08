@@ -9,12 +9,16 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from os import environ, path
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+STATIC_ROOT = path.join(BASE_DIR, "staticfiles")
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -25,12 +29,13 @@ SECRET_KEY = 'django-insecure-haiu^8!_xdq*k&24oi3&)zlk41_wr*y-_$((+%lf4((nqaxrj(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'invite',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,6 +87,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'invite.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -100,6 +107,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Email configuration
+EMAIL_HOST = environ['HOST']
+EMAIL_PORT = environ['EMAIL_PORT']
+EMAIL_HOST_USER = environ['USER']
+EMAIL_HOST_PASSWORD = environ['PASSWORD']
+EMAIL_USE_TLS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -122,3 +135,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Csrf settings
+CSRF_TRUSTED_ORIGINS = ['https://getvyt-web-production.up.railway.app', 'http://127.0.0.1:8000']

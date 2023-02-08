@@ -1,0 +1,104 @@
+{% extends 'invite/layout.html' %}
+
+{% load static %}
+
+{% block body %}
+
+<script src='{% static "invite/js/utils/mainModal.js" %}'></script>
+<script src='{% static "invite/js/main.js" %}'></script>
+
+<div class='body'>
+  <div class='nav-lg-wrapper'>
+    <nav class='nav-lg'>
+      <div class='icon'>
+        <i class='bi bi-house-door'></i>
+      </div>
+      <div class='icon'>
+        <i class='bi bi-search'></i>
+      </div>
+      <div class='icon'>
+        <i class='bi bi-person-add'></i>
+      </div>
+      <div class='icon'>
+        <i class='bi bi-bookmark'></i>
+      </div>
+      <div class='icon'>
+        <i class='bi bi-person'></i>
+      </div>
+      <div class='nav-controller-lg'>
+        <i class='bi bi-arrow-up'></i>
+      </div>
+    </nav>
+  </div>
+
+  <main>
+    <div class='push-notification'>
+      
+    </div>
+    <div class='top-nav'>
+      <div>
+        <span>{% block page-icon %}{% endblock %}</span>
+        <span class='font-headline'>{% block page-title %}{% endblock %}</span>
+      </div>
+      <div>
+        {% block page-icon-extra %}{% endblock %}
+      </div>
+    </div>
+
+    {% block main %}{% endblock %}
+
+    <div class='nav-sm-wrapper'>
+      <nav class='nav-sm'>
+        <div class='icon'>
+          <i class='bi bi-house-door'></i>
+        </div>
+        <div class='icon'>
+          <i class='bi bi-search'></i>
+        </div>
+        <div class='icon'>
+          <i class='bi bi-person-add'></i>
+        </div>
+        <div class='icon'>
+          <i class='bi bi-bookmark'></i>
+        </div>
+        <div class='icon'>
+          <i class='bi bi-person'></i>
+        </div>
+        <div class='nav-controller'>
+          <i class='bi bi-arrow-left'></i>
+        </div>
+      </nav>
+    </div>
+  </main>
+
+</div>
+
+<div class='modal-page'>
+  {% csrf_token %}
+  <div class='header-sm top-nav'>
+    <div>
+      <span class='modal-go-back'>
+        <i class='bi bi-arrow-left'></i>
+      </span>
+      <span class='font-headline modal-page-title'></span>
+    </div>
+    <div class='modal-extra-icon'></div>
+  </div>
+  
+  <div class='header border-bottom border-dark p-2 d-flex justify-content-between align-items-center font-title'>
+    <div>
+      <span class='modal-go-back'>
+        <i class='bi bi-arrow-left'></i>
+      </span>
+      <span class='modal-page-title'></span>
+    </div>
+    <span class='modal-page-cancel'> 
+      <i class='bi bi-x-lg'></i>
+    </span>
+  </div>
+
+  <div class='modal-page-content'>
+  </div>
+</div>
+
+{% endblock %}
