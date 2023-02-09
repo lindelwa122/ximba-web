@@ -329,10 +329,18 @@ def new_password(request, username, access):
 
 def profile(request, username):
     username = username.strip()
-    authenticated = username == request.user.username
-    user = User.objects.get(username=username)
 
-    if user.is_authenticated and not user.is_email_confirmed:
+    # Try to get user
+    try:
+        user = User.objects.get(username=username)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect(reverse('invite:render404'))
+
+    # Checks if user is authenticated
+    authenticated = user.username == request.user.username
+
+    # User authenticated but email not confirmed
+    if authenticated and not user.is_email_confirmed:
         return HttpResponseRedirect(reverse('invite:index'))
 
     return render(request, 'invite/profile.html', {
@@ -356,10 +364,22 @@ def push_top_notification(request):
         return JsonResponse({'currentStatus': 'notLoggedIn'}, status=200)
 
 
-def recent(request):
+def render404(request):
+    return render(request, 'invite/404.html')
+
+
+def recent_search(request):
     person1 = {'username': 'tester', 'fullname': 'Niklas Koffi', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
     person2 = {'username': 'therealjohndoe', 'fullname': 'John Doe', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
+    recent = [person1, person2]
+    return JsonResponse({'recent': recent}, status=200)
 
+
+def search_user(request, username):
+    person1 = {'username': 'tester', 'fullname': 'Niklas Koffi', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
+    person2 = {'username': 'therealjohndoe', 'fullname': 'John Doe', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
+    recent = [person1, person2]
+    return JsonResponse({'results': recent}, status=200)
 
 
 def register_view(request):

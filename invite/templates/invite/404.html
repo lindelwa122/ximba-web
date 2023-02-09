@@ -1,0 +1,23 @@
+{% extends 'invite/layout.html' %}
+
+{% load static %}
+
+{% block title %} Page Not Found {% endblock %}
+
+{% block body %}
+
+<section class='page-not-found'>
+  <div class='illustration-wrapper mb-3'>
+    <img src='{% static "invite/images/illustrations/page_not_found.gif" %}' alt='page-not-found-illustration-by-icons8' loading='lazy'>
+  </div>
+
+  <div class='text-center'>
+    <h3 class='mb-3 font-headline'>Oops! It looks like you've landed on an invalid page. Don't worry, you can go back to the home page by clicking the button below.</h3>
+    
+    <a class='btn btn-secondary btn-small' href='{% url "invite:index" %}'>Take me to the home page</a>
+  </div>
+</section>
+
+
+
+{% endblock %}
