@@ -416,7 +416,7 @@ def reset_password(request):
 
         send_mail(
             'Reset Password',
-            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{user.username}/{User.objects.get(email=email).reset_password} to reset your password.',
+            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{user.username}/{user.reset_password} to reset your password.',
             'portfolio@livingdreams.com',
             [email],
             fail_silently=False,
