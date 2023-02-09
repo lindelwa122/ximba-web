@@ -774,92 +774,6 @@ section.edit-profile .img-container .skeleton {
   }
 }
 
-@media only screen and (max-width: 599px) {
-  .mainsearch {
-    width: 100%;
-    margin-left: 0px;
-  }
-  .mainsearch .card123 {
-    margin-top: 2em;
-  }
-  .mainsearch .card123 .cname {
-    font-size: 12px;
-  }
-  .mainsearch .card123 .rname {
-    font-size: 10px;
-    margin-left: 1em;
-  }
-}
-@media only screen and (min-width: 600px) {
-  .mainsearch {
-    width: 60%;
-    margin-left: 20%;
-  }
-  .mainsearch .card123 {
-    margin-top: 2em;
-  }
-  .mainsearch .card123 .cname {
-    margin-top: 0.5em;
-    font-size: 16px;
-  }
-  .mainsearch .card123 .rname {
-    margin-top: 0.5em;
-    font-size: 12px;
-    margin-left: 2em;
-  }
-}
-@media only screen and (min-width: 992px) {
-  .mainsearch {
-    width: 40%;
-    margin-left: 30%;
-  }
-  .mainsearch .card123 .cname {
-    margin-top: 0.5em;
-    font-size: 16px;
-  }
-  .mainsearch .card123 .rname {
-    margin-top: 0.5em;
-    font-size: 12px;
-    margin-left: 2em;
-  }
-}
-.mainsearch {
-  background-color: rgb(249, 249, 249);
-  display: flex;
-  box-shadow: 2px 2px 5px 3px rgb(198, 198, 198);
-  border-radius: 1%;
-}
-.mainsearch .pcontain {
-  margin-top: 1em;
-}
-.mainsearch .pcontain .card123 {
-  border-bottom: 1px solid black;
-  border-radius: 5%;
-}
-.mainsearch .pcontain .card123 .cname {
-  margin-left: 5%;
-  line-height: 20px;
-  font-weight: bold;
-}
-.mainsearch .pcontain .card123 .rname {
-  color: rgb(98, 98, 98);
-}
-
-.search-container .search-input {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 96%;
-  border: 1px solid black;
-  margin-inline: auto;
-  right: 50%;
-  translate: -50% -50%;
-  padding: 15px 20px;
-  background: #f6f6f6;
-  border: 1px solid #000000;
-  border-radius: 10px;
-}
-
 .events-list {
   width: 100%;
 }
@@ -1025,6 +939,92 @@ section.edit-profile .img-container .skeleton {
 .user-profile > div {
   gap: 3px;
   padding: 5px 0;
+}
+
+@media only screen and (max-width: 599px) {
+  .mainsearch {
+    width: 100%;
+    margin-left: 0px;
+  }
+  .mainsearch .card123 {
+    margin-top: 2em;
+  }
+  .mainsearch .card123 .cname {
+    font-size: 12px;
+  }
+  .mainsearch .card123 .rname {
+    font-size: 10px;
+    margin-left: 1em;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .mainsearch {
+    width: 60%;
+    margin-left: 20%;
+  }
+  .mainsearch .card123 {
+    margin-top: 2em;
+  }
+  .mainsearch .card123 .cname {
+    margin-top: 0.5em;
+    font-size: 16px;
+  }
+  .mainsearch .card123 .rname {
+    margin-top: 0.5em;
+    font-size: 12px;
+    margin-left: 2em;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .mainsearch {
+    width: 40%;
+    margin-left: 30%;
+  }
+  .mainsearch .card123 .cname {
+    margin-top: 0.5em;
+    font-size: 16px;
+  }
+  .mainsearch .card123 .rname {
+    margin-top: 0.5em;
+    font-size: 12px;
+    margin-left: 2em;
+  }
+}
+.mainsearch {
+  background-color: rgb(249, 249, 249);
+  display: flex;
+  box-shadow: 2px 2px 5px 3px rgb(198, 198, 198);
+  border-radius: 1%;
+}
+.mainsearch .pcontain {
+  margin-top: 1em;
+}
+.mainsearch .pcontain .card123 {
+  border-bottom: 1px solid black;
+  border-radius: 5%;
+}
+.mainsearch .pcontain .card123 .cname {
+  margin-left: 5%;
+  line-height: 20px;
+  font-weight: bold;
+}
+.mainsearch .pcontain .card123 .rname {
+  color: rgb(98, 98, 98);
+}
+
+.search-container .search-input {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 96%;
+  border: 1px solid black;
+  margin-inline: auto;
+  right: 50%;
+  translate: -50% -50%;
+  padding: 15px 20px;
+  background: #f6f6f6;
+  border: 1px solid #000000;
+  border-radius: 10px;
 }
 
 /*# sourceMappingURL=styles.css.map */

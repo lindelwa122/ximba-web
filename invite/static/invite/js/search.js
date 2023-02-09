@@ -1,6 +1,7 @@
 document.querySelectorAll('.search-btn').forEach((el) => {
   el.addEventListener('click', () => {
     // TODO
+    addToMainModalHistory('Search', searchContent, '10px');
   });
 });
 
@@ -27,11 +28,10 @@ const searchContent = () => {
   searchInput.classList = 'search-input';
   container.classList = 'search-recents';
   container.classList = 'search-tabs';
-  container.classList = 'search-users';
+  container.classList = 'search-container';
   dimmy1.classList = 'dummy';
   dimmy2.classList = 'dummy';
   dummy.classList = 'dummy';
   console.log(container);
   return container;
 };
-addToMainModalHistory('Search', searchContent, '10px');
