@@ -76,24 +76,25 @@ def confirm_email(request):
 
 
 def edit_about(request):
-    data = loads(request.body)
-    about = data.get('about', )
+    if request.method == 'POST':
+        data = loads(request.body)
+        about = data.get('about', )
 
-    user_profile = Profile.objects.get(user=request.user)
+        user_profile = Profile.objects.get(user=request.user)
 
-    if len(about) > 200:
-        return JsonResponse({}, status=400)
+        if len(about) > 200:
+            return JsonResponse({}, status=400)
 
-    user_profile.bio = about
-    user_profile.save()
+        user_profile.bio = about
+        user_profile.save()
 
-    profile_set_up = ProfileSetUp.objects.get(user=request.user)
+        profile_set_up = ProfileSetUp.objects.get(user=request.user)
 
-    if not profile_set_up.bio_setup:
-        profile_set_up.bio_setup = True
-        profile_set_up.save()
+        if not profile_set_up.bio_setup:
+            profile_set_up.bio_setup = True
+            profile_set_up.save()
 
-    return JsonResponse({'message': about}, status=200)
+        return JsonResponse({'message': about}, status=200)
 
 
 def edit_email(request):
