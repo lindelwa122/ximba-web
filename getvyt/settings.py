@@ -110,11 +110,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Email configuration
-# EMAIL_HOST = environ['HOST']
-# EMAIL_PORT = environ['EMAIL_PORT']
-# EMAIL_HOST_USER = environ['USER']
-# EMAIL_HOST_PASSWORD = environ['PASSWORD']
-# EMAIL_USE_TLS = True
+EMAIL_HOST = environ['HOST']
+EMAIL_PORT = environ['EMAIL_PORT']
+EMAIL_HOST_USER = environ['USER']
+EMAIL_HOST_PASSWORD = environ['PASSWORD']
+EMAIL_USE_TLS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
