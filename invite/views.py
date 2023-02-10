@@ -320,7 +320,7 @@ def profile(request, username):
     authenticated = username == request.user.username
     user = User.objects.get(username=username)
 
-    if user.is_authenticated and not user.is_email_confirmed:
+    if authenticated and not user.is_email_confirmed:
         return HttpResponseRedirect(reverse('invite:index'))
 
     return render(request, 'invite/profile.html', {
