@@ -44,7 +44,7 @@
       <div class='d-flex align-items-center justify-content-between counts font-title'>
         <div class='text-center d-flex align-items-center'>
           <div class='followers-count skeleton skeleton-text count'></div>
-          <div class='normal-font-weight'>followers</div>
+          <div class='normal-font-weight followers-text'>followers</div>
         </div>
         <div class='text-center d-flex align-items-center'>
           <div class='following-count skeleton skeleton-text count'></div>
@@ -57,6 +57,8 @@
       </div>      
     </div>
 
+    <div class='display-error'></div>
+
     <div class='d-flex buttons-wrapper'>
       {% if authenticated %}
         <button class='btn btn-secondary-outline flex-fill edit-btn'>
@@ -64,9 +66,16 @@
           <span class='spinner'></span>
         </button>
         <button class='btn btn-primary flex-fill'>Friend's List</button>
-      {% else %}
-        <button class='btn btn-secondary flex-fill'>Follow</button>
+      {% elif is_user_logged_in %}
+        {% if following_user %}
+          <button class='btn btn-secondary-outline flex-fill unfollow-btn'>Unfollow</button>
+        {% else %}
+          <button class='btn btn-secondary flex-fill follow-btn'>Follow</button>
+        {% endif %}
         <button class='btn btn-primary flex-fill'>Add Friend</button>
+      {% else %}
+        <button class='btn btn-primary-outline flex-fill register-btn'>Try GetVyt now!</button>
+        <button class='btn btn-primary flex-fill login-btn'>Login to access all our features!</button>
       {% endif %}
     </div>
   </div>

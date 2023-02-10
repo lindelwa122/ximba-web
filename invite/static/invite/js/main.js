@@ -204,8 +204,9 @@ const changeProfileImg = (csrfToken, form, e) => {
       return response.json();
     })
     .then(() => {
+      const username = window.location.pathname.split('/')[1];
       document.querySelector('.modal-page').style.display = 'none';
-      fetchProfileImage();
+      fetchProfileImage(username);
     })
     .catch(
       (error) => (document.querySelector('.error-message').textContent = error)
@@ -402,7 +403,20 @@ const pushNotification = () => {
           });
       } else if (data.currentStatus === 'notLoggedIn') {
         pushTopNotification.style.display = 'flex';
-        pushTopNotification.innerHTML = `<p><span><a href='/login'>Login</a></span></p>`;
+        pushTopNotification.className = 'auth-actions-container';
+        pushTopNotification.innerHTML = `
+          <button class='sign-up btn btn-secondary btn-small'>Sign Up</button>
+          <button class='sign-in btn btn-secondary-outline btn-small'>Sign In</button>
+        `;
+
+        document.querySelector('.sign-up').addEventListener('click', () => {
+          window.location.href = '/register';
+        });
+
+        document.querySelector('.sign-in').addEventListener('click', () => {
+          window.location.href = '/login';
+        });
+        
       } else {
         pushTopNotification.style.display = 'none';
       }

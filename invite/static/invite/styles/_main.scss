@@ -291,6 +291,18 @@ main {
   }
 }
 
+.auth-actions-container {
+  margin: 20px 0 10px 20px;
+
+  button:first-child {
+    margin-right: 10px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
 .top-nav {
   align-items: center;
   display: flex;

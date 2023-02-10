@@ -210,6 +210,22 @@ def edit_profile_img(request):
         return JsonResponse({}, status=200)
 
 
+def follow(request, username):
+    user = User.objects.get(username=request.user.username)
+    following = User.objects.get(username=username.strip())
+
+    if user == following:
+        return JsonResponse({'error': 'You cannot follow yourself'}, status=403)
+
+    connection = Following.objects.filter(user=user, following=following)
+    if connection.exists():
+        return JsonResponse({'error': 'Already following user'}, status=409)
+
+    Following.objects.create(user=user, following=following)
+
+    return JsonResponse({}, status=200)
+
+
 def get_data(request, get_query):
     user = request.user
     if user.is_authenticated:
@@ -237,16 +253,13 @@ def get_data(request, get_query):
         return JsonResponse({'error': 'User not authenticated'}, status=409)
 
 
-def get_profile_count(request):
-    if request.user.is_authenticated:
-        friends = Friend.objects.filter(user=request.user).count()
-        following = Following.objects.filter(user=request.user).count()
-        followers = Following.objects.filter(following=request.user).count()
-
-        return JsonResponse({'friendsCount': friends, 'followingCount': following, 'followersCount': followers}, status=200)
-
-    else:
-        return JsonResponse({'message': 'User not authenticated.'}, status=403)
+def get_profile_count(request, username):
+    username = username.strip()
+    user = User.objects.get(username=username)
+    friends = Friend.objects.filter(user=user).count()
+    following = Following.objects.filter(user=user).count()
+    followers = Following.objects.filter(following=user).count()
+    return JsonResponse({'friendsCount': friends, 'followingCount': following, 'followersCount': followers}, status=200)
 
 
 def get_user_bio(request, username):
@@ -337,7 +350,10 @@ def profile(request, username):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('invite:render404'))
 
-    # Checks if user is authenticated
+    # Determine if the Currently Logged-In User Follows the User Whose Profile is Being Viewed
+    f = Following.objects.filter(user=request.user, following=user)
+
+    # Determine if user is authenticated
     authenticated = user.username == request.user.username
 
     # User authenticated but email not confirmed
@@ -346,7 +362,9 @@ def profile(request, username):
 
     return render(request, 'invite/profile.html', {
         'user': user,
-        'authenticated': authenticated
+        'authenticated': authenticated,
+        'is_user_logged_in': request.user.is_authenticated,
+        'following_user': f.exists()
     })
 
 

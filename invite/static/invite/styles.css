@@ -355,6 +355,10 @@ a {
   }
 }
 
+.display-error {
+  color: var(--error-message-color);
+}
+
 main {
   min-height: 100vh;
 }
@@ -644,6 +648,16 @@ main {
 }
 .push-notification span:hover {
   color: var(--main-text-color);
+}
+
+.auth-actions-container {
+  margin: 20px 0 10px 20px;
+}
+.auth-actions-container button:first-child {
+  margin-right: 10px;
+}
+.auth-actions-container p {
+  margin-bottom: 0;
 }
 
 .top-nav {

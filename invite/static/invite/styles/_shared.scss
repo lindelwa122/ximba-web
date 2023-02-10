@@ -15,6 +15,10 @@ a {
   @include body-tiny;
 }
 
+.display-error {
+  color: var(--error-message-color);
+}
+
 main {
   min-height: 100vh;
 }
