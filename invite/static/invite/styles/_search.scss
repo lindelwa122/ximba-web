@@ -1,0 +1,97 @@
+//MOBILE
+@media only screen and (max-width: 599px) {
+  .mainsearch {
+    width: 100%;
+    margin-left: 0px;
+    .card123 {
+      margin-top: 2em;
+      .cname {
+        font-size: 12px;
+      }
+      .rname {
+        font-size: 10px;
+        margin-left: 1em;
+      }
+    }
+  }
+}
+
+//TABLET
+@include for-tablets {
+  .mainsearch {
+    width: 60%;
+    margin-left: 20%;
+    .card123 {
+      margin-top: 2em;
+      .cname {
+        margin-top: 0.5em;
+        font-size: 16px;
+      }
+      .rname {
+        margin-top: 0.5em;
+        font-size: 12px;
+        margin-left: 2em;
+      }
+    }
+  }
+}
+
+//DESKTOP
+@include for-desktops {
+  .mainsearch {
+    width: 40%;
+    margin-left: 30%;
+    .card123 {
+      .cname {
+        margin-top: 0.5em;
+        font-size: 16px;
+      }
+      .rname {
+        margin-top: 0.5em;
+        font-size: 12px;
+        margin-left: 2em;
+      }
+    }
+  }
+}
+
+//GENERAL
+.mainsearch {
+  background-color: rgb(249, 249, 249);
+  display: flex;
+  box-shadow: 2px 2px 5px 3px rgb(198, 198, 198);
+  border-radius: 1%;
+  .pcontain {
+    margin-top: 1em;
+    .card123 {
+      border-bottom: 1px solid black;
+      border-radius: 5%;
+      .cname {
+        margin-left: 5%;
+        line-height: 20px;
+        font-weight: bold;
+      }
+      .rname {
+        color: rgb(98, 98, 98);
+      }
+    }
+  }
+}
+
+// Search Container Styling
+.search-container {
+  .search-input {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 96%;
+    border: 1px solid black;
+    margin-inline: auto;
+    right: 50%;
+    translate: -50% -50%;
+    padding: 15px 20px;
+    background: #f6f6f6;
+    border: 1px solid #000000;
+    border-radius: 10px;
+  }
+}

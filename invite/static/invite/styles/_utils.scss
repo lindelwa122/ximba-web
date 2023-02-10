@@ -1,6 +1,6 @@
 // BUTTON
 
-@mixin button($theme, $color, $borderRadius: $border-radius, $padding: 15px 0) {
+@mixin button($theme, $color, $borderRadius: $border-radius, $padding: 15px 20px) {
   background-color: $theme;
   border-radius: $border-radius;
   color: $color;

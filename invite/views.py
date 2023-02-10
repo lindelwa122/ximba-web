@@ -19,6 +19,19 @@ from django.utils.timezone import localtime
 from .models import *
 from .utils import *
 
+def search_items(names, query):
+    result = []
+    for name in names:
+        if query in name:
+            result.append(name)
+    return result
+
+def find_similar(query, names):
+    result = []
+    for name in names:
+        if difflib.SequenceMatcher(None, query, name).ratio() >= 0.50:
+            result.append(name)
+    return result
 
 @login_required(login_url='/login')
 def index(request):
@@ -317,9 +330,17 @@ def new_password(request, username, access):
 
 def profile(request, username):
     username = username.strip()
-    authenticated = username == request.user.username
-    user = User.objects.get(username=username)
 
+    # Try to get user
+    try:
+        user = User.objects.get(username=username)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect(reverse('invite:render404'))
+
+    # Checks if user is authenticated
+    authenticated = user.username == request.user.username
+
+    # User authenticated but email not confirmed
     if authenticated and not user.is_email_confirmed:
         return HttpResponseRedirect(reverse('invite:index'))
 
@@ -342,6 +363,24 @@ def push_top_notification(request):
 
     else:
         return JsonResponse({'currentStatus': 'notLoggedIn'}, status=200)
+
+
+def render404(request):
+    return render(request, 'invite/404.html')
+
+
+def recent_search(request):
+    person1 = {'username': 'tester', 'fullname': 'Niklas Koffi', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
+    person2 = {'username': 'therealjohndoe', 'fullname': 'John Doe', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
+    recent = [person1, person2]
+    return JsonResponse({'recent': recent}, status=200)
+
+
+def search_user(request, username):
+    person1 = {'username': 'tester', 'fullname': 'Niklas Koffi', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
+    person2 = {'username': 'therealjohndoe', 'fullname': 'John Doe', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
+    recent = [person1, person2]
+    return JsonResponse({'results': recent}, status=200)
 
 
 def register_view(request):
@@ -414,9 +453,12 @@ def reset_password(request):
         user.reset_password = generate_hash(20)
         user.save()
 
+        username = user.username
+        reset_password_code = User.objects.get(email=email).reset_password
+
         send_mail(
             'Reset Password',
-            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{user.username}/{user.reset_password} to reset your password.',
+            f'Click here: https://getvyt-web-production.up.railway.app/new_password/{username}/{reset_password_code} to reset your password.',
             'portfolio@livingdreams.com',
             [email],
             fail_silently=False,
