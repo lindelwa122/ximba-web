@@ -225,6 +225,20 @@ def follow(request, username):
 
     return JsonResponse({}, status=200)
 
+def unfollow(request, username):
+    user = User.objects.get(username=request.user.username)
+    following = User.objects.get(username=username.strip())
+
+    if user == following:
+        return JsonResponse({'error': 'You cannot ufollow yourself'}, status=403)
+
+    connection = Following.objects.filter(user=user, following=following)
+    if not connection.exists():
+        return JsonResponse({'error': 'Not following user'}, status=403)
+
+    connection[0].delete()
+
+    return JsonResponse({}, status=200)
 
 def get_data(request, get_query):
     user = request.user

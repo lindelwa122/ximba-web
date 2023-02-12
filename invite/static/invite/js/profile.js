@@ -1,22 +1,31 @@
+const username = window.location.pathname.split('/')[1];
+
 document.addEventListener('DOMContentLoaded', () => {
-  const username = window.location.pathname.split('/')[1];
   fetchCount(username);
   fetchBio(username);
   fetchProfileImage(username);
 
-  // Prevent JS from stop execution when '.login-btn' or '.register-btn' is null
-  try {
-    document.querySelector('.login-btn').addEventListener('click', () => {
+  const loginBtn = document.querySelector('.login-btn');
+  const registerBtn = document.querySelector('.register-btn');
+
+  if (loginBtn && registerBtn) {
+    loginBtn.addEventListener('click', () => {
       window.location.href = '/login';
     });
   
-    document.querySelector('.register-btn').addEventListener('click', () => {
+    registerBtn.addEventListener('click', () => {
       window.location.href = '/register';
     });
-  } catch (error) {
-    document.querySelector('.follow-btn').addEventListener('click', () => {
-      followBtn(username);
-    })
+  } 
+
+  const followBtn = document.querySelector('.follow-btn');
+  if (followBtn) {
+    followBtn.addEventListener('click', followHandler);
+  }
+  
+  const unfollowBtn = document.querySelector('.unfollow-btn');
+  if (unfollowBtn) {
+    unfollowBtn.addEventListener('click', unfollowHandler);
   }
 });
 
@@ -66,15 +75,22 @@ const removeError = () => {
   document.querySelector('.display-error').textContent = '';
 }
 
-const followBtn = (username) => {
+const followUser = (username) => {
   fetch(`follow/${username}`)
     .then((response) => {
       if (response.status === 200) {
         const followersCount = document.querySelector('.followers-count');
         followersCount.textContent = parseInt(followersCount.textContent) + 1;
-        document.querySelector('.follow-btn').textContent = 'Unfollow';
-        document.querySelector('.follow-btn').classList.replace('btn-secondary', 'btn-secondary-outline');
-        document.querySelector('.follow-btn').classList.replace('follow-btn', 'unfollow-btn');
+        const followBtn = document.querySelector('.follow-btn');
+        followBtn.textContent = 'Unfollow';
+        followBtn.classList.replace('btn-secondary', 'btn-secondary-outline');
+        followBtn.classList.replace('follow-btn', 'unfollow-btn');
+
+        // Remove event handler
+        followBtn.removeEventListener('click', followHandler);
+
+        // Add new event handler
+        followBtn.addEventListener('click', unfollowHandler);
       } else {
         throw new Error('Request Failed, try again later!');
       }
@@ -84,3 +100,32 @@ const followBtn = (username) => {
       setTimeout(removeError, 60000);
     });
 }
+
+const unfollowUser = (username) => {
+  fetch(`unfollow/${username}`)
+    .then((response) => {
+      if (response.status === 200) {
+        const followersCount = document.querySelector('.followers-count');
+        followersCount.textContent = parseInt(followersCount.textContent) - 1;
+        const unfollowBtn = document.querySelector('.unfollow-btn');
+        unfollowBtn.textContent = 'Follow';
+        unfollowBtn.classList.replace('btn-secondary-outline', 'btn-secondary');
+        unfollowBtn.classList.replace('unfollow-btn', 'follow-btn');
+
+        // Remove event handler
+        unfollowBtn.removeEventListener('click', unfollowHandler);
+
+        // Add new event handler
+        unfollowBtn.addEventListener('click', followHandler);
+      } else {
+        throw new Error('Request Failed, try again later!');
+      }
+    })
+    .catch((error) => {
+      document.querySelector('.display-error').textContent = error;
+      setTimeout(removeError, 60000);
+    });
+}
+
+const followHandler = () => followUser(username);
+const unfollowHandler = () => unfollowUser(username);
