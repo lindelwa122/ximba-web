@@ -11,52 +11,70 @@ const searchContent = () => {
   const searchInput = document.createElement('input');
   const recents = document.createElement('div');
   const searched = document.createElement('div');
-  const dimmy1 = document.createElement('div');
-  const dimmy2 = document.createElement('div');
-  const searchTabs = document.createElement('ul');
-  const accounts = document.createElement('li');
-  const area = document.createElement('li');
-  const events = document.createElement('li');
-  const tags = document.createElement('li');
-  const past = document.createElement('li');
-  const upcoming = document.createElement('li');
-  accounts.innerText = 'Accounts';
-  area.innerText = 'Area';
-  events.innerText = 'Events';
-  tags.innerText = 'Tags';
-  past.innerText = 'Past';
-  upcoming.innerText = 'Upcoming';
 
   // Appending
-  container.append(searchInput);
   container.append(recents);
-  recents.append(dimmy1);
-  recents.append(dimmy2);
   container.append(searched);
-  container.append(searchTabs);
-  searchTabs.appendChild(accounts);
-  searchTabs.appendChild(area);
-  searchTabs.appendChild(events);
-  searchTabs.appendChild(tags);
-  searchTabs.appendChild(past);
-  searchTabs.appendChild(upcoming);
-  console.log(searchTabs);
+  container.append(searchInput);
   // Adding Classes
 
   container.classList = 'search-container';
   searchInput.classList = 'search-input';
   recents.classList = 'search-recents';
-  recents.innerHTML = `<h2>Recents</h2>`;
-  searchTabs.classList = 'search-tabs';
+  recents.innerHTML = `
+  <h2>Recents</h2>
+  <div class='d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom border-dark'>
+  <div>
+    <div class='d-flex align-items-center'>
+      <img
+        src='https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=581&q=80'
+        width='15%' alt='A Cake' />
+      <div class='ms-2'>Soccer Tournament</div>
+    </div>
+  </div>
+  <div class='close'>
+  <i class='fa-solid fa-xmark'></i>
+</div>
+</div>
+
+  <div class='d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom border-dark'>
+  <div>
+    <div class='d-flex align-items-center'>
+      <img
+        src='https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=581&q=80'
+        width='15%' alt='A Cake' />
+      <div class='ms-2'>Soccer Tournament</div>
+    </div>
+
+  </div>
+
+  <div class='close'>
+    <i class='fa-solid fa-xmark'></i>
+  </div>
+</div>
+  <div class='d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom border-dark'>
+  <div>
+    <div class='d-flex align-items-center'>
+      <img
+        src='https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=581&q=80'
+        width='15%' alt='A Cake' />
+      <div class='ms-2'>Soccer Tournament</div>
+    </div>
+  </div>
+  <div class='close'>
+  <i class='fa-solid fa-xmark'></i>
+</div>
+</div>
+  `;
+
   searched.classList = 'searched';
   searched.innerHTML = `<h2>Searched</h2>`;
-
-  dimmy1.classList = 'dummy';
-  dimmy2.classList = 'dummy';
-  console.log(container);
   searchInput.addEventListener('focus', () => {
-    searchInput.style.bottom = '76%';
+    searchInput.style.top = '14%';
     recents.style.height = '0';
+    recents.style.visibility = 'hidden';
+    searched.style.height = '100%';
+    searched.style.visibility = 'visible';
   });
   return container;
 };
