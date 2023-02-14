@@ -1,5 +1,5 @@
 from io import BytesIO
-from json import loads
+from json import dumps, loads
 from tempfile import NamedTemporaryFile
 from uuid import uuid4
 
@@ -48,6 +48,11 @@ def index(request):
             fail_silently=False,
         )
         request.session['username'] = request.user.username
+
+        profile = Profile.objects.filter(user=user)
+        if not profile.exists():
+            Profile.objects.create(user=user)
+        
         return HttpResponseRedirect(reverse('invite:confirm_email'))
 
     return HttpResponseRedirect(reverse('invite:profile', kwargs={'username': request.user.username}))
@@ -267,6 +272,22 @@ def get_data(request, get_query):
         return JsonResponse({'error': 'User not authenticated'}, status=409)
 
 
+def get_followings(request, username):
+    user = User.objects.get(username=username.strip())
+    followings = Following.objects.filter(user=user)
+    followings_data = []
+
+    for _user in followings:
+        obj = {}
+        obj['username'] = _user.following.username
+        obj['fullName'] = f'{_user.following.first_name} {_user.following.last_name}'
+        profile = Profile.objects.get(user=_user.following)
+        obj['image'] = get_img_url(profile.profile_img)
+        followings_data.append(obj)
+
+    return JsonResponse({'users': followings_data}, status=200)
+
+
 def get_profile_count(request, username):
     username = username.strip()
     user = User.objects.get(username=username)
@@ -364,12 +385,16 @@ def profile(request, username):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('invite:render404'))
 
-    # Determine if the Currently Logged-In User Follows the User Whose Profile is Being Viewed
-    f = Following.objects.filter(user=request.user, following=user)
+    if request.user.is_authenticated:
+        # Determine if the Currently Logged-In User Follows the User Whose Profile is Being Viewed
+        f = Following.objects.filter(user=request.user, following=user)
+        f = f.exists()
+    else:
+        f = False
 
     # Determine if user is authenticated
     authenticated = user.username == request.user.username
-
+    
     # User authenticated but email not confirmed
     if authenticated and not user.is_email_confirmed:
         return HttpResponseRedirect(reverse('invite:index'))
@@ -378,7 +403,7 @@ def profile(request, username):
         'user': user,
         'authenticated': authenticated,
         'is_user_logged_in': request.user.is_authenticated,
-        'following_user': f.exists()
+        'following_user': f
     })
 
 

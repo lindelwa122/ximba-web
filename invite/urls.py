@@ -11,6 +11,7 @@ urlpatterns = [
     path('follow/<str:username>', views.follow, name='follow'),
     path('unfollow/<str:username>', views.unfollow, name='unfollow'),
     path('get/<str:get_query>', views.get_data, name='get_data'),
+    path('get/followings/<str:username>', views.get_followings, name='get_followings'),
     path('login', views.login_view, name='login'),
     path('new_password/<str:username>/<str:access>', views.new_password, name='new_password'),
     path('notification/push/top', views.push_top_notification, name='push_top_notification'),

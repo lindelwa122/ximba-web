@@ -225,6 +225,13 @@
     background-color: hsl(200deg, 20%, 95%);
   }
 }
+.skeleton-card {
+  border-radius: 10px;
+  height: 70px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
 .skeleton-text {
   border-radius: 5px;
   height: 20px;
@@ -376,6 +383,16 @@ section.form-section {
   min-height: calc(100vh - 20px);
 }
 
+.auth-actions-container {
+  margin: 20px 0 10px 20px;
+}
+.auth-actions-container button:first-child {
+  margin-right: 10px;
+}
+.auth-actions-container p {
+  margin-bottom: 0;
+}
+
 .body {
   display: flex;
 }
@@ -477,10 +494,6 @@ main {
   .modal-page .modal-page-content > div {
     padding: 0;
   }
-}
-.modal-page .modal-page-content > div:hover {
-  background-color: var(--background-color-lg);
-  cursor: pointer;
 }
 
 .nav-controller {
@@ -650,16 +663,6 @@ main {
   color: var(--main-text-color);
 }
 
-.auth-actions-container {
-  margin: 20px 0 10px 20px;
-}
-.auth-actions-container button:first-child {
-  margin-right: 10px;
-}
-.auth-actions-container p {
-  margin-bottom: 0;
-}
-
 .top-nav {
   align-items: center;
   display: flex;
@@ -786,6 +789,22 @@ section.edit-profile .img-container .skeleton {
     font-size: 12px;
     line-height: 18px;
   }
+}
+
+.count-group-container .font-body-tiny {
+  font-weight: 500;
+}
+.count-group-container img {
+  width: 60px;
+  aspect-ratio: 1;
+}
+
+.count-group-container > div {
+  border-radius: 10px;
+  border: 1px solid var(--primary-color);
+  cursor: pointer;
+  padding: 10px 20px;
+  margin-bottom: 10px;
 }
 
 .events-list {
@@ -918,6 +937,9 @@ section.edit-profile .img-container .skeleton {
 
 .user-info .counts .count {
   margin-right: 5px;
+}
+.user-info .counts .count-group:hover {
+  cursor: pointer;
 }
 .user-info .counts .normal-font-weight {
   font-weight: 400 !important;

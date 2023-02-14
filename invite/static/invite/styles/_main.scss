@@ -1,3 +1,15 @@
+.auth-actions-container {
+  margin: 20px 0 10px 20px;
+
+  button:first-child {
+    margin-right: 10px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
 .body {
   display: flex;
 
@@ -100,10 +112,10 @@ main {
       padding: 0;
     }
 
-    &:hover {
-      background-color: var(--background-color-lg);
-      cursor: pointer;
-    }
+    // &:hover {
+    //   background-color: var(--background-color-lg);
+    //   cursor: pointer;
+    // }
   }
 }
 
@@ -288,18 +300,6 @@ main {
     &:hover {
       color: var(--main-text-color);
     }
-  }
-}
-
-.auth-actions-container {
-  margin: 20px 0 10px 20px;
-
-  button:first-child {
-    margin-right: 10px;
-  }
-
-  p {
-    margin-bottom: 0;
   }
 }
 

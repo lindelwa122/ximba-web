@@ -1,3 +1,23 @@
+.count-group-container {
+  .font-body-tiny {
+    font-weight: 500;
+  }
+
+  img {
+    aspect-ratio: 1;
+    width: 60px;
+  }
+}
+
+.count-group-container > div {
+  // background-color: var(--background-color-lg);
+  border: 1px solid var(--primary-color);
+  border-radius: $border-radius;
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: $general-padding;
+}
+
 .events-list {
   width: 100%;
 
@@ -40,7 +60,7 @@
 
 .top-profile-wrapper {
   align-items: flex-start;
-  
+
   img {
     aspect-ratio: 1;
     max-width: 220px;
@@ -114,6 +134,10 @@
       margin-right: 5px;
     }
 
+    .count-group:hover {
+      cursor: pointer;
+    }
+
     .normal-font-weight {
       font-weight: 400 !important;
     }
@@ -126,7 +150,7 @@
       width: 50%;
     }
   }
-  
+
   i {
     color: var(--secondary-color);
     font-size: 15px;
