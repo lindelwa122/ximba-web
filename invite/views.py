@@ -14,7 +14,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-from django.utils.timezone import localtime
+from django.utils.timezone import now, localtime
 
 from .models import *
 from .utils import *
@@ -26,12 +26,12 @@ def search_items(names, query):
             result.append(name)
     return result
 
-def find_similar(query, names):
-    result = []
-    for name in names:
-        if difflib.SequenceMatcher(None, query, name).ratio() >= 0.50:
-            result.append(name)
-    return result
+# def find_similar(query, names):
+#     result = []
+#     for name in names:
+#         if difflib.SequenceMatcher(None, query, name).ratio() >= 0.50:
+#             result.append(name)
+#     return result
 
 @login_required(login_url='/login')
 def index(request):
@@ -66,7 +66,8 @@ def confirm_email(request):
         if int(data.get('code', '')) != user.email_code:
             return JsonResponse({'message': 'Your code is incorrect. Try checking your emails again.'}, status=400)
 
-        if (localtime() - user.code_generation_date).seconds > 916:
+        time_difference = localtime() - user.code_generation_date
+        if (time_difference).seconds > 916:
             user.email_code = generate_code()
             user.code_generation_date = localtime()
             user.save()

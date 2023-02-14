@@ -112,7 +112,6 @@ const fetchFollowingUsers = () => {
       // Add click event listener (route to user's profile)
       document.querySelectorAll('.account-container').forEach((container) => {
         const username = container.dataset.username;
-        console.log(username);
         container.addEventListener('click', () => {
           window.location.href = `/${username}`;
         });
@@ -185,6 +184,14 @@ const followUser = (username) => {
       if (response.status === 200) {
         const followersCount = document.querySelector('.followers-count');
         followersCount.textContent = parseInt(followersCount.textContent) + 1;
+
+        // Toggle between 'follower' and 'followers'
+        if (parseInt(followersCount.textContent) === 1) {
+          document.querySelector('.followers-text').textContent = 'follower';
+        } else {
+          document.querySelector('.followers-text').textContent = 'followers';
+        }
+      
         const followBtn = document.querySelector('.follow-btn');
         followBtn.textContent = 'Unfollow';
         followBtn.classList.replace('btn-secondary', 'btn-secondary-outline');
@@ -211,6 +218,14 @@ const unfollowUser = (username) => {
       if (response.status === 200) {
         const followersCount = document.querySelector('.followers-count');
         followersCount.textContent = parseInt(followersCount.textContent) - 1;
+
+        // Toggle between 'follower' and 'followers'
+        if (parseInt(followersCount.textContent) === 1) {
+          document.querySelector('.followers-text').textContent = 'follower';
+        } else {
+          document.querySelector('.followers-text').textContent = 'followers';
+        }
+
         const unfollowBtn = document.querySelector('.unfollow-btn');
         unfollowBtn.textContent = 'Follow';
         unfollowBtn.classList.replace('btn-secondary-outline', 'btn-secondary');
