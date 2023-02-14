@@ -64,4 +64,3 @@ const goBackInMainModalHistory = () => {
   
   addContentToMainModal(current.title, current.content, current.padding);
 }
-

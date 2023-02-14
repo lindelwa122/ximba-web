@@ -477,10 +477,6 @@ main {
     padding: 0;
   }
 }
-.modal-page .modal-page-content > div:hover {
-  background-color: var(--background-color-lg);
-  cursor: pointer;
-}
 
 .nav-controller {
   align-items: center;
