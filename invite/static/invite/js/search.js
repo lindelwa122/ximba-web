@@ -1,7 +1,7 @@
 document.querySelectorAll('.search-btn').forEach((el) => {
   el.addEventListener('click', () => {
     // TODO
-    addToMainModalHistory('Search', searchContent, '10px');
+    addToMainModalHistory('Recents', searchContent, '10px');
   });
 });
 
@@ -22,7 +22,6 @@ const searchContent = () => {
   searchInput.classList = 'search-input';
   recents.classList = 'search-recents';
   recents.innerHTML = `
-  <h2>Recents</h2>
   <div class='d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom border-dark'>
   <div>
     <div class='d-flex align-items-center'>
@@ -70,11 +69,14 @@ const searchContent = () => {
   searched.classList = 'searched';
   searched.innerHTML = `<h2>Searched</h2>`;
   searchInput.addEventListener('focus', () => {
-    searchInput.style.top = '14%';
+    searchInput.style.top = '6%';
     recents.style.height = '0';
     recents.style.visibility = 'hidden';
     searched.style.height = '100%';
     searched.style.visibility = 'visible';
+    document.querySelectorAll('.modal-page-title').forEach((title) => {
+      title.textContent = 'Search';
+    });
   });
   return container;
 };
