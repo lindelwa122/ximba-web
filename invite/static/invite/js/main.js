@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     showHideAnimation();
   });
 
-  document.querySelector('.edit-btn').addEventListener('click', (event) => {
-    editProfile(event);
+  document.querySelectorAll('.view-profile-btn').forEach((el) => {
+    el.addEventListener('click', () => window.location.href = '/');
   });
 });
 

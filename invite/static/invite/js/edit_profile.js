@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('.edit-btn').addEventListener('click', editProfile);
+})
+
 // EDIT PROFILE
 const editProfile = () => {  
   addToMainModalHistory('Edit Profile', editProfileSection);

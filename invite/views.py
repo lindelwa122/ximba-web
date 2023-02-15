@@ -14,10 +14,20 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-from django.utils.timezone import now, localtime
+from django.utils.timezone import localtime
 
 from .models import *
 from .utils import *
+
+def is_user_authenticated(request, username):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'User not logged in'}, status=403)
+
+    if request.user.username != username.strip():
+        return JsonResponse({'error': 'Access denied'}, status=403)
+
+    return JsonResponse({}, status=200)
+
 
 def search_items(names, query):
     result = []
@@ -287,6 +297,22 @@ def get_followings(request, username):
         followings_data.append(obj)
 
     return JsonResponse({'users': followings_data}, status=200)
+    
+
+def get_followers(request, username):
+    user = User.objects.get(username=username.strip())
+    followers = Following.objects.filter(following=user)
+    followers_data = []
+
+    for _user in followers:
+        obj = {}
+        obj['username'] = _user.user.username
+        obj['fullName'] = f'{_user.user.first_name} {_user.user.last_name}'
+        profile = Profile.objects.get(user=_user.user)
+        obj['image'] = get_img_url(profile.profile_img)
+        followers_data.append(obj)
+
+    return JsonResponse({'users': followers_data}, status=200)
 
 
 def get_profile_count(request, username):
@@ -317,6 +343,16 @@ def get_user_profile_image(request, username):
     profile = Profile.objects.get(user=user)
 
     return JsonResponse({'imagePath': get_img_url(profile.profile_img)}, status=200)
+
+
+def is_user_following(request, other_user):
+    user = User.objects.get(username=request.user.username)
+    other_user = User.objects.get(username=other_user.strip())
+
+    following = Following.objects.filter(user=user, following=other_user)
+    answer = 'YES' if following.exists() else 'NO'
+
+    return JsonResponse({'answer': answer}, status=200)
 
 
 def login_view(request):
