@@ -92,14 +92,24 @@ main {
       display: flex !important;
     }
   }
+
   .modal-page-content {
-    height: 92.5%;
+    height: calc(100% - 50.25px);
+
+    @include for-tablets {
+      height: calc(100% - 39px);
+    }
+
+    @include for-desktops {
+      height: calc(100% - 45px);
+    }
   }
+
   .modal-page-content > div {
     padding: 0 20px;
 
     @include for-tablets {
-      padding: 0;
+      padding: 10px;
     }
 
     // &:hover {

@@ -8,7 +8,7 @@ const addContentToMainModal = (title, content, padding) => {
   const modalPage = document.querySelector('.modal-page-content');
   modalTitle.forEach((t) => (t.textContent = title));
 
-  modalPage.style.padding = padding;
+  // modalPage.style.padding = padding;
   modalPage.innerHTML = '';
   modalPage.append(content());
 }

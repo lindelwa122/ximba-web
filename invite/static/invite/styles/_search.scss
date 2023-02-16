@@ -78,32 +78,74 @@
   }
 }
 
+@keyframes move-up {
+  from {
+    bottom: 10px;
+  }
+
+  95% {
+    bottom: calc(100% - 52.5px);
+  }
+  
+  to {
+    bottom: auto;
+  }
+}
+
 // Search Container Styling
 .search-container {
   height: 100%;
-  overflow: hidden;
   position: relative;
-  .search-input {
-    position: absolute;
-    left: 50%;
-    right: 50%;
-    top: 94%;
-    width: 100%;
-    border: 1px solid black;
-    margin-inline: auto;
-    translate: -50% -50%;
-    padding: 15px 20px;
-    background: #f6f6f6;
-    border: 1px solid #000000;
-    border-radius: 10px;
-    transition: all 0.3s ease-out;
+ 
+  .move-to-top {
+    animation: move-up ease-in-out 1s forwards;
   }
+
+  .search-input-container {
+    bottom: 10px;
+    display: flex;
+    position: absolute;
+    width: calc(100% - 40px);
+
+    @include for-tablets {
+      width: calc(100% - 20px);
+    }
+  }
+
+  .search-icon-wrapper {
+    align-items: center;
+    background-color: #ced4da;
+    border: 1px solid #ced4da;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: center;
+    width: 10%;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    i {
+      color: var(--primary-color); 
+      font-size: 25px;
+    }
+  }
+  
+  .search-input {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    padding: 10px 8px;
+    width: 90%;
+  }
+
   .search-recents {
     width: 100%;
-    height: 100%;
+    // height: 100%;
     overflow-y: auto;
     transition: all 0.3s ease-out;
   }
+
   .searched {
     width: 100%;
     height: 0;
