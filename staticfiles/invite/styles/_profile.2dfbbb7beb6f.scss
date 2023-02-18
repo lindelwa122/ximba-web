@@ -1,0 +1,138 @@
+.events-list {
+  width: 100%;
+
+  @include for-tablets {
+    background-color: var(--background-color);
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 10px;
+    width: 60%;
+  }
+
+  @include for-desktops {
+    width: 40%;
+  }
+}
+
+.event-post {
+  padding: 10px 20px;
+
+  .bi-three-dots-vertical {
+    font-size: 20px;
+  }
+}
+
+.post-img-wrapper {
+  aspect-ratio: 1;
+  overflow: hidden;
+  max-width: 10%;
+}
+
+.profile-container {
+  padding: 0;
+}
+
+.profile-ratings {
+  display: flex;
+  gap: 2px;
+
+  @include for-tablets {
+    display: none;
+  }
+}
+
+.top-profile-wrapper {
+  .counts {
+    justify-content: space-between;
+
+    div {
+      flex-direction: column;
+
+      @include for-tablets {
+        align-items: center;
+        flex-direction: row;
+        gap: 10px;
+      }
+    }
+
+    @include for-tablets {
+      justify-content: flex-start;
+      gap: 50px;
+    }
+  }
+
+  img {
+    aspect-ratio: 1;
+    max-width: 220px;
+    width: 30%;
+
+    @include for-tablets {
+      width: 23%;
+    }
+
+    @include for-desktops {
+      width: 15%;
+    }
+  }
+
+  .side-profile {
+    margin-left: 40px;
+    gap: 20px;
+
+    i {
+      color: var(--secondary-color);
+      font-size: 30px;
+    }
+
+    .profile-ratings {
+      display: none;
+
+      @include for-tablets {
+        display: flex;
+        gap: 5px;
+      }
+    }
+
+    @include for-tablets {
+      margin-left: 80px;
+    }
+
+    @include for-desktops {
+      margin-left: 100px;
+    }
+  }
+}
+
+.user-events {
+  flex: 1;
+
+  @include for-tablets {
+    padding: 0 20px;
+  }
+}
+
+.user-info {
+  gap: 5px;
+
+  i {
+    color: var(--secondary-color);
+    font-size: 20px;
+  }
+}
+
+.user-profile {
+  gap: 10px;
+  padding: $general-padding;
+
+  .buttons-wrapper {
+    gap: 20px;
+
+    @include for-tablets {
+      width: 40%;
+    }
+  }
+}
+
+.user-profile > div {
+  padding: 10px 0;
+}

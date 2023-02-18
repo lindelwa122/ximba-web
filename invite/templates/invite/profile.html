@@ -1,0 +1,143 @@
+{% extends 'invite/main.html' %}
+{% load static %}
+
+{% block title %} {{ user.username }} {% endblock %}
+{% block page-icon %} <i class='bi bi-person-fill'></i> {% endblock %}
+{% block page-title %} @{{ user.username }} {% endblock %}
+{% block page-icon-extra %} <i class='bi bi-list'></i> {% endblock %}
+
+{% block main %}
+
+<section class='d-flex flex-column profile-container'>
+  <div class='mb-2 d-flex flex-column user-profile'>
+    <div class='d-flex top-profile-wrapper'>
+      <img class='profile-img skeleton' src='' alt='Profile image'/>
+
+      <div class='d-flex flex-column side-profile'>
+
+        {% if authenticated %}
+          <div class='align-items-center profile-ratings'>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-half'></i>
+            <i class='bi bi-star'></i>
+            <span class='font-body-tiny'>3.5 (171 K)</span>
+          </div>
+        {% else %}
+          <div class='align-items-center profile-ratings'>
+            <i class='bi bi-star-fill tertiary-color'></i>
+            <i class='bi bi-star-fill tertiary-color'></i>
+            <i class='bi bi-star-fill tertiary-color'></i>
+            <i class='bi bi-star-half tertiary-color'></i>
+            <i class='bi bi-star tertiary-color'></i>
+            <span class='font-body-tiny'>3.5 (171 K)</span>
+          </div>
+        {% endif %}
+
+        <div class='font-title bio'></div>
+      </div>
+    </div>
+
+    <div class='d-flex flex-column user-info'>
+      <div class='font-headline full-name'>{{ user.first_name }} {{ user.last_name }}</div>
+      <div class='d-flex align-items-center justify-content-between counts font-title'>
+        <div class='text-center d-flex align-items-center count-group followers-wrapper'>
+          <div class='followers-count skeleton skeleton-text count'></div>
+          <div class='normal-font-weight followers-text'>followers</div>
+        </div>
+        <div class='text-center d-flex align-items-center count-group following-wrapper'>
+          <div class='following-count skeleton skeleton-text count'></div>
+          <div class='normal-font-weight'>following</div>
+        </div>
+        <div class='text-center d-flex align-items-center count-group friends-wrapper'>
+          <div class='friends-count skeleton skeleton-text count'></div>
+          <div class='normal-font-weight'>friends</div>
+        </div>
+      </div>      
+    </div>
+
+    <div class='display-error'></div>
+
+    <div class='d-flex buttons-wrapper'>
+      {% if authenticated %}
+        <button class='btn btn-secondary-outline flex-fill edit-btn'>
+          <span class='text-btn'>Edit Profile</span>
+          <span class='spinner'></span>
+        </button>
+        <button class='btn btn-primary flex-fill'>Friend's List</button>
+      {% elif is_user_logged_in %}
+        {% if following_user %}
+          <button class='btn btn-secondary-outline flex-fill unfollow-btn'>Unfollow</button>
+        {% else %}
+          <button class='btn btn-secondary flex-fill follow-btn'>Follow</button>
+        {% endif %}
+        <button class='btn btn-primary flex-fill'>Add Friend</button>
+      {% else %}
+        <button class='btn btn-primary-outline flex-fill register-btn'>Try GetVyt now!</button>
+        <button class='btn btn-primary flex-fill login-btn'>Login to access all our features!</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class='d-flex flex-column user-events'>
+    <div class='font-headline border-bottom border-dark event-post'>
+      EVENTS (47)
+    </div>
+
+    <div class='d-flex flex-column align-items-center w-100 flex-grow-1 flex-shrink-1'>
+      <div class='d-flex flex-column flex-grow-1 flex-shrink-1 events-list'>
+        <div class='d-flex align-items-center justify-content-between border-bottom border-dark event-post'>
+          <div class='overflow-hidden'>
+            <div class='d-flex align-items-center mb-2'>
+              <div class='post-img-wrapper'>
+                <img class='h-100' class='skeleton'
+                  src='https://tse2.mm.bing.net/th?id=OIP.U8KQimQkVNUTTJU_QjlPFQHaEo&pid=Api&P=0' />
+              </div>
+              <span class='ms-2 font-title ms-3'>My 21st birthday party</span>
+            </div>
+            <div class='d-flex justify-content-between align-items-center'>
+              <p class='font-body'>
+                Hey you guys, I am so happy I am turning 21 next week. My
+                brother is coming home on Wednesday. It's gonna b... (see more)
+              </p>
+            </div>
+            <small class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1'>5 Jun 2025, 8:30</span>
+            </small>
+          </div>
+          <i class='bi bi-three-dots-vertical'></i>
+        </div>
+
+        <div class='d-flex align-items-center justify-content-between event-post border-bottom border-dark'>
+          <div class='overflow-hidden'>
+            <div class='d-flex align-items-center mb-2'>
+              <div class='post-img-wrapper'>
+                <img class='h-100' class='skeleton'
+                  src='https://tse2.mm.bing.net/th?id=OIP.xIKx6KnCCTCOG6f_emeO4wHaJl&pid=Api&P=0' />
+              </div>
+              <span class='ms-2 font-title ms-3'>Soccer Tournament</span>
+            </div>
+            <div class='d-flex justify-content-between align-items-center'>
+              <p class='font-body'>
+                16 Teams competing for $1500. This one will be different
+                compared 'o the last tournament. The ele... (see more)
+              </p>
+            </div>
+            <small class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1'>5 Jun 2025, 8:30</span>
+            </small>
+          </div>
+          <i class='bi bi-three-dots-vertical'></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src='{% static "invite/js/profile.js" %}'></script>
+<script src='{% static "invite/js/edit_profile.js" %}'></script>
+
+{% endblock %}
