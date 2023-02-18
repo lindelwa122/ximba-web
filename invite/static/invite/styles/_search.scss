@@ -1,97 +1,3 @@
-//MOBILE
-@media only screen and (max-width: 599px) {
-  .mainsearch {
-    width: 100%;
-    margin-left: 0px;
-    .card123 {
-      margin-top: 2em;
-      .cname {
-        font-size: 12px;
-      }
-      .rname {
-        font-size: 10px;
-        margin-left: 1em;
-      }
-    }
-  }
-}
-
-//TABLET
-@include for-tablets {
-  .mainsearch {
-    width: 60%;
-    margin-left: 20%;
-    .card123 {
-      margin-top: 2em;
-      .cname {
-        margin-top: 0.5em;
-        font-size: 16px;
-      }
-      .rname {
-        margin-top: 0.5em;
-        font-size: 12px;
-        margin-left: 2em;
-      }
-    }
-  }
-}
-
-//DESKTOP
-@include for-desktops {
-  .mainsearch {
-    width: 40%;
-    margin-left: 30%;
-    .card123 {
-      .cname {
-        margin-top: 0.5em;
-        font-size: 16px;
-      }
-      .rname {
-        margin-top: 0.5em;
-        font-size: 12px;
-        margin-left: 2em;
-      }
-    }
-  }
-}
-
-//GENERAL
-.mainsearch {
-  background-color: rgb(249, 249, 249);
-  display: flex;
-  box-shadow: 2px 2px 5px 3px rgb(198, 198, 198);
-  border-radius: 1%;
-  .pcontain {
-    margin-top: 1em;
-    .card123 {
-      border-bottom: 1px solid black;
-      border-radius: 5%;
-      .cname {
-        margin-left: 5%;
-        line-height: 20px;
-        font-weight: bold;
-      }
-      .rname {
-        color: rgb(98, 98, 98);
-      }
-    }
-  }
-}
-
-@keyframes move-up {
-  from {
-    bottom: 10px;
-  }
-
-  95% {
-    bottom: calc(100% - 52.5px);
-  }
-  
-  to {
-    bottom: auto;
-  }
-}
-
 // Search Container Styling
 .search-container {
   height: 100%;
@@ -100,60 +6,46 @@
   .move-to-top {
     animation: move-up ease-in-out 1s forwards;
   }
+}
+.search-input-container {
+  bottom: 10px;
+  display: flex;
+  position: absolute;
+  width: calc(100% - 40px);
 
-  .search-input-container {
-    bottom: 10px;
-    display: flex;
-    position: absolute;
-    width: calc(100% - 40px);
+  @include for-tablets {
+    width: calc(100% - 20px);
+  }
+}
 
-    @include for-tablets {
-      width: calc(100% - 20px);
-    }
+.search-icon-wrapper {
+  align-items: center;
+  background-color: #ced4da;
+  border: 1px solid #ced4da;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  justify-content: center;
+  width: 10%;
+
+  &:hover {
+    cursor: pointer;
   }
 
-  .search-icon-wrapper {
-    align-items: center;
-    background-color: #ced4da;
-    border: 1px solid #ced4da;
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
-    display: flex;
-    justify-content: center;
-    width: 10%;
-
-    &:hover {
-      cursor: pointer;
-    }
-
-    i {
-      color: var(--primary-color); 
-      font-size: 25px;
-    }
+  i {
+    color: var(--primary-color); 
+    font-size: 25px;
   }
+}
+
+.search-input {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  padding: 10px 8px;
+  width: 90%;
+}
+
+.search-results {
+  display: none;
   
-  .search-input {
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-    padding: 10px 8px;
-    width: 90%;
-  }
-
-  .search-recents {
-    width: 100%;
-    // height: 100%;
-    overflow-y: auto;
-    transition: all 0.3s ease-out;
-  }
-
-  .searched {
-    width: 100%;
-    height: 0;
-    overflow-y: auto;
-    visibility: hidden;
-    display: grid;
-    place-items: center;
-    padding-top: 50px;
-    transition: all 0.3s ease-out;
-  }
 }
