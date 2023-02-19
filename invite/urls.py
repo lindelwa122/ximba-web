@@ -33,5 +33,6 @@ urlpatterns = [
     path('page-not-found', views.render404, name='render404'),
     path('main', views.main, name='main'),
     path('logout', views.logout_view, name='logout'),
+    path('find_friends', views.find_friends, name='find_friends'),
     path('<str:username>', views.profile, name='profile')
 ]
