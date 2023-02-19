@@ -369,7 +369,7 @@ def render404(request):
 
 
 def recent_search(request):
-    person1 = {'username': 'tester', 'fullname': 'Niklas Koffi', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
+    person1 = {'username': 'tester', 'fullname': 'Niklas Koffi', 'profile_img': 'invite/images/profiles/default.png'}
     person2 = {'username': 'therealjohndoe', 'fullname': 'John Doe', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
     recent = [person1, person2]
     return JsonResponse({'recent': recent}, status=200)
