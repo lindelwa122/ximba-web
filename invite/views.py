@@ -562,3 +562,17 @@ def reset_password(request):
 
     else:
         return render(request, 'invite/reset_password.html')
+    
+    
+def find_friends(request):
+    following_list = []
+    user = User.objects.get(username='tester')
+    friends = Friend.objects.filter(user=user)
+    following = Following.objects.filter(user=user)
+    for followers in following:
+        if followers in friends:
+            pass
+        following_list.append(followers)
+    print(following_list)
+    return HttpResponse(f'{friends}{following_list}')    
+    
