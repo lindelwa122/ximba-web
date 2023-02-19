@@ -25,3 +25,7 @@ class ProfileSetUp(models.Model):
   user = models.ForeignKey(User, models.CASCADE, related_name='setup_user')
   profile_img_setup = models.BooleanField(default=False)
   bio_setup = models.BooleanField(default=False)
+
+class Recent(models.Model):
+  user = models.ForeignKey(User, models.CASCADE, related_name='recent_user')
+  recent = models.ForeignKey(User, models.CASCADE, related_name='recent_recent')

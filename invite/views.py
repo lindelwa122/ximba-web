@@ -12,9 +12,10 @@ from django.core.files.storage import default_storage
 from django.core.mail import send_mail
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.timezone import localtime
+from fuzzywuzzy import process
 
 from .models import *
 from .utils import *
@@ -368,19 +369,72 @@ def render404(request):
     return render(request, 'invite/404.html')
 
 
+def add_to_recent_searches(request, username):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({}, status=401)
+
+        recent = list(Recent.objects.filter(user=request.user))
+
+        for user in recent:
+            if user.recent.username == username.strip():
+                return JsonResponse({}, status=409)
+
+        # If recent size is 3 or more, delete the last element
+        if len(recent) >= 3:
+            recent_queryset = Recent.objects.filter(user=request.user).order_by('-id')
+            recent_queryset.last().delete()
+
+        user = get_object_or_404(User, username=username)
+
+        # Add new user to recent
+        Recent.objects.create(user=request.user, recent=user)
+
+        return JsonResponse({}, status=200)
+
 def recent_search(request):
-    person1 = {'username': 'tester', 'fullname': 'Niklas Koffi', 'profile_img': 'invite/images/profiles/default.png'}
-    person2 = {'username': 'therealjohndoe', 'fullname': 'John Doe', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
-    recent = [person1, person2]
+    logged_in_user = request.user
+    recent = []
+
+    if not logged_in_user.is_authenticated:
+        return JsonResponse({'recent': recent}, status=200)
+
+    recent_users = Recent.objects.filter(user=logged_in_user).order_by('-id')
+
+    for recent_user in recent_users:
+        user = recent_user.recent
+        obj = {
+            'username': user.username,
+            'fullName': f'{user.first_name} {user.last_name}',
+        }
+        profile = Profile.objects.filter(user=user).first()
+        if profile:
+            obj['image'] = profile.profile_img.url
+        recent.append(obj)
+
     return JsonResponse({'recent': recent}, status=200)
 
 
-def search_user(request, username):
-    person1 = {'username': 'tester', 'fullname': 'Niklas Koffi', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
-    person2 = {'username': 'therealjohndoe', 'fullname': 'John Doe', 'profile_img': 'invite/static/invite/images/profiles/default.png'}
-    recent = [person1, person2]
-    return JsonResponse({'results': recent}, status=200)
+def find_users(query, threshold=80):
+    users = User.objects.all()
+    matching_users = []
+    for user in users:
+        user_fields = [user.username, user.first_name, user.last_name]
+        best_match = process.extractOne(query, user_fields)
+        profile = Profile.objects.filter(user=user).first()
+        if best_match[1] >= threshold:
+            matching_users.append({
+                'username': user.username,
+                'fullName': f'{user.first_name} {user.last_name}',
+                'image': get_img_url(profile.profile_img) if profile else ''
+            })
+    return matching_users
 
+def search(request):
+    query = request.GET.get('query')
+    threshold = int(request.GET.get('threshold', 80))
+    matching_users = find_users(query, threshold=threshold)
+    return JsonResponse({'users': matching_users})
 
 def register_view(request):
     if request.method == 'POST':
