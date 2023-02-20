@@ -85,10 +85,16 @@
     bottom: 10px;
   }
 
+  75% {
+    bottom: calc(100% - 48.5px);
+  }
+  85% {
+    bottom: calc(100% - 72.5px);
+  }
   95% {
     bottom: calc(100% - 52.5px);
   }
-  
+
   to {
     bottom: auto;
   }
