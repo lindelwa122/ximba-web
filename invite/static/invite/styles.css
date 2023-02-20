@@ -487,12 +487,25 @@ main {
     display: flex !important;
   }
 }
+.modal-page .modal-page-content {
+  height: calc(100% - 50.25px);
+}
+@media only screen and (min-width: 600px) {
+  .modal-page .modal-page-content {
+    height: calc(100% - 39px);
+  }
+}
+@media only screen and (min-width: 992px) {
+  .modal-page .modal-page-content {
+    height: calc(100% - 45px);
+  }
+}
 .modal-page .modal-page-content > div {
   padding: 0 20px;
 }
 @media only screen and (min-width: 600px) {
   .modal-page .modal-page-content > div {
-    padding: 0;
+    padding: 10px;
   }
 }
 
@@ -1048,19 +1061,171 @@ section.edit-profile .img-container .skeleton {
   color: rgb(98, 98, 98);
 }
 
-.search-container .search-input {
+@keyframes move-up {
+  from {
+    bottom: 10px;
+  }
+  95% {
+    bottom: calc(100% - 52.5px);
+  }
+  to {
+    bottom: auto;
+  }
+}
+.search-container {
+  height: 100%;
+  position: relative;
+}
+.search-container img {
+  width: 50px;
+  aspect-ratio: 1;
+}
+.search-container .not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.search-container .illustration {
+  width: 60%;
+  height: auto;
+}
+.search-container .move-to-top {
+  animation: move-up ease-in-out 1s forwards;
+}
+.search-container .search-input-container {
+  bottom: 10px;
+  display: flex;
   position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 96%;
-  border: 1px solid black;
-  margin-inline: auto;
-  right: 50%;
-  translate: -50% -50%;
-  padding: 15px 20px;
-  background: #f6f6f6;
-  border: 1px solid #000000;
+  width: calc(100% - 40px);
+}
+@media only screen and (min-width: 600px) {
+  .search-container .search-input-container {
+    width: calc(100% - 20px);
+  }
+}
+.search-container .search-icon-wrapper {
+  align-items: center;
+  background-color: #ced4da;
+  border: 1px solid #ced4da;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  justify-content: center;
+  width: 10%;
+}
+.search-container .search-icon-wrapper:hover {
+  cursor: pointer;
+}
+.search-container .search-icon-wrapper i {
+  color: var(--primary-color);
+  font-size: 25px;
+}
+.search-container .search-input {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  padding: 10px 8px;
+  width: 90%;
+}
+.search-container .search-recents {
+  width: 100%;
+  overflow-y: auto;
+  transition: all 0.3s ease-out;
+}
+.search-container .searched {
+  width: 100%;
+  height: 0;
+  overflow-y: auto;
+  visibility: hidden;
+  display: grid;
+  place-items: center;
+  padding-top: 50px;
+  transition: all 0.3s ease-out;
+}
+.search-container .skeleton-card {
   border-radius: 10px;
+  margin-bottom: 10px;
+  height: 80px;
+  width: 100%;
+}
+.search-container .account-container {
+  border-radius: 10px;
+  border: 1px solid var(--primary-color);
+  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+@keyframes disappear {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.recent-searches-wrapper.hide {
+  animation: disappear 0.5s ease-in-out forwards;
+}
+
+.search-results {
+  display: none;
+  opacity: 0;
+  padding-top: 65px;
+}
+.search-results .nav {
+  display: flex;
+  justify-content: space-between;
+}
+.search-results .nav span.active::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #212529;
+}
+.search-results .nav span:hover {
+  cursor: pointer;
+}
+.search-results .nav span::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 1px;
+  background-color: #212529;
+  -o-transition: width 0.3s;
+  -moz-transition: width 0.3s;
+  -webkit-transition: width 0.3s;
+  transition: width 0.3s;
+}
+.search-results .nav span:hover::after {
+  width: 100%;
+}
+.search-results .content {
+  width: 100%;
+  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.search-results .content div {
+  width: 100%;
+}
+.search-results .content .spinner {
+  display: none;
+  color: var(--primary-color);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.search-results.show {
+  animation: appear 1s ease-in-out forwards;
 }
 
 /*# sourceMappingURL=styles.css.map */

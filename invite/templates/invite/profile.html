@@ -61,10 +61,7 @@
 
     <div class='d-flex buttons-wrapper'>
       {% if authenticated %}
-        <button class='btn btn-secondary-outline flex-fill edit-btn'>
-          <span class='text-btn'>Edit Profile</span>
-          <span class='spinner'></span>
-        </button>
+        <button class='btn btn-secondary-outline flex-fill edit-btn'>Edit Profile</button>
         <button class='btn btn-primary flex-fill'>Friend's List</button>
       {% elif is_user_logged_in %}
         {% if following_user %}

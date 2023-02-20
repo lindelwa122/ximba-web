@@ -38,3 +38,7 @@ class ProfileSetUp(models.Model):
 
   def __str__(self) -> str:
     return f'{self.user.username}: ({self.profile_img_setup}, {self.bio_setup})'
+    
+class Recent(models.Model):
+  user = models.ForeignKey(User, models.CASCADE, related_name='recent_user')
+  recent = models.ForeignKey(User, models.CASCADE, related_name='recent_recent')
