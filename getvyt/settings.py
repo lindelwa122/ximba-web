@@ -108,10 +108,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Email configuration
-# EMAIL_HOST = environ['HOST']
-# EMAIL_PORT = environ['EMAIL_PORT']
-# EMAIL_HOST_USER = environ['USER']
-# EMAIL_HOST_PASSWORD = environ['PASSWORD']
+EMAIL_HOST = environ['HOST']
+EMAIL_PORT = environ['EMAIL_PORT']
+EMAIL_HOST_USER = environ['USER']
+EMAIL_HOST_PASSWORD = environ['PASSWORD']
 EMAIL_USE_TLS = True
 
 # Internationalization
