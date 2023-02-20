@@ -240,7 +240,7 @@ const renderUserSearchResults = (data, containerClass) => {
       .join('')}
   `;
 
-  if (data.length === 0) {
+  if (data.length === 0 & containerClass === 'content') {
     document.querySelector(`.${containerClass}`).innerHTML = `
       <div class='not-found'>
         <img class='illustration' src='/static/invite/images/illustrations/page_not_found.gif' alt='Search results not found'>

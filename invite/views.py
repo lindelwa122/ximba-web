@@ -20,53 +20,29 @@ from fuzzywuzzy import process
 from .models import *
 from .utils import *
 
-def is_user_authenticated(request, username):
-    if not request.user.is_authenticated:
-        return JsonResponse({'error': 'User not logged in'}, status=403)
 
-    if request.user.username != username.strip():
-        return JsonResponse({'error': 'Access denied'}, status=403)
+def add_to_recent_searches(request, username):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({}, status=401)
 
-    return JsonResponse({}, status=200)
+        recent = list(Recent.objects.filter(user=request.user))
 
+        for user in recent:
+            if user.recent.username == username.strip():
+                return JsonResponse({}, status=409)
 
-def search_items(names, query):
-    result = []
-    for name in names:
-        if query in name:
-            result.append(name)
-    return result
+        # If recent size is 3 or more, delete the last element
+        if len(recent) >= 3:
+            recent_queryset = Recent.objects.filter(user=request.user).order_by('-id')
+            recent_queryset.last().delete()
 
-# def find_similar(query, names):
-#     result = []
-#     for name in names:
-#         if difflib.SequenceMatcher(None, query, name).ratio() >= 0.50:
-#             result.append(name)
-#     return result
+        user = get_object_or_404(User, username=username)
 
-@login_required(login_url='/login')
-def index(request):
-    user = User.objects.get(username=request.user.username)
-    if not user.is_email_confirmed:
-        user.email_code = generate_code()
-        user.code_generation_date = localtime()
-        user.save()
-        send_mail(
-            'Welcome to GetVyt',
-            f'Hello, {user.first_name}. Use this code: {user.email_code} to confirm your email.',
-            'portfolio@livingdreams.com',
-            [user.email],
-            fail_silently=False,
-        )
-        request.session['username'] = request.user.username
+        # Add new user to recent
+        Recent.objects.create(user=request.user, recent=user)
 
-        profile = Profile.objects.filter(user=user)
-        if not profile.exists():
-            Profile.objects.create(user=user)
-        
-        return HttpResponseRedirect(reverse('invite:confirm_email'))
-
-    return HttpResponseRedirect(reverse('invite:profile', kwargs={'username': request.user.username}))
+        return JsonResponse({}, status=200)
 
 
 def confirm_email(request):
@@ -227,6 +203,48 @@ def edit_profile_img(request):
         return JsonResponse({}, status=200)
 
 
+def find_users(query, threshold=80):
+    # Get all users from the database
+    users = User.objects.all()
+
+    # Create an empty list to hold the matching users
+    matching_users = []
+
+    # Loop through each user
+    for user in users:
+        # Extract the relevant fields for the user and store them in a list
+        user_fields = [user.username, user.first_name, user.last_name]
+
+        # Find the best match between the query and the user fields
+        best_match = process.extractOne(query, user_fields)
+
+        # Check if the best match meets the threshold
+        if best_match[1] >= threshold:
+            # If the match meets the threshold, add the user's information to the list of matching users
+            profile = Profile.objects.filter(user=user).first()
+            matching_users.append({
+                'username': user.username,
+                'fullName': f'{user.first_name} {user.last_name}',
+                'image': get_img_url(profile.profile_img) if profile else ''
+            })
+
+    # Return the list of matching users
+    return matching_users
+
+
+def find_friends(request):
+    following_list = []
+    user = User.objects.get(username='tester')
+    friends = Friend.objects.filter(user=user)
+    following = Following.objects.filter(user=user)
+    for followers in following:
+        if followers in friends:
+            pass
+        following_list.append(followers)
+    print(following_list)
+    return HttpResponse(f'{friends}{following_list}')    
+
+
 def follow(request, username):
     user = User.objects.get(username=request.user.username)
     following = User.objects.get(username=username.strip())
@@ -242,20 +260,6 @@ def follow(request, username):
 
     return JsonResponse({}, status=200)
 
-def unfollow(request, username):
-    user = User.objects.get(username=request.user.username)
-    following = User.objects.get(username=username.strip())
-
-    if user == following:
-        return JsonResponse({'error': 'You cannot ufollow yourself'}, status=403)
-
-    connection = Following.objects.filter(user=user, following=following)
-    if not connection.exists():
-        return JsonResponse({'error': 'Not following user'}, status=403)
-
-    connection[0].delete()
-
-    return JsonResponse({}, status=200)
 
 def get_data(request, get_query):
     user = request.user
@@ -344,6 +348,41 @@ def get_user_profile_image(request, username):
     profile = Profile.objects.get(user=user)
 
     return JsonResponse({'imagePath': get_img_url(profile.profile_img)}, status=200)
+
+
+@login_required(login_url='/login')
+def index(request):
+    user = User.objects.get(username=request.user.username)
+    if not user.is_email_confirmed:
+        user.email_code = generate_code()
+        user.code_generation_date = localtime()
+        user.save()
+        send_mail(
+            'Welcome to GetVyt',
+            f'Hello, {user.first_name}. Use this code: {user.email_code} to confirm your email.',
+            'portfolio@livingdreams.com',
+            [user.email],
+            fail_silently=False,
+        )
+        request.session['username'] = request.user.username
+
+        profile = Profile.objects.filter(user=user)
+        if not profile.exists():
+            Profile.objects.create(user=user)
+        
+        return HttpResponseRedirect(reverse('invite:confirm_email'))
+
+    return HttpResponseRedirect(reverse('invite:profile', kwargs={'username': request.user.username}))
+
+
+def is_user_authenticated(request, username):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'User not logged in'}, status=403)
+
+    if request.user.username != username.strip():
+        return JsonResponse({'error': 'Access denied'}, status=403)
+
+    return JsonResponse({}, status=200)
 
 
 def is_user_following(request, other_user):
@@ -460,33 +499,6 @@ def push_top_notification(request):
         return JsonResponse({'currentStatus': 'notLoggedIn'}, status=200)
 
 
-def render404(request):
-    return render(request, 'invite/404.html')
-
-
-def add_to_recent_searches(request, username):
-    if request.method == 'POST':
-        if not request.user.is_authenticated:
-            return JsonResponse({}, status=401)
-
-        recent = list(Recent.objects.filter(user=request.user))
-
-        for user in recent:
-            if user.recent.username == username.strip():
-                return JsonResponse({}, status=409)
-
-        # If recent size is 3 or more, delete the last element
-        if len(recent) >= 3:
-            recent_queryset = Recent.objects.filter(user=request.user).order_by('-id')
-            recent_queryset.last().delete()
-
-        user = get_object_or_404(User, username=username)
-
-        # Add new user to recent
-        Recent.objects.create(user=request.user, recent=user)
-
-        return JsonResponse({}, status=200)
-
 def recent_search(request):
     logged_in_user = request.user
     recent = []
@@ -510,26 +522,9 @@ def recent_search(request):
     return JsonResponse({'recent': recent}, status=200)
 
 
-def find_users(query, threshold=80):
-    users = User.objects.all()
-    matching_users = []
-    for user in users:
-        user_fields = [user.username, user.first_name, user.last_name]
-        best_match = process.extractOne(query, user_fields)
-        profile = Profile.objects.filter(user=user).first()
-        if best_match[1] >= threshold:
-            matching_users.append({
-                'username': user.username,
-                'fullName': f'{user.first_name} {user.last_name}',
-                'image': get_img_url(profile.profile_img) if profile else ''
-            })
-    return matching_users
+def render404(request):
+    return render(request, 'invite/404.html')
 
-def search(request):
-    query = request.GET.get('query')
-    threshold = int(request.GET.get('threshold', 80))
-    matching_users = find_users(query, threshold=threshold)
-    return JsonResponse({'users': matching_users})
 
 def register_view(request):
     if request.method == 'POST':
@@ -616,17 +611,26 @@ def reset_password(request):
 
     else:
         return render(request, 'invite/reset_password.html')
-    
-    
-def find_friends(request):
-    following_list = []
-    user = User.objects.get(username='tester')
-    friends = Friend.objects.filter(user=user)
-    following = Following.objects.filter(user=user)
-    for followers in following:
-        if followers in friends:
-            pass
-        following_list.append(followers)
-    print(following_list)
-    return HttpResponse(f'{friends}{following_list}')    
-    
+
+
+def search(request):
+    query = request.GET.get('query')
+    threshold = int(request.GET.get('threshold', 80))
+    matching_users = find_users(query, threshold=threshold)
+    return JsonResponse({'users': matching_users})
+
+
+def unfollow(request, username):
+    user = User.objects.get(username=request.user.username)
+    following = User.objects.get(username=username.strip())
+
+    if user == following:
+        return JsonResponse({'error': 'You cannot unfollow yourself'}, status=403)
+
+    connection = Following.objects.filter(user=user, following=following)
+    if not connection.exists():
+        return JsonResponse({'error': 'Not following user'}, status=403)
+
+    connection[0].delete()
+
+    return JsonResponse({}, status=200)

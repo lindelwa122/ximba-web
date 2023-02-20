@@ -25,6 +25,39 @@ class InviteTestCase(TestCase):
             code_generation_date=localtime(),
         )
 
+        user2 = User.objects.create_user(
+            first_name='Jane',
+            last_name='Doe',
+            username='janedoe',
+            email='janedoe@example.com',
+            password='Jane@0123',
+            email_code=generate_code(),
+            code_generation_date=localtime(),
+        )  
+
+        User.objects.create_user(
+            first_name='Tester',
+            last_name='Jester',
+            username='tester',
+            email='tester@example.com',
+            password='tester@0123',
+            email_code=generate_code(),
+            code_generation_date=localtime(),
+        )   
+
+        User.objects.create_user(
+            first_name='Another',
+            last_name='User',
+            username='ordinary_user',
+            email='ordi@example.com',
+            password='tester@0123',
+            email_code=generate_code(),
+            code_generation_date=localtime(),
+        )   
+
+        # Add user to recent
+        Recent.objects.create(user=user, recent=user2)
+
         # Create profile
         Profile.objects.create(user=user)
 
@@ -332,3 +365,77 @@ class InviteTestCase(TestCase):
         response = c.get('/get/invalid-query')
         self.assertEqual(response.status_code, 404)
     
+    def test_add_to_recent_searches_invalid_not_logged_in(self):
+        c.logout()
+        response = c.post('/search/recent/add/saradoe')
+        self.assertEqual(response.status_code, 401)
+
+    def test_add_to_recent_searches_invalid_exists(self):
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.post('/search/recent/add/janedoe')
+        self.assertEqual(response.status_code, 409)
+
+    def test_add_to_recent_searches_valid(self):
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.post('/search/recent/add/tester')
+        self.assertEqual(response.status_code, 200)
+
+    def test_recent_search_user_not_logged_in(self):
+        c.logout()
+        response = c.get('/search/recent')
+        self.assertEqual(response.status_code, 200)
+        content = response.json()
+        self.assertEqual(len(content['recent']), 0)
+
+    def test_recent_search_valid(self):
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.get('/search/recent')
+        self.assertEqual(response.status_code, 200)
+        content = response.json()
+        self.assertGreaterEqual(len(content['recent']), 0)
+
+    def test_search(self):
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.get('/search?query=jane')
+        self.assertEqual(response.status_code, 200)
+        content = response.json()
+        self.assertGreaterEqual(len(content['users']), 1)
+        self.assertEqual(content['users'][0]['username'], 'janedoe')
+
+    def test_follow_invalid_forbidden(self):
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.get('/follow/saradoe')
+        self.assertEqual(response.status_code, 403)
+
+    def test_follow_invalid_exists(self):
+        user = User.objects.get(username='saradoe')
+        following = User.objects.get(username='janedoe')
+        f = Following(user=user, following=following)
+        f.save()
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.get('/follow/janedoe')
+        self.assertEqual(response.status_code, 409)
+
+    def test_follow_valid(self):
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.get('/follow/tester')
+        self.assertEqual(response.status_code, 200)
+
+    def test_unfollow_invalid_1(self):
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.get('/unfollow/saradoe')
+        self.assertEqual(response.status_code, 403)
+
+    def test_unfollow_invalid_2(self):
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.get('/unfollow/ordinary_user')
+        self.assertEqual(response.status_code, 403)
+
+    def test_unfollow_valid(self):
+        user = User.objects.get(username='saradoe')
+        following = User.objects.get(username='janedoe')
+        f = Following(user=user, following=following)
+        f.save()
+        c.login(username='saradoe', password='Sara@0123')
+        response = c.get('/unfollow/janedoe')
+        self.assertEqual(response.status_code, 200)

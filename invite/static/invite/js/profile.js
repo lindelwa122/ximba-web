@@ -269,7 +269,7 @@ const toggleFollowStatusForUser = (action, btn, username, newTextContentAfterFol
     initialClassToken = 'btn-primary-outline';
     newClassToken = 'btn-primary';
   }
-
+0
   // Make a request to the follow/unfollow API endpoint for the specified user
   fetch(`/${action}/${username}`)
     .then((response) => {
