@@ -1,0 +1,171 @@
+// BUTTON
+
+@mixin button($theme, $color, $borderRadius: $border-radius, $padding: 15px 20px) {
+  background-color: $theme;
+  border-radius: $border-radius;
+  color: $color;
+  @include label;
+  outline: none;
+  padding: $padding;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &:disabled {
+    background-color: $theme;
+    box-shadow: none;
+    filter: brightness(110%);
+  }
+}
+
+.btn-primary {
+  border: none;
+  @include button(var(--primary-color), var(--main-text-color));
+}
+
+.btn-primary-outline {
+  border-color: var(--primary-color);
+  @include button(var(--background-lg-color), var(--secondary-text-color));
+
+  &:hover {
+    border-color: var(--secondary-color);
+  }
+}
+
+.btn-secondary {
+  border: none;
+  @include button(var(--secondary-color), var(--main-text-color));
+}
+
+.btn-secondary-outline {
+  border-color: var(--secondary-color);
+  @include button(var(--background-lg-color), var(--secondary-text-color));
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+}
+
+.btn-small {
+  padding: 7.5px 10px;
+}
+
+// BUTTON LOAD ANIMATION
+
+.spinner {
+  display: none;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: rotate 1s alternate infinite;
+  animation-fill-mode: forwards;
+}
+
+.submit-button {
+  position: relative;
+
+  .text-btn {
+    display: inline-block;
+  }
+}
+
+.submit-button[disabled] .spinner {
+  display: inline-block;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// COLOR
+.primary-color {
+  color: var(--primary-color) !important;
+}
+
+.secondary-color {
+  color: var(--secondary-color) !important;
+}
+
+.tertiary-color {
+  color: var(--tertiary-color) !important;
+}
+
+// INPUT
+
+.input-frame {
+  border-radius: $border-radius;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 20px 15px;
+  width: 100%;
+
+  @include body;
+
+  &:active,
+  &:focus {
+    border-color: var(--primary-color);
+    outline: none;
+  }
+}
+
+// LOGO
+.logo {
+  width: 120px;
+}
+
+// SKELETON
+.skeleton {
+  animation: skeleton-loading 1s linear infinite alternate;
+  opacity: 0.7;
+}
+
+@keyframes skeleton-loading {
+  from {
+    background-color: hsl(200, 20%, 70%);
+  }
+
+  to {
+    background-color: hsl(200, 20%, 95%);
+  }
+}
+
+.skeleton-card {
+  border-radius: $border-radius;
+  height: 70px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.skeleton-text {
+  border-radius: 5px;
+  height: 20px;
+  width: 100%;
+
+  @include for-tablets {
+    width: 40px;
+  }
+}
+
+// TYPOGRAPHY
+.font-body {
+  @include body;
+}
+
+.font-body-tiny {
+  @include body-tiny;
+}
+
+.font-headline {
+  @include headline;
+}
+
+.font-title {
+  @include title;
+}
