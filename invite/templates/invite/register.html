@@ -10,23 +10,25 @@
 
   <div class='d-flex align-items-center flex-column form'>
     <img class='logo rounded-circle'
-      src='https://images.unsplash.com/profile-1633364056312-0319b9fc4586image?dpr=1&auto=format&fit=crop&w=150&h=150&q=60&crop=faces&bg=fff'
+      src='{% static "invite/images/app/logo.png" %}'
       alt='Profile Pic'>
 
     <form class='w-100'>
 
+      {% csrf_token %}
+
       <div class='row mb-3'>
         <div class='col-6'>
-          <input type='text' name='firstname' class='firstname form-control input-frame' placeholder='First Name'>
+          <input type='text' name='firstname' class='firstname form-control input-frame' placeholder='First Name' required>
         </div>
 
         <div class='col-6'>
-          <input type='text' name='lastname' class='lastname form-control input-frame' placeholder='Last Name'>
+          <input type='text' name='lastname' class='lastname form-control input-frame' placeholder='Last Name' required>
         </div>
       </div>
 
       <div class='mb-3'>
-        <input type='text' name='username' class='username form-control input-frame' placeholder='Username'>
+        <input type='text' name='username' class='username form-control input-frame' placeholder='Username' required>
       </div>
 
       <div class='mb-3 d-none username-help form-help'>
@@ -35,11 +37,11 @@
       </div>
 
       <div class='mb-3'>
-        <input type='email' name='email' class='email form-control input-frame' placeholder='Email'>
+        <input type='email' name='email' class='email form-control input-frame' placeholder='Email' required>
       </div>
 
       <div class='mb-3'>
-        <input type='password' name='password' class='password form-control input-frame' placeholder='Password'>
+        <input type='password' name='password' class='password form-control input-frame' placeholder='Password' required>
       </div>
 
       <div class='mb-3 d-none password-help form-help'>
@@ -51,8 +53,7 @@
       </div>
 
       <div class='mb-3'>
-        <input type='password' name='confirm-password' class='confirm-password form-control input-frame' placeholder='Confirm Password'
-        >
+        <input type='password' name='confirm-password' class='confirm-password form-control input-frame' placeholder='Confirm Password' required>
       </div>
 
       <div class='mb-3 d-none confirm-help form-help'>
@@ -61,19 +62,23 @@
 
       <div class='mb-3 error-message'></div>
 
-      <div>
+      <div class='mb-3'>
         <input type='submit' value='Register' class='btn btn-primary form-control w-100'>
+        <button class='btn btn-primary w-100 d-none' disabled>
+          <span class='spinner'></span>
+        </button>
       </div>
 
     </form>
 
     <hr class='w-100'>
 
-    <a type='button' href='' class='btn btn-secondary w-50'>Login</a>
+    <a type='button' class='btn btn-secondary w-50' href='{% url "invite:login" %}'>Login</a>
   </div>
 
 </section>
 
+<script src='{% static "invite/js/utils/forms.js" %}'></script>
 <script src='{% static "invite/js/register.js" %}'></script>
 
 {% endblock %}

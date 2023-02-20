@@ -97,6 +97,26 @@ main {
     width: 30%;
   }
 
+  /* For webkit-based browsers */
+  &::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--grey-scrollbar-color);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    border-radius: 10px;
+    margin: 5px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-color);
+  }
+
   .header {
     display: none !important;
 
@@ -105,11 +125,23 @@ main {
     }
   }
 
+  .modal-page-content {
+    height: calc(100% - 50.25px);
+
+    @include for-tablets {
+      height: calc(100% - 39px);
+    }
+
+    @include for-desktops {
+      height: calc(100% - 45px);
+    }
+  }
+
   .modal-page-content > div {
     padding: 0 20px;
 
     @include for-tablets {
-      padding: 0;
+      padding: 10px;
     }
 
     // &:hover {

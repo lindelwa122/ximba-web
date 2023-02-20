@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelector('form').addEventListener('submit', (event) => {
     event.preventDefault();
-    validateForm();
+    validateForm(event);
   });
 });
 
@@ -29,7 +29,7 @@ const validateUsername = () => {
   });
 };
 
-const validateForm = () => {
+const validateForm = (e) => {
   const confirmPassword = document.querySelector('.confirm-password');
   const errorContainer = document.querySelector('.error-message');
   const password = document.querySelector('.password');
@@ -87,5 +87,6 @@ const validateForm = () => {
     return false;
   }
 
+  startBtnLoadingAnimation(e.submitter);
   sendFormDataToServer('/register', '/confirm', errorContainer);
 };

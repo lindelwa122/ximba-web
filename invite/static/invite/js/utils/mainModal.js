@@ -8,7 +8,7 @@ const addContentToMainModal = (title, content, padding) => {
   const modalPage = document.querySelector('.modal-page-content');
   modalTitle.forEach((t) => (t.textContent = title));
 
-  modalPage.style.padding = padding;
+  // modalPage.style.padding = padding;
   modalPage.innerHTML = '';
   modalPage.append(content());
 }
@@ -16,9 +16,6 @@ const addContentToMainModal = (title, content, padding) => {
 const addToMainModalHistory = (title, content, padding = 0) => {
   mainModalHistory.push({title: title, content: content, padding: padding});
   index = mainModalHistory.length - 1;
-
-  console.log(mainModalHistory);
-  console.log(index);
   
   // Add content to the modal
   addContentToMainModal(title, content, padding);
@@ -64,4 +61,3 @@ const goBackInMainModalHistory = () => {
   
   addContentToMainModal(current.title, current.content, current.padding);
 }
-
