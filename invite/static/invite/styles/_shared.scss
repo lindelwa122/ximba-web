@@ -11,6 +11,29 @@ html, body {
   }
 }
 
+/* For webkit-based browsers */
+html {
+  /* For webkit-based browsers */
+  &::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    border-radius: 10px;
+    margin: 5px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-color);
+  }
+}
+
 a {
   @include body-tiny;
 }

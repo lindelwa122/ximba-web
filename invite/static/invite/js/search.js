@@ -234,8 +234,6 @@ const renderUserSearchResults = (data, containerClass) => {
             <div class='font-body'>${user.fullName}</div>
           </div>
         </div>
-        <div class='btn-container'>
-        </div>
       </div>
     `
       )

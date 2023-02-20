@@ -18,6 +18,7 @@
   --background-color: #fff;
   --background-color-lg: #fafafa;
   --error-message-color: #f00;
+  --grey-scrollbar-color: #ad8a8a;
   --main-text-color: #fff;
   --primary-color: #3b44f6;
   --secondary-color: #3ec70b;
@@ -130,3 +131,14 @@ $font-family-secondary: 'Playfair', serif;
 // EXTRA
 $general-padding: 10px 20px;
 $border-radius: 10px;
+
+// HIGHLIGHT STYLE (SELECTION)
+::selection {
+  background-color: var(--secondary-color);
+  color: var(--main-text-color);
+}
+
+::-moz-selection {
+  background-color: var(--secondary-color);
+  color: var(--main-text-color);
+}

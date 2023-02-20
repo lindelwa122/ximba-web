@@ -2,11 +2,22 @@
   --background-color: #fff;
   --background-color-lg: #fafafa;
   --error-message-color: #f00;
+  --grey-scrollbar-color: #ad8a8a;
   --main-text-color: #fff;
   --primary-color: #3b44f6;
   --secondary-color: #3ec70b;
   --secondary-text-color: #212529;
   --tertiary-color: #a149fa;
+}
+
+::selection {
+  background-color: var(--secondary-color);
+  color: var(--main-text-color);
+}
+
+::-moz-selection {
+  background-color: var(--secondary-color);
+  color: var(--main-text-color);
 }
 
 .btn-primary {
@@ -344,6 +355,26 @@ html, body {
   }
 }
 
+/* For webkit-based browsers */
+html {
+  /* For webkit-based browsers */
+}
+html::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 10px;
+}
+html::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+html::-webkit-scrollbar-track {
+  border-radius: 10px;
+  margin: 5px;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background-color: var(--secondary-color);
+}
+
 a {
   font-family: "Roboto", sans-serif;
   font-size: 8px;
@@ -462,8 +493,10 @@ main {
   overflow-y: auto;
   position: fixed;
   right: 0;
+  scrollbar-width: thin;
   top: 0;
   width: 100%;
+  /* For webkit-based browsers */
 }
 @media only screen and (min-width: 600px) {
   .modal-page {
@@ -478,6 +511,21 @@ main {
   .modal-page {
     width: 30%;
   }
+}
+.modal-page::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 10px;
+}
+.modal-page::-webkit-scrollbar-thumb {
+  background-color: var(--grey-scrollbar-color);
+  border-radius: 10px;
+}
+.modal-page::-webkit-scrollbar-track {
+  border-radius: 10px;
+  margin: 5px;
+}
+.modal-page::-webkit-scrollbar-thumb:hover {
+  background-color: var(--secondary-color);
 }
 .modal-page .header {
   display: none !important;
@@ -808,16 +856,16 @@ section.edit-profile .img-container .skeleton {
   font-weight: 500;
 }
 .count-group-container img {
-  width: 60px;
   aspect-ratio: 1;
+  width: 60px;
 }
 
 .count-group-container > div {
-  border-radius: 10px;
   border: 1px solid var(--primary-color);
+  border-radius: 10px;
   cursor: pointer;
-  padding: 10px 20px;
   margin-bottom: 10px;
+  padding: 10px 20px;
 }
 
 .events-list {

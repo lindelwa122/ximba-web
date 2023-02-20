@@ -82,6 +82,7 @@ main {
   overflow-y: auto;
   position: fixed;
   right: 0;
+  scrollbar-width: thin;
   top: 0;
   width: 100%;
 
@@ -95,6 +96,26 @@ main {
 
   @include for-desktops {
     width: 30%;
+  }
+
+  /* For webkit-based browsers */
+  &::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--grey-scrollbar-color);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    border-radius: 10px;
+    margin: 5px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-color);
   }
 
   .header {

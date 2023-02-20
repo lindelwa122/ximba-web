@@ -16,9 +16,6 @@ const addContentToMainModal = (title, content, padding) => {
 const addToMainModalHistory = (title, content, padding = 0) => {
   mainModalHistory.push({title: title, content: content, padding: padding});
   index = mainModalHistory.length - 1;
-
-  console.log(mainModalHistory);
-  console.log(index);
   
   // Add content to the modal
   addContentToMainModal(title, content, padding);

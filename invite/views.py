@@ -504,7 +504,7 @@ def recent_search(request):
         }
         profile = Profile.objects.filter(user=user).first()
         if profile:
-            obj['image'] = profile.profile_img.url
+            obj['image'] = get_img_url(profile.profile_img)
         recent.append(obj)
 
     return JsonResponse({'recent': recent}, status=200)
