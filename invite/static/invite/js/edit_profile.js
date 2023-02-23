@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelector('.edit-btn').addEventListener('click', editProfile);
+  const editBtn = document.querySelector('.edit-btn');
+  if (editBtn) {
+    editBtn.addEventListener('click', editProfile);
+  }
 })
 
 // EDIT PROFILE

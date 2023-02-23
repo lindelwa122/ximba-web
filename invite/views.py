@@ -11,6 +11,7 @@ from django.core.files import File
 from django.core.files.storage import default_storage
 from django.core.mail import send_mail
 from django.db import IntegrityError
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -19,6 +20,67 @@ from fuzzywuzzy import process
 
 from .models import *
 from .utils import *
+
+
+def accept_friendship(request):
+    if request.method == 'POST':
+        data = loads(request.body)
+        username = data.get('username', '')
+        other_user = User.objects.get(username=username)
+        logged_in_user = request.user
+
+        # Ensure the friend request exists
+        friendship = FriendRequest.objects.filter(requester=logged_in_user, receivers=other_user)
+        if not friendship.exists(): 
+            friendship = FriendRequest.objects.filter(requester=other_user, receivers=logged_in_user)
+        else:
+            friendship.first().receivers.remove(other_user)
+
+        if not friendship.exists():
+            return JsonResponse({'error': 'No friend request was found'}, status=400)
+        else:
+            friendship.first().receivers.remove(logged_in_user)
+
+        # Check existing connections
+        connection = Friend.objects.filter(user=logged_in_user, friend=other_user).first()
+        if connection:
+            connection.status = Friend.ACCEPTED
+            connection.save()
+
+            con2 = Friend.objects.filter(user=other_user, friend=logged_in_user).first()
+            con2.status = Friend.ACCEPTED
+            con2.save()
+
+        else:
+            # Create a new friendship
+            Friend.objects.create(user=logged_in_user, friend=other_user, status=Friend.ACCEPTED)
+            Friend.objects.create(user=other_user, friend=logged_in_user, status=Friend.ACCEPTED)
+
+        return JsonResponse({}, status=200)
+
+
+def add_friend(request):
+    if request.method == 'POST':
+        data = loads(request.body)
+        friend_username = data.get('username', '')
+        friend = get_object_or_404(User, username=friend_username)
+
+        # Check if a friend request already exists between the users
+        existing_request = FriendRequest.objects.filter(requester=request.user, 
+            receivers=friend, 
+            status=FriendRequest.PENDING).first()
+
+        if existing_request:
+            # A pending request already exists
+            return JsonResponse({'error': 'Friend request already sent'}, status=400)
+        else:
+            # Create a new friend request
+            new_request, created = FriendRequest.objects.get_or_create(requester=request.user)
+            new_request.receivers.add(friend)
+
+            # TODO: Add Notification
+
+            return JsonResponse({}, status=200)
 
 
 def add_to_recent_searches(request, username):
@@ -79,6 +141,30 @@ def confirm_email(request):
 
     else:
         return render(request, 'invite/confirm_email.html')
+
+
+def delete_friendship(request):
+    if request.method == 'POST':
+        data = loads(request.body)
+        username = data.get('username', '')
+        logged_in_user = request.user
+        other_user = get_object_or_404(User, username=username)
+
+        connection_1 = get_object_or_404(Friend, user=logged_in_user, friend=other_user)
+        connection_2 = get_object_or_404(Friend, user=other_user, friend=logged_in_user)
+
+        if (connection_1.status == Friend.PENDING):
+            return JsonResponse({'error': 'Your friendship status is pending'}, status=400)
+
+        # Update status
+        connection_1.status = Friend.PENDING
+        connection_2.status = Friend.PENDING
+
+        # Save
+        connection_1.save()
+        connection_2.save()
+
+        return JsonResponse({'message': 'Friendship deleted successfully.'}, status=200)
 
 
 def edit_about(request):
@@ -232,17 +318,90 @@ def find_users(query, threshold=80):
     return matching_users
 
 
-def find_friends(request):
-    following_list = []
-    user = User.objects.get(username='tester')
-    friends = Friend.objects.filter(user=user)
-    following = Following.objects.filter(user=user)
-    for followers in following:
-        if followers in friends:
-            pass
-        following_list.append(followers)
-    print(following_list)
-    return HttpResponse(f'{friends}{following_list}')    
+#     # Get user
+#     if username == 'use-logged-in-user':
+#         user = request.user
+#     else:
+#         user = User.objects.get(username=username.strip())
+
+#     # Get the user's friends and following users
+#     friends = Friend.objects.filter(user=user).values_list('friend', flat=True)
+#     following = Following.objects.filter(user=user).values_list('following', flat=True)
+
+#     # Get the friends of the user's friends, excluding the user's friends and the user themselves
+#     friend_friends = Friend.objects.filter(user__in=friends).exclude(user=user).exclude(friend__in=friends).values_list('friend', flat=True)
+
+#     # Get the users who follow the user but are not friends yet
+#     followers = Following.objects.filter(following=user).exclude(user__in=friends).exclude(user=user).values_list('user', flat=True)
+
+#     # Get the recent users visited by the user
+#     recent_users = Recent.objects.filter(user=user).values_list('recent', flat=True)
+
+#     # Get the mutual friends of the user and each potential friend
+#     potential_friends = User.objects.filter(
+#         Q(id__in=friends) | 
+#         Q(id__in=friend_friends) | 
+#         Q(id__in=followers) | 
+#         Q(id__in=recent_users)
+#     ).exclude(id__in=friends).exclude(id__in=following).distinct()
+
+#     print(potential_friends)
+
+#     # Sort potential friends by relevance, in descending order
+#     relevance_scores = {}
+#     for friend in potential_friends:
+#         mutual_friends = Friend.objects.filter(user=friend, friend__in=friends).values_list('friend', flat=True)
+#         mutual_friends_count = len(mutual_friends)
+#         following_friend = Following.objects.filter(user=user, following=friend).exists()
+#         friend_following = Following.objects.filter(user=friend, following=user).exists()
+#         relevance_score = mutual_friends_count + following_friend + friend_following
+#         relevance_scores[friend] = relevance_score
+#     suggested_friends = sorted(relevance_scores, key=lambda friend: relevance_scores[friend], reverse=True)
+
+#     return JsonResponse({'suggested_friends': list(suggested_friends)})
+
+
+def find_friends(request, username):
+    # Get user
+    if username == 'use-logged-in-user':
+        user = request.user
+    else:
+        user = User.objects.get(username=username.strip())
+
+    # Get the user's friends
+    friends = Friend.objects.filter(user=user, status=Friend.ACCEPTED).values_list('friend', flat=True)
+    friends_pending = list(FriendRequest.objects.filter(requester=user).values_list('receivers', flat=True))
+    requests_pending = list(FriendRequest.objects.filter(receivers=user).values_list('requester', flat=True))
+
+    # Get the friends of the user's friends, excluding the user's friends and the user themselves
+    friend_friends = Friend.objects.filter(user__in=friends).exclude(user=user).exclude(friend__in=friends).values_list('friend', flat=True)
+
+    # Get the users who follow the user but are not friends yet
+    followers = Following.objects.filter(following=user).exclude(user__in=friends).exclude(user=user).values_list('user', flat=True)
+
+    # Get the recent users visited by the user
+    recent_users = Recent.objects.filter(user=user).values_list('recent', flat=True)
+
+    # Get the mutual friends of the user and each potential friend
+    potential_friends = User.objects.filter(
+        Q(id__in=friends) | 
+        Q(id__in=friend_friends) | 
+        Q(id__in=followers) | 
+        Q(id__in=recent_users)
+    ).exclude(id__in=friends).exclude(id__in=friends_pending).exclude(id__in=requests_pending).exclude(id=user.id).distinct()
+
+    # Sort potential friends by relevance, in descending order
+    relevance_scores = {}
+    for friend in potential_friends:
+        mutual_friends = Friend.objects.filter(user=friend, friend__in=friends).values_list('friend', flat=True)
+        mutual_friends_count = len(mutual_friends)
+        following_friend = Following.objects.filter(user=user, following=friend).exists()
+        friend_following = Following.objects.filter(user=friend, following=user).exists()
+        relevance_score = mutual_friends_count + following_friend + friend_following
+        relevance_scores[friend] = relevance_score
+    suggested_friends = sorted(relevance_scores, key=lambda friend: relevance_scores[friend], reverse=True)
+
+    return JsonResponse({'suggested_friends': serialize_data(list(suggested_friends)[:10])})
 
 
 def follow(request, username):
@@ -320,10 +479,54 @@ def get_followers(request, username):
     return JsonResponse({'users': followers_data}, status=200)
 
 
+def get_friends(request, username):
+    user = User.objects.get(username=username.strip())
+    friends = Friend.objects.filter(user=user, status=Friend.ACCEPTED)
+    return JsonResponse({'friends': serialize_data([friend.friend for friend in friends])})
+
+
+def get_notifications(request):
+    notifications = Notification.objects.filter(to=request.user)
+    print(notifications)
+
+    # Serialize data
+    data = []
+    for notification in notifications:
+        profile = Profile.objects.filter(user=notification.origin).first()
+        obj = {
+            'origin': notification.origin.username,
+            'type': notification.notification_type,
+            'datetime': notification.datetime,
+            'image': get_img_url(profile.profile_img) if profile else ''
+        }
+        data.append(obj)
+
+    return JsonResponse({'notifications': data}, status=200)
+
+
+def get_pending_friends(request, username):
+    user = User.objects.get(username=username.strip())
+
+    # Get request receivers
+    pending_friends = FriendRequest.objects.filter(requester=user, status=FriendRequest.PENDING)
+    receiver_ids = [receiver_id for (receiver_id,) in pending_friends.values_list('receivers')]
+    receivers = User.objects.filter(id__in=receiver_ids)
+    serialized_receivers = serialize_data(receivers)
+
+    # Get requesters
+    received_requests = FriendRequest.objects.filter(receivers=user)
+    requester_ids = [requester_id for (requester_id,) in received_requests.values_list('requester')]
+    requesters = User.objects.filter(id__in=requester_ids)
+    serialized_requesters = serialize_data(requesters)
+
+    return JsonResponse({'receivers': serialized_receivers, 'requesters': serialized_requesters}, status=200)
+
+
 def get_profile_count(request, username):
     username = username.strip()
     user = User.objects.get(username=username)
-    friends = Friend.objects.filter(user=user).count()
+
+    friends = Friend.objects.filter(user=user, status=Friend.ACCEPTED).count()
     following = Following.objects.filter(user=user).count()
     followers = Following.objects.filter(following=user).count()
     return JsonResponse({'friendsCount': friends, 'followingCount': following, 'followersCount': followers}, status=200)
@@ -466,8 +669,10 @@ def profile(request, username):
         # Determine if the Currently Logged-In User Follows the User Whose Profile is Being Viewed
         f = Following.objects.filter(user=request.user, following=user)
         f = f.exists()
+        friendship_status = check_friendship_status(request, username)
     else:
         f = False
+        friendship_status = 'no_relationship'
 
     # Determine if user is authenticated
     authenticated = user.username == request.user.username
@@ -480,7 +685,8 @@ def profile(request, username):
         'user': user,
         'authenticated': authenticated,
         'is_user_logged_in': request.user.is_authenticated,
-        'following_user': f
+        'following_user': f,
+        'friendship_status': friendship_status
     })
 
 

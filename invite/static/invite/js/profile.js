@@ -28,6 +28,27 @@ document.addEventListener('DOMContentLoaded', () => {
     unfollowBtn.addEventListener('click', unfollowHandler);
   }
 
+  const buttonsWrapper = document.querySelector('.buttons-wrapper');
+  if (buttonsWrapper) {
+    buttonsWrapper.addEventListener('click', (event) => {
+      const elClicked = event.target;
+
+      if (elClicked.classList.contains('add-friend')) {
+        elClicked.disabled = true;
+        addFriend(elClicked, username);
+      }
+
+      if (elClicked.classList.contains('accept-friendship')) {
+        acceptFriendRequest(elClicked, username);
+      }
+
+      if (elClicked.classList.contains('remove-friend')) {
+        removeFriend(elClicked, username);
+      }
+      
+    })
+  }
+
   document.querySelector('.following-wrapper').addEventListener('click', () => {
     displayFollowingUsers();
     fetchFollowingUsers();
@@ -74,7 +95,7 @@ const fetchCount = (username) => {
       }
 
       if (data.friendsCount === 1) {
-        document.querySelector('.followers-text').textContent = 'friend';
+        document.querySelector('.friends-text').textContent = 'friend';
       }
 
       document.querySelectorAll('.count').forEach((element) => {
