@@ -565,6 +565,8 @@ def register_view(request):
 
         confirm_account_code = User.objects.get(username=username).email_code
 
+        Profile.objects.create(user=User.objects.get(username=username))
+        
         send_mail(
             'Welcome to GetVyt',
             f'Hello, {username}. Use this code: {confirm_account_code} to confirm your email.',
@@ -575,7 +577,6 @@ def register_view(request):
 
         request.session['username'] = username
 
-        Profile.objects.create(user=User.objects.get(username=username))
 
         return JsonResponse({}, status=200)
 

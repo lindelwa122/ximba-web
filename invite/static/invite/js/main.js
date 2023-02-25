@@ -1,21 +1,81 @@
 document.addEventListener('DOMContentLoaded', () => {
   pushNotification();
+
+  checkProfileAuthenticity();
+
   document.querySelector('.nav-controller').addEventListener('click', () => {
     rotateAnimation('sm');
+    
+    document.querySelectorAll('.nav-icon-wrapper').forEach((el) => {
+      el.classList.add('hide');
+      el.classList.remove('show');
+      el.style.width = 0;
+    });
+
     shrinkExpandAnimation();
-    showHideAnimation();
+
+    const navSm = document.querySelector('.nav-sm');
+    navSm.addEventListener('animationend', () => {
+      if (navSm.classList.contains('expand')) {
+        document.querySelectorAll('.nav-icon-wrapper').forEach((el) => {
+          el.classList.add('show');
+          el.classList.remove('hide');
+          el.style.width = '40px';
+        })
+      }
+    })
   });
 
   document.querySelector('.nav-controller-lg').addEventListener('click', () => {
     rotateAnimation('lg');
-    shrinkExpandAnimationForLargeDevices();
-    showHideAnimation();
+    toggleShowAndHideIcons();
+    setTimeout(shrinkExpandAnimationForLargeDevices, 100)
   });
 
   document.querySelectorAll('.view-profile-btn').forEach((el) => {
     el.addEventListener('click', () => window.location.href = '/');
   });
 });
+
+let iconVisibilityStatus = 'visible'
+
+const toggleShowAndHideIcons = () => {
+  const iconsWrappers = document.querySelectorAll('.nav-icon-wrapper-lg');
+  const navForLargeScreens = document.querySelector('.nav-lg');
+  
+  if (iconVisibilityStatus === 'visible') {
+    hideIconsAnimations(iconsWrappers);
+    navForLargeScreens.style.height = '90px';
+    iconVisibilityStatus = 'hidden';
+  }
+  else {
+    navForLargeScreens.style.height = '100%';
+    setTimeout(() => {
+      showIconsAnimations(iconsWrappers);
+    }, 200);
+    iconVisibilityStatus = 'visible';
+  }
+}
+
+const showIconsAnimations = (wrappers) => {
+  wrappers.forEach((el, index) => {
+    setTimeout(() => {
+      el.classList.remove('hide');
+      el.classList.add('show');
+    }, (index + 1) * 80); // calculate delay based on index
+  });
+}
+ 
+const hideIconsAnimations = (wrappers) => {
+  const reversedIconsWrappers = Array.prototype.slice.call(wrappers).reverse();
+  
+  reversedIconsWrappers.forEach((el, index) => {
+    setTimeout(() => {
+      el.classList.remove('show');
+      el.classList.add('hide');
+    }, (index + 1) * 90); // calculate delay based on index
+  });
+}
 
 // ANIMATION
 
@@ -34,50 +94,26 @@ const rotateAnimation = (device) => {
   }
 };
 
-const showHideAnimation = () => {
-  document.querySelectorAll('.icon').forEach((element) => {
-    if (element.classList.contains('show')) {
-      element.classList.remove('show');
-      element.classList.add('hide');
-      element.addEventListener('animationend', () => {
-        if (element.classList.contains('hide')) {
-          element.style.display = 'none';
-        }
-      });
-    } else {
-      element.classList.remove('hide');
-      element.classList.add('show');
-      element.setAttribute(
-        'style',
-        `
-        align-items: center;
-        display: flex;
-        justify-content: center;
-      `
-      );
-    }
-  });
-};
 
 const shrinkExpandAnimation = () => {
   const nav = document.querySelector('.nav-sm');
-  if (nav.classList.contains('expand')) {
-    nav.classList.remove('expand');
-    nav.classList.add('shrink');
-  } else {
+  if (nav.classList.contains('shrink')) {
     nav.classList.remove('shrink');
     nav.classList.add('expand');
+  } else {
+    nav.classList.remove('expand');
+    nav.classList.add('shrink');
   }
 };
 
 const shrinkExpandAnimationForLargeDevices = () => {
-  const nav = document.querySelector('.nav-lg');
-  if (nav.classList.contains('expand-lg')) {
-    nav.classList.remove('expand-lg');
-    nav.classList.add('shrink-lg');
-  } else {
+  const nav = document.querySelector('.animated-nav-icons-lg');
+  if (nav.classList.contains('shrink-lg')) {
     nav.classList.remove('shrink-lg');
     nav.classList.add('expand-lg');
+  } else {
+    nav.classList.remove('expand-lg');
+    nav.classList.add('shrink-lg');
   }
 };
 
@@ -422,3 +458,19 @@ const pushNotification = () => {
       }
     });
 };
+
+
+// Check if the user is viewing their profile
+const checkProfileAuthenticity = () => {
+  const username = window.location.pathname.split('/')[1];
+
+  fetch(`/is-user-authenticated/${username}`)
+    .then((response) => {
+      if (response.status === 200) {
+        document.querySelectorAll('.view-profile-btn').forEach((el) => {
+          el.classList.add('selected');
+        })
+      }
+    })
+    .catch((error) => console.error(error));
+}

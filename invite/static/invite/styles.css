@@ -332,25 +332,33 @@
 }
 
 html, body {
-  min-height: 100vh;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  min-width: 300px;
+  max-width: 1200px;
   font-family: "Roboto", sans-serif;
   font-size: 12px;
   line-height: 16px;
 }
 @media only screen and (min-width: 600px) {
-  html, body {
+  body {
     font-size: 14px;
     line-height: 20px;
   }
 }
 @media only screen and (min-width: 992px) {
-  html, body {
+  body {
     font-size: 16px;
     line-height: 24px;
   }
 }
 @media only screen and (min-width: 600px) {
-  html, body {
+  body {
     background-color: var(--background-color-lg);
   }
 }
@@ -406,12 +414,8 @@ main {
 }
 
 section {
-  min-height: 100vh;
+  flex: 1;
   padding: 10px 20px;
-}
-
-section.form-section {
-  min-height: calc(100vh - 20px);
 }
 
 .auth-actions-container {
@@ -428,50 +432,11 @@ section.form-section {
   display: flex;
 }
 .body main {
-  min-height: 100vh;
+  min-height: 100%;
 }
 
-.icon {
-  display: none;
-  height: 100%;
-  opacity: 0;
-}
-@media only screen and (min-width: 600px) {
-  .icon {
-    padding: 10px;
-  }
-}
-
-.icon.hide {
-  animation: hide-icon 0.54s forwards;
-}
-
-@keyframes hide-icon {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-.icon.show {
-  animation: show-icon 0.54s forwards;
-}
-
-@keyframes show-icon {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@media only screen and (min-width: 600px) {
-  .icon:hover,
-  .icon.selected {
-    background-color: rgba(218, 218, 218, 0.5);
-    cursor: pointer;
-  }
+body.modal-open {
+  overflow: hidden;
 }
 
 main {
@@ -483,26 +448,39 @@ main {
   }
 }
 
-.modal-page {
-  background-color: var(--background-color);
-  bottom: 0;
-  display: none;
-  left: 0;
-  margin: auto;
-  min-height: 100vh;
-  overflow-y: auto;
+.modal-overlay.active {
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100%;
   position: fixed;
   right: 0;
   top: 0;
   width: 100%;
+  z-index: 999;
+}
+
+.modal-page {
+  background-color: var(--background-color);
+  border-radius: 10px 10px 0 0;
+  bottom: 0;
+  height: 0;
+  left: 0;
+  margin: auto;
+  max-height: 100%;
+  overflow: auto;
+  position: fixed;
+  right: 0;
+  transition: all 0.5s ease-in-out;
+  width: 100%;
+  z-index: 9999;
   /* For webkit-based browsers */
 }
 @media only screen and (min-width: 600px) {
   .modal-page {
-    border: 1px solid var(--bs-black);
     border-radius: 10px;
+    height: 100%;
     max-height: 600px;
-    min-height: 400px;
+    scale: 0;
+    top: 0;
     width: 60%;
   }
 }
@@ -526,8 +504,12 @@ main {
 .modal-page::-webkit-scrollbar-thumb:hover {
   background-color: var(--secondary-color);
 }
+.modal-page .bi-arrow-left:hover, .modal-page .bi-x-lg:hover {
+  cursor: pointer;
+}
 .modal-page .header {
   display: none !important;
+  overflow: hidden;
 }
 @media only screen and (min-width: 600px) {
   .modal-page .header {
@@ -535,16 +517,16 @@ main {
   }
 }
 .modal-page .modal-page-content {
-  height: calc(100% - 50.25px);
+  height: calc(100% - 64px);
 }
 @media only screen and (min-width: 600px) {
   .modal-page .modal-page-content {
-    height: calc(100% - 39px);
+    height: calc(100% - 42px);
   }
 }
 @media only screen and (min-width: 992px) {
   .modal-page .modal-page-content {
-    height: calc(100% - 45px);
+    height: calc(100% - 50px);
   }
 }
 .modal-page .modal-page-content > div {
@@ -553,6 +535,16 @@ main {
 @media only screen and (min-width: 600px) {
   .modal-page .modal-page-content > div {
     padding: 10px;
+  }
+}
+
+.modal-page.show {
+  height: calc(100% - 50px);
+}
+@media only screen and (min-width: 600px) {
+  .modal-page.show {
+    max-height: 600px;
+    scale: 1;
   }
 }
 
@@ -568,7 +560,7 @@ main {
 }
 
 .nav-controller.rotate-back,
-.nav-controller-lg.nav-controller.rotate-back {
+.nav-controller-lg.rotate-back {
   animation: rotate-back 1s ease-in-out forwards;
 }
 
@@ -585,59 +577,114 @@ main {
     transform: rotate(180deg);
   }
   to {
-    transform: rotate(0);
+    transform: rotate(360deg);
   }
 }
+.nav-controller-lg {
+  margin-top: 20px;
+  padding: 10px;
+}
+.nav-controller-lg:hover {
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 600px) {
+  .nav-icon-wrapper-lg {
+    padding: 10px;
+  }
+}
+
+.nav-icon-wrapper.hide, .nav-icon-wrapper-lg.hide {
+  animation: hide-icon 0.12s forwards;
+}
+
+@keyframes hide-icon {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.nav-icon-wrapper.show, .nav-icon-wrapper-lg.show {
+  animation: show-icon 0.12s forwards;
+}
+
+@keyframes show-icon {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .nav-icon-wrapper-lg:hover,
+  .nav-icon-wrapper-lg.selected {
+    background-color: rgba(218, 218, 218, 0.5);
+    cursor: pointer;
+  }
+}
+
 .nav-lg {
   align-items: center;
   background-color: var(--background-color);
   border: 1px solid var(--secondary-text-color);
   border-radius: 10px;
-  display: flex;
+  display: none;
   flex-direction: column;
-  height: 80px;
-  justify-content: space-between;
+  justify-content: flex-end;
+  height: 100%;
+  transition: height 1.2s ease-in-out;
   padding: 20px 10px;
+}
+@media only screen and (min-width: 600px) {
+  .nav-lg {
+    display: flex;
+  }
 }
 .nav-lg div {
   border-radius: 10px;
-  height: fit-content;
 }
 .nav-lg div .bi {
   color: var(--secondary-text-color);
   font-size: 30px;
 }
 
-.nav-lg.expand-lg {
-  animation: expand-lg 1s forwards;
+.nav-lg-wrapper {
+  height: 100%;
+  padding: 20px;
+  position: fixed;
+  width: 120px;
+  z-index: 9999;
 }
-
+.nav-lg-wrapper .animated-nav-icons-lg {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+.nav-lg-wrapper .animated-nav-icons-lg.expand-lg {
+  animation: expand-lg 1.2s forwards;
+}
 @keyframes expand-lg {
   from {
-    height: 80px;
+    height: 0;
   }
   to {
     height: 100%;
   }
 }
-.nav-lg.shrink-lg {
-  animation: shrink-lg 1s forwards;
+.nav-lg-wrapper .animated-nav-icons-lg.shrink-lg {
+  animation: shrink-lg 1.7s forwards;
 }
-
 @keyframes shrink-lg {
   from {
     height: 100%;
   }
   to {
-    height: 80px;
+    height: 0;
   }
-}
-.nav-lg-wrapper {
-  display: none;
-  height: 100vh;
-  padding: 20px;
-  position: fixed;
-  width: 120px;
 }
 @media only screen and (min-width: 600px) {
   .nav-lg-wrapper {
@@ -653,10 +700,14 @@ main {
   display: flex;
   justify-content: space-between;
   padding: 10px;
+  width: 100%;
 }
 .nav-sm div {
+  align-items: center;
   border-radius: 10px;
+  display: flex;
   height: 40px;
+  justify-content: center;
   width: 40px;
 }
 .nav-sm div .bi {
@@ -665,7 +716,7 @@ main {
 }
 
 .nav-sm.expand {
-  animation: expand 1s forwards;
+  animation: expand 1.2s forwards;
 }
 
 @keyframes expand {
@@ -677,7 +728,7 @@ main {
   }
 }
 .nav-sm.shrink {
-  animation: shrink 1s forwards;
+  animation: shrink 1.2s forwards;
 }
 
 @keyframes shrink {
@@ -829,7 +880,7 @@ section.edit-profile .img-container .skeleton {
 }
 @media only screen and (min-width: 992px) {
   .form {
-    width: 30%;
+    width: 35%;
   }
 }
 
@@ -849,6 +900,10 @@ section.edit-profile .img-container .skeleton {
     font-size: 12px;
     line-height: 18px;
   }
+}
+
+.buttons-wrapper button {
+  width: 100%;
 }
 
 .count-group-container .font-body-tiny {

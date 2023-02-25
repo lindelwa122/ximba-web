@@ -3,7 +3,16 @@
 }
 
 html, body {
-  min-height: 100vh;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  min-width: 300px;
+  max-width: 1200px;
+
   @include body;
 
   @include for-tablets {
@@ -51,10 +60,11 @@ main {
 }
 
 section {
-  min-height: 100vh;
+  // min-height: 100%;
+  flex: 1;
   padding: $general-padding;
 }
 
-section.form-section {
-  min-height: calc(100vh - 20px);
-}
+// section.form-section {
+//   min-height: calc(100vh - 20px);
+// }

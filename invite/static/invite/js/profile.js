@@ -30,12 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelector('.following-wrapper').addEventListener('click', () => {
     displayFollowingUsers();
-    fetchFollowingUsers();
   });
 
   document.querySelector('.followers-wrapper').addEventListener('click', () => {
     displayFollowers();
-    fetchFollowers();
   })
 });
 
@@ -52,11 +50,15 @@ const countGroupDisplay = () => {
 };
 
 const displayFollowingUsers = () => {
-  addToMainModalHistory('Following', countGroupDisplay, '10px');
+  addToMainModalHistory('Following', countGroupDisplay, [
+    { func: fetchFollowingUsers, values: [] }
+  ]);
 };
 
 const displayFollowers = () => {
-  addToMainModalHistory('Followers', countGroupDisplay, '10px');
+  addToMainModalHistory('Followers', countGroupDisplay, [
+    { func: fetchFollowers, values: []}
+  ]);
 }
 
 const fetchCount = (username) => {

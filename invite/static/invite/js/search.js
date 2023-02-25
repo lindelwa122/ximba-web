@@ -1,5 +1,11 @@
 document.querySelectorAll('.search-btn').forEach((el) => {
   el.addEventListener('click', () => {
+    document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
+      icon.classList.remove('selected');
+    });
+
+    el.classList.add('selected');
+
     // Open main modal with search content
     addToMainModalHistory('Recents', searchContent, '10px');
 

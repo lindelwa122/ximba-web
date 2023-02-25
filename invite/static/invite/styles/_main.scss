@@ -14,54 +14,12 @@
   display: flex;
 
   main {
-    min-height: 100vh;
+    min-height: 100%;
   }
 }
 
-.icon {
-  display: none;
-  height: 100%;
-  opacity: 0;
-
-  @include for-tablets {
-    padding: 10px;
-  }
-}
-
-.icon.hide {
-  animation: hide-icon 0.54s forwards;
-}
-
-@keyframes hide-icon {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
-.icon.show {
-  animation: show-icon 0.54s forwards;
-}
-
-@keyframes show-icon {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.icon:hover,
-.icon.selected {
-  @include for-tablets {
-    background-color: rgba(218, 218, 218, 0.5);
-    cursor: pointer;
-  }
+body.modal-open {
+  overflow: hidden;
 }
 
 main {
@@ -72,24 +30,37 @@ main {
   }
 }
 
-.modal-page {
-  background-color: var(--background-color);
-  bottom: 0;
-  display: none;
-  left: 0;
-  margin: auto;
-  min-height: 100vh;
-  overflow-y: auto;
+.modal-overlay.active {
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100%;
   position: fixed;
   right: 0;
   top: 0;
   width: 100%;
+  z-index: 999;
+}
 
+.modal-page {
+  background-color: var(--background-color);
+  border-radius: 10px 10px 0 0;
+  bottom: 0;
+  height: 0;
+  left: 0;
+  margin: auto;
+  max-height: 100%;
+  overflow: auto;
+  position: fixed;
+  right: 0;
+  transition: all .5s ease-in-out;
+  width: 100%;
+  z-index: 9999;
+  
   @include for-tablets {
-    border: 1px solid var(--bs-black);
     border-radius: 10px;
+    height: 100%;
     max-height: 600px;
-    min-height: 400px;
+    scale: 0;
+    top: 0;
     width: 60%;
   }
 
@@ -117,8 +88,13 @@ main {
     background-color: var(--secondary-color);
   }
 
+  .bi-arrow-left:hover, .bi-x-lg:hover {
+    cursor: pointer;
+  }
+
   .header {
     display: none !important;
+    overflow: hidden;
 
     @include for-tablets {
       display: flex !important;
@@ -126,14 +102,14 @@ main {
   }
 
   .modal-page-content {
-    height: calc(100% - 50.25px);
+    height: calc(100% - 64px);
 
     @include for-tablets {
-      height: calc(100% - 39px);
+      height: calc(100% - 42px);
     }
 
     @include for-desktops {
-      height: calc(100% - 45px);
+      height: calc(100% - 50px);
     }
   }
 
@@ -151,6 +127,15 @@ main {
   }
 }
 
+.modal-page.show {
+  height: calc(100% - 50px);
+  
+  @include for-tablets {
+    max-height: 600px;
+    scale: 1;
+  }
+}
+
 .nav-controller {
   align-items: center;
   display: flex;
@@ -163,7 +148,7 @@ main {
 }
 
 .nav-controller.rotate-back,
-.nav-controller-lg.nav-controller.rotate-back {
+.nav-controller-lg.rotate-back {
   animation: rotate-back 1s ease-in-out forwards;
 }
 
@@ -183,7 +168,58 @@ main {
   }
 
   to {
-    transform: rotate(0);
+    transform: rotate(360deg);
+  }
+}
+
+.nav-controller-lg {
+  margin-top: 20px;
+  padding: 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.nav-icon-wrapper-lg {
+  @include for-tablets {
+    padding: 10px;
+  }
+}
+
+.nav-icon-wrapper.hide, .nav-icon-wrapper-lg.hide {
+  animation: hide-icon 0.12s forwards;
+}
+
+@keyframes hide-icon {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.nav-icon-wrapper.show, .nav-icon-wrapper-lg.show {
+  animation: show-icon 0.12s forwards;
+}
+
+@keyframes show-icon {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.nav-icon-wrapper-lg:hover,
+.nav-icon-wrapper-lg.selected {
+  @include for-tablets {
+    background-color: rgba(218, 218, 218, 0.5);
+    cursor: pointer;
   }
 }
 
@@ -192,15 +228,20 @@ main {
   background-color: var(--background-color);
   border: 1px solid var(--secondary-text-color);
   border-radius: $border-radius;
-  display: flex;
+  display: none;
   flex-direction: column;
-  height: 80px;
-  justify-content: space-between;
+  justify-content: flex-end;
+  height: 100%;
+  transition: height 1.2s ease-in-out;
   padding: 20px 10px;
+
+  @include for-tablets {
+    display: flex;
+  }
 
   div {
     border-radius: $border-radius;
-    height: fit-content;
+    // height: fit-content;
 
     .bi {
       color: var(--secondary-text-color);
@@ -209,40 +250,47 @@ main {
   }
 }
 
-.nav-lg.expand-lg {
-  animation: expand-lg 1s forwards;
-}
-
-@keyframes expand-lg {
-  from {
-    height: 80px;
-  }
-
-  to {
-    height: 100%;
-  }
-}
-
-.nav-lg.shrink-lg {
-  animation: shrink-lg 1s forwards;
-}
-
-@keyframes shrink-lg {
-  from {
-    height: 100%;
-  }
-
-  to {
-    height: 80px;
-  }
-}
-
 .nav-lg-wrapper {
-  display: none;
-  height: 100vh;
+  height: 100%;
   padding: 20px;
   position: fixed;
   width: 120px;
+  z-index: 9999;
+
+  .animated-nav-icons-lg {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  .animated-nav-icons-lg.expand-lg {
+    animation: expand-lg 1.2s forwards;
+  }
+  
+  @keyframes expand-lg {
+    from {
+      height: 0;
+    }
+  
+    to {
+      height: 100%;
+    }
+  }
+  
+  .animated-nav-icons-lg.shrink-lg {
+    animation: shrink-lg 1.7s forwards;
+  }
+  
+  @keyframes shrink-lg {
+    from {
+      height: 100%;
+    }
+  
+    to {
+      height: 0;
+    }
+  }
 
   @include for-tablets {
     display: flex;
@@ -257,10 +305,14 @@ main {
   display: flex;
   justify-content: space-between;
   padding: 10px;
+  width: 100%;
 
   div {
+    align-items: center;
     border-radius: $border-radius;
+    display: flex;
     height: 40px;
+    justify-content: center;
     width: 40px;
 
     .bi {
@@ -271,7 +323,7 @@ main {
 }
 
 .nav-sm.expand {
-  animation: expand 1s forwards;
+  animation: expand 1.2s forwards;
 }
 
 @keyframes expand {
@@ -285,7 +337,7 @@ main {
 }
 
 .nav-sm.shrink {
-  animation: shrink 1s forwards;
+  animation: shrink 1.2s forwards;
 }
 
 @keyframes shrink {
