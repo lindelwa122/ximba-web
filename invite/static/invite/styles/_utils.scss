@@ -7,14 +7,38 @@
   @include label;
   outline: none;
   padding: $padding;
+  transition: all 0.2s ease-in-out;
 
   &:hover,
   &:focus,
   &:active,
   &:disabled {
-    background-color: $theme;
-    box-shadow: none;
-    filter: brightness(110%);
+    // Use a linear-gradient to create a background that fades to transparent at the bottom
+    background-image: linear-gradient(to bottom, $theme, transparent);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    filter: brightness(80%);
+  }
+
+  &:hover {
+    scale: 1.02;
+  }
+}
+
+.btn.attractive {
+  @include for-tablets {
+    animation: attractive-btn 1s ease-in-out alternate infinite;
+    // animation: name duration timing-function delay iteration-count direction fill-mode;
+  }
+}
+
+@keyframes attractive-btn {
+  from {
+    scale: 1;
+  }
+
+  to {
+    scale: 1.05;
   }
 }
 
@@ -103,7 +127,7 @@
   border-radius: $border-radius;
   box-shadow: none !important;
   outline: none !important;
-  padding: 20px 15px;
+  padding: 15px;
   width: 100%;
 
   @include body;
@@ -160,6 +184,10 @@
 
 .font-body-tiny {
   @include body-tiny;
+}
+
+.font-display {
+  @include display;
 }
 
 .font-headline {

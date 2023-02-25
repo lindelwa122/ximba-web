@@ -20,6 +20,20 @@
   color: var(--main-text-color);
 }
 
+@media only screen and (min-width: 600px) {
+  .btn.attractive {
+    animation: attractive-btn 1s ease-in-out alternate infinite;
+  }
+}
+
+@keyframes attractive-btn {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.05;
+  }
+}
 .btn-primary {
   border: none;
   background-color: var(--primary-color);
@@ -31,6 +45,7 @@
   line-height: 16px;
   outline: none;
   padding: 15px 20px;
+  transition: all 0.2s ease-in-out;
 }
 @media only screen and (min-width: 600px) {
   .btn-primary {
@@ -45,9 +60,13 @@
   }
 }
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:disabled {
-  background-color: var(--primary-color);
-  box-shadow: none;
-  filter: brightness(110%);
+  background-image: linear-gradient(to bottom, var(--primary-color), transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  filter: brightness(80%);
+}
+.btn-primary:hover {
+  scale: 1.02;
 }
 
 .btn-primary-outline {
@@ -61,6 +80,7 @@
   line-height: 16px;
   outline: none;
   padding: 15px 20px;
+  transition: all 0.2s ease-in-out;
 }
 @media only screen and (min-width: 600px) {
   .btn-primary-outline {
@@ -75,9 +95,13 @@
   }
 }
 .btn-primary-outline:hover, .btn-primary-outline:focus, .btn-primary-outline:active, .btn-primary-outline:disabled {
-  background-color: var(--background-lg-color);
-  box-shadow: none;
-  filter: brightness(110%);
+  background-image: linear-gradient(to bottom, var(--background-lg-color), transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  filter: brightness(80%);
+}
+.btn-primary-outline:hover {
+  scale: 1.02;
 }
 .btn-primary-outline:hover {
   border-color: var(--secondary-color);
@@ -94,6 +118,7 @@
   line-height: 16px;
   outline: none;
   padding: 15px 20px;
+  transition: all 0.2s ease-in-out;
 }
 @media only screen and (min-width: 600px) {
   .btn-secondary {
@@ -108,9 +133,13 @@
   }
 }
 .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .btn-secondary:disabled {
-  background-color: var(--secondary-color);
-  box-shadow: none;
-  filter: brightness(110%);
+  background-image: linear-gradient(to bottom, var(--secondary-color), transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  filter: brightness(80%);
+}
+.btn-secondary:hover {
+  scale: 1.02;
 }
 
 .btn-secondary-outline {
@@ -124,6 +153,7 @@
   line-height: 16px;
   outline: none;
   padding: 15px 20px;
+  transition: all 0.2s ease-in-out;
 }
 @media only screen and (min-width: 600px) {
   .btn-secondary-outline {
@@ -138,9 +168,13 @@
   }
 }
 .btn-secondary-outline:hover, .btn-secondary-outline:focus, .btn-secondary-outline:active, .btn-secondary-outline:disabled {
-  background-color: var(--background-lg-color);
-  box-shadow: none;
-  filter: brightness(110%);
+  background-image: linear-gradient(to bottom, var(--background-lg-color), transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  filter: brightness(80%);
+}
+.btn-secondary-outline:hover {
+  scale: 1.02;
 }
 .btn-secondary-outline:hover {
   border-color: var(--primary-color);
@@ -196,7 +230,7 @@
   border-radius: 10px;
   box-shadow: none !important;
   outline: none !important;
-  padding: 20px 15px;
+  padding: 15px;
   width: 100%;
   font-family: "Roboto", sans-serif;
   font-size: 12px;
@@ -290,6 +324,24 @@
   }
 }
 
+.font-display {
+  font-family: "Playfair", serif;
+  font-size: 36px;
+  line-height: 44px;
+}
+@media only screen and (min-width: 600px) {
+  .font-display {
+    font-size: 45px;
+    line-height: 52px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .font-display {
+    font-size: 57px;
+    font-size: 64px;
+  }
+}
+
 .font-headline {
   font-family: "Playfair", serif;
   font-size: 18px;
@@ -332,7 +384,9 @@
 }
 
 html, body {
+  display: flex;
   height: 100%;
+  justify-content: center;
 }
 
 body {
@@ -340,7 +394,7 @@ body {
   flex-direction: column;
   min-height: 100%;
   min-width: 300px;
-  max-width: 1200px;
+  max-width: 1800px;
   font-family: "Roboto", sans-serif;
   font-size: 12px;
   line-height: 16px;
@@ -883,23 +937,90 @@ section.edit-profile .img-container .skeleton {
     width: 35%;
   }
 }
+@media only screen and (min-width: 600px) {
+  .form img {
+    display: none;
+  }
+}
 
 .form-help {
   font-family: "Roboto", sans-serif;
-  font-size: 8px;
-  line-height: 10px;
+  font-size: 12px;
+  line-height: 16px;
 }
 @media only screen and (min-width: 600px) {
+  .form-help {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .form-help {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .form-help {
+    font-family: "Roboto", sans-serif;
+    font-size: 8px;
+    line-height: 10px;
+  }
+}
+@media only screen and (min-width: 600px) and (min-width: 600px) {
   .form-help {
     font-size: 10px;
     line-height: 12px;
   }
 }
-@media only screen and (min-width: 992px) {
+@media only screen and (min-width: 600px) and (min-width: 992px) {
   .form-help {
     font-size: 12px;
     line-height: 18px;
   }
+}
+
+section.form-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+@media only screen and (min-width: 992px) {
+  section.form-section {
+    padding: 0 100px;
+  }
+}
+section.form-section .hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+  height: 100%;
+}
+section.form-section .hero-section .img-wrapper {
+  display: flex;
+  justify-content: center;
+}
+section.form-section .hero-section .img-wrapper img {
+  border-radius: 10px;
+  height: auto;
+  width: 33.33%;
+}
+section.form-section .hero-section .img-wrapper img:first-child {
+  transform: translateX(50px);
+}
+section.form-section .hero-section .img-wrapper img:nth-child(2) {
+  transform: translateY(-50px);
+}
+section.form-section .hero-section .img-wrapper img:nth-child(2):hover {
+  transform: scale(5);
+  transform: translateY(-30px);
+  z-index: 9999;
+}
+section.form-section .hero-section .img-wrapper img:last-child {
+  transform: translate(-50px, 30px);
 }
 
 .buttons-wrapper button {

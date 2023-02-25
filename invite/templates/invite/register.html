@@ -6,75 +6,89 @@
 
 {% block body %}
 
-<section class='align-items-center d-flex flex-column justify-content-center'>
+<section class='form-section'>
 
-  <div class='d-flex align-items-center flex-column form'>
-    <img class='logo rounded-circle'
-      src='{% static "invite/images/app/logo.png" %}'
-      alt='Profile Pic'>
+  <div class='register-form-wrapper d-flex justify-content-between'>
+    <div class='hero-section'>
+      <div class='header font-headline'>Find all the best events near you</div>
+      <div class='img-wrapper'>
+        <img src='https://images.unsplash.com/photo-1582103287241-2762adba6c36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fHBhcnR5fGVufDB8MXwwfHw%3D' alt=''>
+        <img src='https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8d2VkZGluZ3xlbnwwfDF8MHx8' alt=''>
+        <img src='https://images.unsplash.com/photo-1519671845924-1fd18db430b8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjl8fGV2ZW50fGVufDB8MXwwfHw%3D' alt=''>
+      </div>
+      <div class='footer font-headline'>Never be bored on weekends again</div>
+    </div>
 
-    <form class='w-100'>
 
-      {% csrf_token %}
-
-      <div class='row mb-3'>
-        <div class='col-6'>
-          <input type='text' name='firstname' class='firstname form-control input-frame' placeholder='First Name' required>
+    <div class='d-flex align-items-center flex-column form'>
+      <img class='logo rounded-circle'
+        src='{% static "invite/images/app/logo.png" %}'
+        alt='Profile Pic'>
+  
+      <form class='w-100'>
+  
+        {% csrf_token %}
+  
+        <div class='row mb-3'>
+          <div class='col-6'>
+            <input type='text' name='firstname' class='firstname form-control input-frame' placeholder='First Name' required>
+          </div>
+  
+          <div class='col-6'>
+            <input type='text' name='lastname' class='lastname form-control input-frame' placeholder='Last Name' required>
+          </div>
         </div>
-
-        <div class='col-6'>
-          <input type='text' name='lastname' class='lastname form-control input-frame' placeholder='Last Name' required>
+  
+        <div class='mb-3'>
+          <input type='text' name='username' class='username form-control input-frame' placeholder='Username' required>
         </div>
-      </div>
-
-      <div class='mb-3'>
-        <input type='text' name='username' class='username form-control input-frame' placeholder='Username' required>
-      </div>
-
-      <div class='mb-3 d-none username-help form-help'>
-        <div class='user-count'>Username must have a characters between 3 and 16</div>
-        <div class='user'>Username must only contain lowercases and numbers</div>
-      </div>
-
-      <div class='mb-3'>
-        <input type='email' name='email' class='email form-control input-frame' placeholder='Email' required>
-      </div>
-
-      <div class='mb-3'>
-        <input type='password' name='password' class='password form-control input-frame' placeholder='Password' required>
-      </div>
-
-      <div class='mb-3 d-none password-help form-help'>
-        <div class='char'>Password must have characters between 8 and 16</div>
-        <div class='upper'>Password must have at least one uppercase letter</div>
-        <div class='lower'>Password must have at least one lower letter</div>
-        <div class='number'>Password must have at least one number</div>
-        <div class='symbol'>Password must have at least one symbol</div>
-      </div>
-
-      <div class='mb-3'>
-        <input type='password' name='confirm-password' class='confirm-password form-control input-frame' placeholder='Confirm Password' required>
-      </div>
-
-      <div class='mb-3 d-none confirm-help form-help'>
-        <div class='confirm'>Password must match</div>
-      </div>
-
-      <div class='mb-3 error-message'></div>
-
-      <div class='mb-3'>
-        <input type='submit' value='Register' class='btn btn-primary form-control w-100'>
-        <button class='btn btn-primary w-100 d-none' disabled>
-          <span class='spinner'></span>
-        </button>
-      </div>
-
-    </form>
-
-    <hr class='w-100'>
-
-    <a type='button' class='btn btn-secondary w-50' href='{% url "invite:login" %}'>Login</a>
+  
+        <div class='mb-3 d-none username-help form-help'>
+          <div class='user-count'>Username must have a characters between 3 and 16</div>
+          <div class='user'>Username must only contain lowercases and numbers</div>
+        </div>
+  
+        <div class='mb-3'>
+          <input type='email' name='email' class='email form-control input-frame' placeholder='Email' required>
+        </div>
+  
+        <div class='mb-3'>
+          <input type='password' name='password' class='password form-control input-frame' placeholder='Password' required>
+        </div>
+  
+        <div class='mb-3 d-none password-help form-help'>
+          <div class='char'>Password must have characters between 8 and 16</div>
+          <div class='upper'>Password must have at least one uppercase letter</div>
+          <div class='lower'>Password must have at least one lower letter</div>
+          <div class='number'>Password must have at least one number</div>
+          <div class='symbol'>Password must have at least one symbol</div>
+        </div>
+  
+        <div class='mb-3'>
+          <input type='password' name='confirm-password' class='confirm-password form-control input-frame' placeholder='Confirm Password' required>
+        </div>
+  
+        <div class='mb-3 d-none confirm-help form-help'>
+          <div class='confirm'>Password must match</div>
+        </div>
+  
+        <div class='mb-3 error-message'></div>
+  
+        <div>
+          <input type='submit' value='Register' class='btn btn-primary form-control w-100 attractive'>
+          <button class='btn btn-primary w-100 d-none' disabled>
+            <span class='spinner'></span>
+          </button>
+        </div>
+  
+      </form>
+  
+      <hr class='w-100'>
+  
+      <a type='button' class='btn btn-secondary w-50' href='{% url "invite:login" %}'>Login</a>
+    </div>
   </div>
+
 
 </section>
 

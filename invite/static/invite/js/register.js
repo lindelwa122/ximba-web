@@ -15,6 +15,10 @@ const validateUsername = () => {
   username.addEventListener('focus', () => {
     document.querySelector('.username-help').classList.remove('d-none');
   });
+  
+  username.addEventListener('blur', () => {
+    document.querySelector('.username-help').classList.add('d-none');
+  });
 
   username.addEventListener('input', () => {
     username.value = username.value.toLowerCase().trim();

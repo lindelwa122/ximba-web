@@ -5,6 +5,10 @@ const validate_password_strength = () => {
     document.querySelector('.password-help').classList.remove('d-none');
   });
 
+  password.addEventListener('blur', () => {
+    document.querySelector('.password-help').classList.add('d-none');
+  });
+
   password.addEventListener('input', () => {
     password.value.length >= 8 && password.value.length <= 16
       ? (document.querySelector('.char').style.color = '#3ec70b')
@@ -33,6 +37,10 @@ const confirmPassword = () => {
 
   confirm.addEventListener('focus', () => {
     document.querySelector('.confirm-help').classList.remove('d-none');
+  });
+
+  confirm.addEventListener('blur', () => {
+    document.querySelector('.confirm-help').classList.add('d-none');
   });
 
   confirm.addEventListener('input', () => {
