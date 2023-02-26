@@ -9,12 +9,69 @@ class User(AbstractUser):
   is_email_confirmed = models.BooleanField(default=False)
   reset_password = models.TextField(max_length=20, blank=True, null=True)
 
+  def __str__(self):
+    return self.username
+
 class Friend(models.Model):
+  PENDING = 'pending'
+  ACCEPTED = 'accepted'
+  STATUS_CHOICES = [
+      (PENDING, 'Pending'),
+      (ACCEPTED, 'Accepted')
+  ]
+
   user = models.ForeignKey(User, models.CASCADE, related_name='friend_user')
   friend = models.ForeignKey(User, models.CASCADE, 'friend')
+  status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
+  created_at = models.DateTimeField(auto_now_add=True)
 
   def __str__(self) -> str:
     return f'{self.user.username} befriends {self.friend.username}'
+
+
+class FriendRequest(models.Model):
+  PENDING = 'pending'
+  ACCEPTED = 'accepted'
+  STATUS_CHOICES = (
+      (PENDING, 'Pending'),
+      (ACCEPTED, 'Accepted'),
+  )
+  requester = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friend_requests_sent')
+  receivers = models.ManyToManyField(User, related_name='friend_requests_received')
+  status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    receivers = self.receivers
+    all_receivers = receivers.all()
+
+    if all_receivers.count() == 1:
+      names = str(all_receivers[0])
+    elif all_receivers.count() == 2:
+      names = ' and '.join(map(str, all_receivers))
+    elif all_receivers.count >= 3:
+      first_two = ', '.join(map(str, all_receivers[:2]))
+      remaining = all_receivers.count() - 2
+      remaining_text = '1 more.' if remaining else f'{remaining} more.'
+      names = f'{first_two} and {remaining_text}'
+
+    return f'{self.requester} sent a friend request to {names}'
+
+
+class Notification(models.Model):
+  TYPE_CHOICES = [
+    ('friend_request', 'Friend Request'),
+    ('new_follower', 'New Follower')
+  ]
+
+  origin = models.ForeignKey(User, models.CASCADE, related_name='notification_origin')
+  to = models.ForeignKey(User, models.CASCADE, related_name='notification_receiver')
+  notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+  seen = models.BooleanField(default=False)
+  datetime = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f'From: {self.origin}. To: {self.to}. Type: {self.notification_type}.'
 
 class Following(models.Model):
   user = models.ForeignKey(User, models.CASCADE, related_name='following_user')

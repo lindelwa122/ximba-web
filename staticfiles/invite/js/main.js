@@ -24,7 +24,6 @@ const rotateAnimation = (device) => {
     device === 'sm'
       ? document.querySelector('.nav-controller')
       : document.querySelector('.nav-controller-lg');
-
   if (navController.classList.contains('rotate')) {
     navController.classList.remove('rotate');
     navController.classList.add('rotate-back');

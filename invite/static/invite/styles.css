@@ -1370,4 +1370,127 @@ section.form-section .hero-section .img-wrapper img:last-child {
   }
 }
 
+@media only screen and (max-width: 599px) {
+  .fgeneral {
+    width: 100%;
+  }
+  .fgeneral .fcard .flink {
+    font-size: 14px;
+  }
+  .fgeneral .fcard img {
+    width: 3em;
+    height: 3em;
+  }
+  .fgeneral .fbtn {
+    padding: 5px 10px !important;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .fgeneral {
+    width: 60%;
+    margin-left: 20%;
+  }
+  .fgeneral .fcard .flink {
+    font-size: 14px;
+    position: relative;
+    top: 0.5em;
+  }
+  .fgeneral .fcard .fname {
+    margin-top: 0.5em;
+    font-size: 12px;
+    margin-left: 1em;
+  }
+  .fgeneral .fcard img {
+    width: 5em;
+    height: 5em;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .fgeneral {
+    width: 40%;
+    margin-left: 30%;
+  }
+  .fcard {
+    padding: 1em;
+  }
+  .fcard .flink {
+    margin-top: 1em;
+    font-size: 16px;
+  }
+  .fcard .fname {
+    margin-top: 0.5em;
+    font-size: 12px;
+    margin-left: 1em;
+  }
+  .fcard img {
+    width: 5em;
+    height: 5em;
+  }
+}
+.fgeneral {
+  box-shadow: 2px 2px 5px 3px rgb(198, 198, 198);
+  border-radius: 1%;
+}
+.fgeneral .ftitle {
+  margin-top: 0.75em;
+  margin-left: 1em;
+}
+
+.fcard {
+  border-bottom: 1px solid black;
+  border-radius: 5%;
+  font-weight: 500;
+}
+.fcard .flink {
+  padding-top: 1em;
+  margin-left: 5%;
+  line-height: 20px;
+}
+.fcard .fname {
+  color: rgb(98, 98, 98);
+}
+
+.suggested-friends-container .account-container, .friends-container .account-container {
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+.suggested-friends-container .illustration, .friends-container .illustration {
+  height: auto;
+  width: 60%;
+}
+.suggested-friends-container img, .friends-container img {
+  aspect-ratio: 1;
+  width: 50px;
+}
+
+.friends-container .btn-secondary {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.empty-content-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.notifications-container .account-container {
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+.notifications-container .illustration {
+  height: auto;
+  width: 60%;
+}
+.notifications-container img {
+  aspect-ratio: 1;
+  width: 50px;
+}
+
 /*# sourceMappingURL=styles.css.map */

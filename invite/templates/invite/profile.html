@@ -52,7 +52,7 @@
         </div>
         <div class='text-center d-flex align-items-center count-group friends-wrapper'>
           <div class='friends-count skeleton skeleton-text count'></div>
-          <div class='normal-font-weight'>friends</div>
+          <div class='normal-font-weight friends-text'>friends</div>
         </div>
       </div>      
     </div>
@@ -62,14 +62,23 @@
     <div class='d-flex buttons-wrapper'>
       {% if authenticated %}
         <button class='btn btn-secondary-outline flex-fill edit-btn'>Edit Profile</button>
-        <button class='btn btn-primary flex-fill'>Friend's List</button>
+        <button class='btn btn-primary flex-fill friends-list'>Groups</button>
       {% elif is_user_logged_in %}
         {% if following_user %}
           <button class='btn btn-secondary-outline flex-fill unfollow-btn'>Unfollow</button>
         {% else %}
           <button class='btn btn-secondary flex-fill follow-btn'>Follow</button>
         {% endif %}
-        <button class='btn btn-primary flex-fill'>Add Friend</button>
+
+        {% if friendship_status == 'friends' %}
+          <button class='btn btn-primary flex-fill remove-friend'>Remove Friend</button>
+        {% elif friendship_status == 'friendship_requested' %}
+          <button class='btn btn-primary flex-fill' disabled>Request Sent</button>
+        {% elif friendship_status == 'friendship_received' %}
+          <button class='btn btn-primary flex-fill accept-friendship'>Accept Friend Request</button> 
+        {% else %}
+          <button class='btn btn-primary flex-fill add-friend'>Add Friend</button> 
+        {% endif %}
       {% else %}
         <button class='btn btn-primary-outline flex-fill register-btn'>Try GetVyt now!</button>
         <button class='btn btn-primary flex-fill login-btn'>Login to access all our features!</button>

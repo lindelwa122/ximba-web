@@ -6,6 +6,7 @@
 
 <script src='{% static "invite/js/utils/mainModal.js" %}'></script>
 <script src='{% static "invite/js/main.js" %}'></script>
+<script src='{% static "invite/js/friends.js" %}'></script>
 
 <div class='body'>
   <div class='nav-lg-wrapper'>
@@ -19,6 +20,9 @@
         </div>
         <div class='nav-icon-wrapper-lg' title='Find Friends'>
           <i class='nav-icon bi bi-person-add'></i>
+        </div>
+        <div class='nav-icon-wrapper notification'>
+          <i class='nav-icon bi bi-bell'></i>
         </div>
         <div class='nav-icon-wrapper-lg' title='Saved Events'>
           <i class='nav-icon bi bi-bookmark'></i>
@@ -59,6 +63,8 @@
         </div>
         <div class='nav-icon-wrapper'>
           <i class='nav-icon bi bi-person-add'></i>
+        <div class='icon friends-btn'>
+          <i class='bi bi-person-add'></i>
         </div>
         <div class='nav-icon-wrapper'>
           <i class='nav-icon bi bi-bookmark'></i>
@@ -108,5 +114,6 @@
 </div>
 
 <script src='{% static "invite/js/search.js" %}'></script>
+<script src='{% static "invite/js/notifications.js" %}'></script>
 
 {% endblock %}
