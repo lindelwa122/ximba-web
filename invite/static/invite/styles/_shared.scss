@@ -4,14 +4,14 @@
 
 html, body {
   height: 100%;
+  min-width: 300px;
+  max-width: 1400px;
 }
 
 body {
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  min-width: 300px;
-  max-width: 1800px;
 
   @include body;
 
@@ -60,11 +60,6 @@ main {
 }
 
 section {
-  // min-height: 100%;
   flex: 1;
   padding: $general-padding;
 }
-
-// section.form-section {
-//   min-height: calc(100vh - 20px);
-// }

@@ -385,14 +385,14 @@
 
 html, body {
   height: 100%;
+  min-width: 300px;
+  max-width: 1400px;
 }
 
 body {
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  min-width: 300px;
-  max-width: 1800px;
   font-family: "Roboto", sans-serif;
   font-size: 12px;
   line-height: 16px;
@@ -920,6 +920,7 @@ section.edit-profile .img-container .skeleton {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 50px;
   width: 100%;
 }
 @media only screen and (min-width: 600px) {
@@ -927,6 +928,7 @@ section.edit-profile .img-container .skeleton {
     border-radius: 10px;
     box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.15);
     padding: 20px;
+    margin-bottom: 0;
     width: 50%;
   }
 }
@@ -936,7 +938,7 @@ section.edit-profile .img-container .skeleton {
     max-width: 600px;
   }
 }
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 992px) {
   .form img {
     display: none;
   }
@@ -979,23 +981,53 @@ section.edit-profile .img-container .skeleton {
   }
 }
 
+.forms-wrapper {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+@media only screen and (min-width: 992px) {
+  .forms-wrapper {
+    justify-content: space-between;
+  }
+}
+
 section.form-section {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: auto;
+  max-width: 500px;
   width: 100%;
+}
+@media only screen and (min-width: 600px) {
+  section.form-section {
+    max-width: 1400px;
+  }
 }
 @media only screen and (min-width: 992px) {
   section.form-section {
-    padding: 0 100px;
+    padding: 0 10%;
   }
 }
+section.form-section .form-header {
+  opacity: 1;
+  transition: opacity 2s ease-in-out;
+}
+section.form-section .form-header.change-text {
+  opacity: 0;
+}
 section.form-section .hero-section {
-  display: flex;
-  flex-direction: column;
   align-items: center;
+  display: none;
+  flex-direction: column;
+  height: 500px;
   width: 50%;
-  height: 100%;
+}
+@media only screen and (min-width: 992px) {
+  section.form-section .hero-section {
+    display: flex;
+  }
 }
 section.form-section .hero-section .img-wrapper {
   display: flex;
@@ -1012,9 +1044,9 @@ section.form-section .hero-section .img-wrapper img:first-child {
   transition: all 0.3s ease-in-out;
 }
 section.form-section .hero-section .img-wrapper img:first-child:hover {
+  box-shadow: 20px -17px 4px rgba(0, 0, 0, 0.15);
   cursor: zoom-in;
-  transform: scale(1.2) translate(0, -50px);
-  box-shadow: 10px 7px 10px rgba(0, 0, 0, 0.15);
+  transform: scale(1.2) translate(0, 50px);
   z-index: 999;
 }
 section.form-section .hero-section .img-wrapper img:nth-child(2) {
@@ -1022,25 +1054,32 @@ section.form-section .hero-section .img-wrapper img:nth-child(2) {
   transition: all 0.3s ease-in-out;
 }
 section.form-section .hero-section .img-wrapper img:nth-child(2):hover {
-  box-shadow: 7px -4px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 17px -9px 4px rgba(0, 0, 0, 0.15);
   cursor: zoom-in;
   transform: scale(1.2) translateY(-40px) translateX(-70px);
-  z-index: 9999;
+  z-index: 999;
 }
 section.form-section .hero-section .img-wrapper img:last-child {
   transform: translate(-50px, 30px);
   transition: all 0.3s ease-in-out;
 }
 section.form-section .hero-section .img-wrapper img:last-child:hover {
+  box-shadow: -20px -5px 4px rgba(0, 0, 0, 0.15);
   cursor: zoom-in;
-  transform: scale(1.05) translate(10px, -40px);
-  box-shadow: -60px 15px 4px rgba(0, 0, 0, 0.15);
+  transform: scale(1.2) translate(10px, -40px);
 }
-section.form-section .form-header {
-  opacity: 1;
-  transition: opacity 2s ease-in-out;
+section.form-section .hero-section .img-wrapper-login {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
 }
-section.form-section .form-header.change-text {
+section.form-section .hero-section .img-wrapper-login img {
+  border-radius: 10px;
+  height: auto;
+  transition: all 3s ease-in-out;
+  width: 100%;
+}
+section.form-section .hero-section .img-wrapper-login img.low-opacity {
   opacity: 0;
 }
 

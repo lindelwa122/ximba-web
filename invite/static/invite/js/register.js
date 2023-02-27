@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   changeEventDescription();
   setTimeout(changeFormHeaderText, 1000);
+  imageLoadHandler();
 });
 
 const validateUsername = () => {
@@ -99,7 +100,7 @@ const validateForm = (e) => {
 };
 
 const changeEventDescription = () => {
-  const adjectives = ['amazing', 'awesome', 'beautiful', 'breathtaking', 'captivating', 'charming', 'colorful', 'creative', 'delightful', 'energetic', 'exciting', 'exhilarating', 'extraordinary', 'fabulous', 'fantastic', 'fun', 'funky', 'glamorous', 'grand', 'happening', 'inspiring', 'joyful', 'lively', 'magical', 'memorable', 'mind-blowing', 'magnificent', 'outstanding', 'remarkable', 'sensational', 'spectacular', 'stunning', 'superb', 'surprising', 'thrilling', 'unforgettable', 'uplifting', 'vibrant', 'wonderful', 'youthful', 'zany', 'zesty'];
+  const adjectives = ['amazing', 'awesome', 'beautiful', 'breathtaking', 'captivating', 'charming', 'colorful', 'creative', 'delightful', 'energetic', 'exciting', 'exhilarating', 'extraordinary', 'fabulous', 'fantastic', 'fun', 'funky', 'glamorous', 'grand', 'happening', 'hottest', 'inspiring', 'joyful', 'lively', 'magical', 'memorable', 'mind-blowing', 'magnificent', 'outstanding', 'remarkable', 'sensational', 'spectacular', 'stunning', 'superb', 'surprising', 'thrilling', 'unforgettable', 'uplifting', 'vibrant', 'wonderful', 'youthful', 'zany', 'zesty'];
 
   setTimeout(() => {
     for (const adj of adjectives) {
@@ -119,7 +120,7 @@ const calcWordsSpeed = (current) => {
 }
 
 const changeFormHeaderText = () => {
-  const bottomHeaderText = [
+  const headerText = [
     'Say goodbye to boring weekends with our app.',
     'Expand your social circle and meet new friends.',
     'Create unforgettable memories.',
@@ -129,7 +130,7 @@ const changeFormHeaderText = () => {
   const formHeader = document.querySelector('.form-header');
 
   setTimeout(() => {
-    for (const text of bottomHeaderText) {
+    for (const text of headerText) {
       setTimeout(() => {
         formHeader.classList.add('change-text');
 
@@ -137,8 +138,17 @@ const changeFormHeaderText = () => {
           formHeader.classList.remove('change-text');
           formHeader.textContent = text;
         });
-      }, 7000 * (bottomHeaderText.indexOf(text) + 1));
+      }, 7000 * (headerText.indexOf(text) + 1));
     }
   }, 20000);
 }
 
+const imageLoadHandler = () => {
+  const imgWrapper = document.querySelector('.img-wrapper');
+
+  imgWrapper.childNodes.forEach((child) => {
+    child.addEventListener('load', () => {
+      child.classList.remove('skeleton');
+    })
+  })
+}

@@ -115,10 +115,14 @@ const sendFormDataToServer = (
       return response.json();
     })
     .then((data) => {
-      throw new Error(data.message);
+      formErrorHandler(data.message);
     })
     .catch((error) => {
       errorContainer.innerText = error;
       console.error(error)
     })
 };
+
+const formErrorHandler = (error_type) => {
+
+}

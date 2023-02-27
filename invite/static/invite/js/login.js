@@ -19,4 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
       sendFormDataToServer('/login', '/', errorContainer);
     }
   });
+
+  // Change text in the form-header
+  const formHeader = document.querySelector('.form-header');
+
+  setTimeout(() => {
+    formHeader.classList.add('change-text');
+
+    formHeader.addEventListener('transitionend', () => {
+      formHeader.classList.remove('change-text');
+      formHeader.textContent = 'Your one-stop-shop for all the hottest events.';
+    });
+  }, 10000);
 });

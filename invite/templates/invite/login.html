@@ -6,42 +6,50 @@
 
 {% block body %}
 
-<!-- Your code goes here -->
+<section class='form-section align-items-center d-flex flex-column justify-content-center form-section'>
 
-<section class='align-items-center d-flex flex-column justify-content-center form-section'>
-
-  <div class='align-items-center d-flex flex-column form'>
-    <img class='logo mb-3 rounded-circle'
-      src='{% static "invite/images/app/logo.png" %}'
-      alt='This is a logo' />
-
-    <form class='w-100'>
-      {% csrf_token %}
-
-      <div class='mb-3'>
-        <input type='text' class='username form-control input-frame' placeholder='Username' name='Username' required/>
+  <div class='forms-wrapper w-100'>
+    <div class='hero-section'>
+      <div class='form-header font-headline text-center'>Welcome Back!</div>
+      <div class='img-wrapper-login'>
+        <img class='login-img' src='{% static "/invite/images/app/logo.png" %}' alt='logo'>
       </div>
+    </div>
 
-      <div class='mb-3'>
-        <input type='password' class='password form-control input-frame' placeholder='Password' name='Passsword' required/>
-      </div>
-
-      <div class='mb-3 error-message'></div>
-
-      <div class='mb-3'>
-        <input type='submit' value='Login' class='btn btn-primary w-100'>
-        <button class='btn btn-primary w-100 d-none' disabled>
-          <span class='spinner'></span>
-        </button>
-      </div>
-    </form>
-
-    <a class='text-primary' href='{% url "invite:reset_password" %}'>Forgot Password?</a>
-
-    <hr class='w-100' />
-
-    <a type='button' class='btn btn-secondary w-50' href='{% url "invite:register" %}'>Register</a>
+    <div class='align-items-center d-flex flex-column form'>
+      <img class='logo mb-3 rounded-circle'
+        src='{% static "invite/images/app/logo.png" %}'
+        alt='This is a logo' />
+  
+      <form class='w-100'>
+        {% csrf_token %}
+  
+        <div class='mb-3'>
+          <input type='text' class='username form-control input-frame' placeholder='Username' name='Username' required/>
+        </div>
+  
+        <div class='mb-3'>
+          <input type='password' class='password form-control input-frame' placeholder='Password' name='Passsword' required/>
+        </div>
+  
+        <div class='mb-3 error-message'></div>
+  
+        <div class='mb-3'>
+          <input type='submit' value='Login' class='btn btn-primary w-100 attractive'>
+          <button class='btn btn-primary w-100 d-none' disabled>
+            <span class='spinner'></span>
+          </button>
+        </div>
+      </form>
+  
+      <a class='text-primary' href='{% url "invite:reset_password" %}'>Forgot Password?</a>
+  
+      <hr class='w-100' />
+  
+      <a type='button' class='btn btn-secondary w-50' href='{% url "invite:register" %}'>Register</a>
+    </div>
   </div>
+
 
 </section>
 
