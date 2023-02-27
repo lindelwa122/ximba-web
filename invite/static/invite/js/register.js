@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault();
     validateForm(event);
   });
+
+  changeEventDescription();
+  setTimeout(changeFormHeaderText, 1000);
 });
 
 const validateUsername = () => {
@@ -15,7 +18,7 @@ const validateUsername = () => {
   username.addEventListener('focus', () => {
     document.querySelector('.username-help').classList.remove('d-none');
   });
-  
+
   username.addEventListener('blur', () => {
     document.querySelector('.username-help').classList.add('d-none');
   });
@@ -94,3 +97,48 @@ const validateForm = (e) => {
   startBtnLoadingAnimation(e.submitter);
   sendFormDataToServer('/register', '/confirm', errorContainer);
 };
+
+const changeEventDescription = () => {
+  const adjectives = ['amazing', 'awesome', 'beautiful', 'breathtaking', 'captivating', 'charming', 'colorful', 'creative', 'delightful', 'energetic', 'exciting', 'exhilarating', 'extraordinary', 'fabulous', 'fantastic', 'fun', 'funky', 'glamorous', 'grand', 'happening', 'inspiring', 'joyful', 'lively', 'magical', 'memorable', 'mind-blowing', 'magnificent', 'outstanding', 'remarkable', 'sensational', 'spectacular', 'stunning', 'superb', 'surprising', 'thrilling', 'unforgettable', 'uplifting', 'vibrant', 'wonderful', 'youthful', 'zany', 'zesty'];
+
+  setTimeout(() => {
+    for (const adj of adjectives) {
+      setTimeout(() => {
+        document.querySelector('.events-description').textContent = adj;
+      }, 1000 * calcWordsSpeed(adjectives.indexOf(adj)));
+    }
+  }, 4000);
+}
+
+const calcWordsSpeed = (current) => {
+  if (current <= 1) {
+    return 1;
+  }
+
+  return (calcWordsSpeed(current - 1) * 0.95) + 1;
+}
+
+const changeFormHeaderText = () => {
+  const bottomHeaderText = [
+    'Say goodbye to boring weekends with our app.',
+    'Expand your social circle and meet new friends.',
+    'Create unforgettable memories.',
+    'Join us now and start exploring!'
+  ];
+
+  const formHeader = document.querySelector('.form-header');
+
+  setTimeout(() => {
+    for (const text of bottomHeaderText) {
+      setTimeout(() => {
+        formHeader.classList.add('change-text');
+
+        formHeader.addEventListener('transitionend', () => {
+          formHeader.classList.remove('change-text');
+          formHeader.textContent = text;
+        });
+      }, 7000 * (bottomHeaderText.indexOf(text) + 1));
+    }
+  }, 20000);
+}
+

@@ -326,19 +326,19 @@
 
 .font-display {
   font-family: "Playfair", serif;
-  font-size: 36px;
+  font-size: 26px;
   line-height: 44px;
 }
 @media only screen and (min-width: 600px) {
   .font-display {
-    font-size: 45px;
+    font-size: 35px;
     line-height: 52px;
   }
 }
 @media only screen and (min-width: 992px) {
   .font-display {
-    font-size: 57px;
-    font-size: 64px;
+    font-size: 47px;
+    line-height: 64px;
   }
 }
 
@@ -384,9 +384,7 @@
 }
 
 html, body {
-  display: flex;
   height: 100%;
-  justify-content: center;
 }
 
 body {
@@ -935,6 +933,7 @@ section.edit-profile .img-container .skeleton {
 @media only screen and (min-width: 992px) {
   .form {
     width: 35%;
+    max-width: 600px;
   }
 }
 @media only screen and (min-width: 600px) {
@@ -995,32 +994,54 @@ section.form-section .hero-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   width: 50%;
   height: 100%;
 }
 section.form-section .hero-section .img-wrapper {
   display: flex;
   justify-content: center;
+  margin-top: 100px;
 }
 section.form-section .hero-section .img-wrapper img {
   border-radius: 10px;
   height: auto;
-  width: 33.33%;
+  width: 30%;
 }
 section.form-section .hero-section .img-wrapper img:first-child {
   transform: translateX(50px);
+  transition: all 0.3s ease-in-out;
+}
+section.form-section .hero-section .img-wrapper img:first-child:hover {
+  cursor: zoom-in;
+  transform: scale(1.2) translate(0, -50px);
+  box-shadow: 10px 7px 10px rgba(0, 0, 0, 0.15);
+  z-index: 999;
 }
 section.form-section .hero-section .img-wrapper img:nth-child(2) {
   transform: translateY(-50px);
+  transition: all 0.3s ease-in-out;
 }
 section.form-section .hero-section .img-wrapper img:nth-child(2):hover {
-  transform: scale(5);
-  transform: translateY(-30px);
+  box-shadow: 7px -4px 6px rgba(0, 0, 0, 0.15);
+  cursor: zoom-in;
+  transform: scale(1.2) translateY(-40px) translateX(-70px);
   z-index: 9999;
 }
 section.form-section .hero-section .img-wrapper img:last-child {
   transform: translate(-50px, 30px);
+  transition: all 0.3s ease-in-out;
+}
+section.form-section .hero-section .img-wrapper img:last-child:hover {
+  cursor: zoom-in;
+  transform: scale(1.05) translate(10px, -40px);
+  box-shadow: -60px 15px 4px rgba(0, 0, 0, 0.15);
+}
+section.form-section .form-header {
+  opacity: 1;
+  transition: opacity 2s ease-in-out;
+}
+section.form-section .form-header.change-text {
+  opacity: 0;
 }
 
 .buttons-wrapper button {

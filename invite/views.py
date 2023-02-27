@@ -741,15 +741,15 @@ def register_view(request):
         # Ensure form data is not empty
         for val in data.values():
             if not val:
-                return JsonResponse({'message': 'No input field must be empty'}, status=400)
+                return JsonResponse({'message': 'Every input field is required.'}, status=400)
 
         # Validate password
         if not (check_upper(password) and check_lower(password) and check_digit(password)):
-            return JsonResponse({'message': 'Password is invalid'}, status=400)
+            return JsonResponse({'message': 'Password is invalid.'}, status=400)
 
         # Ensure that password is the same as confirm-password
         if password != data.get('confirm-password', ''):
-            return JsonResponse({'message': 'Password must match with confirm password'}, status=400)
+            return JsonResponse({'message': 'Password must match with confirm password.'}, status=400)
 
         if User.objects.filter(email=data.get('email', '')).exists():
             return JsonResponse({'message': 'This email is already registered. Try logging in.'}, status=409)
