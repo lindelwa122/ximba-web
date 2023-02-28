@@ -7,35 +7,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const validateForm = (e) => {
   const code = document.querySelector('.code');
-  const errorContainer = document.querySelector('.error-message');
+  let errorContainer;
+
+  // Remove the invalid input fields
+  document.querySelectorAll('.input-frame').forEach((input) => {
+    input.classList.remove('is-invalid');
+  });
+
+  // Hide every invalid feedback
+  document.querySelectorAll('.error-message').forEach((el) => {
+    if (!el.classList.contains('d-none')) {
+      el.classList.add('d-none');
+    }
+  });
 
   if (code.value === '') {
-    formErrorRender(
-      code,
-      errorContainer,
-      'Code mustn\'t be empty check your emails for a code'
-    );
+    errorContainer = document.querySelector('.code-empty');
+    formErrorRender(code, errorContainer);
     return false;
   }
 
   if (code.value.length !== 6) {
-    formErrorRender(
-      code,
-      errorContainer,
-      'Code must be 6 digits, check your emails for a correct code'
-    );
+    errorContainer = document.querySelector('.code-long');
+    formErrorRender(code, errorContainer);
     return false;
   }
 
   if (isNaN(code.value)) {
-    formErrorRender(
-      code,
-      errorContainer,
-      'Code must only be digits, check your emails for a correct code'
-    );
+    errorContainer = document.querySelector('.code-nan');
+    formErrorRender(code, errorContainer);
     return false;
   }
 
   startBtnLoadingAnimation(e.submitter);
-  sendFormDataToServer('/confirm', '/', errorContainer);
+  sendFormDataToServer('/confirm', '/');
 };

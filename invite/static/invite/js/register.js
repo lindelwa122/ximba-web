@@ -8,6 +8,27 @@ document.addEventListener('DOMContentLoaded', () => {
     validateForm(event);
   });
 
+  const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
+  const firstName = document.querySelector('.firstname');
+  firstName.addEventListener('input', () => {
+    firstName.value = capitalizeFirstLetter(firstName.value);
+  });
+
+  const lastName = document.querySelector('.lastname');
+  lastName.addEventListener('input', () => {
+    lastName.value = capitalizeFirstLetter(lastName.value);
+  });
+
+  const password = document.querySelector('.password');
+  password.addEventListener('input', () => {
+    isPasswordConfirmed()
+      ? (document.querySelector('.confirm').style.color = '#3ec70b')
+      : (document.querySelector('.confirm').style.color = '#212529');
+  });
+
   changeEventDescription();
   setTimeout(changeFormHeaderText, 1000);
   imageLoadHandler();
@@ -34,23 +55,49 @@ const validateUsername = () => {
     hasSymbol(username.value)
       ? (document.querySelector('.user').style.color = '#f00')
       : (document.querySelector('.user').style.color = '#3ec70b');
+
+    if (username.value.length === 0) {
+      document.querySelector('.user').style.color = '#212529';
+    }
   });
 };
 
 const validateForm = (e) => {
   const confirmPassword = document.querySelector('.confirm-password');
-  const errorContainer = document.querySelector('.error-message');
   const password = document.querySelector('.password');
   const username = document.querySelector('.username');
   let isFormValid = true;
 
+  // Remove the invalid input fields
+  document.querySelectorAll('.input-frame').forEach((input) => {
+    input.classList.remove('is-invalid');
+  });
+
+  // Hide every invalid feedback
+  document.querySelectorAll('.error-message').forEach((el) => {
+    if (!el.classList.contains('d-none')) {
+      el.classList.add('d-none');
+    }
+  });
+
   // Ensure no input field is empty
   document.querySelectorAll('.input-frame').forEach((input) => {
     if (input.value.length === 0) {
-      formErrorRender(input, errorContainer, 'Every input field is required**');
+      const inputName = input.classList[0];
+
+      if (inputName === 'firstname' || inputName === 'lastname') {
+        errorContainer = document.querySelector('.names-empty');
+        errorContainer.style.display = 'block';
+      } else {
+        errorContainer = document.querySelector(`.${inputName}-empty`);
+      }
+
+      formErrorRender(input, errorContainer, 'Every input field is required');
       isFormValid = false;
     }
   });
+
+  if (!isFormValid) return;
 
   // Define isPasswordInvalid as list because it creates a very long, unreadable if statement
   const isPasswordInvalid = [
@@ -65,6 +112,7 @@ const validateForm = (e) => {
   // Ensure password is valid
   isPasswordInvalid.forEach((element) => {
     if (element === true) {
+      const errorContainer = document.querySelector('.password-invalid');
       formErrorRender(password, errorContainer, 'Password is invalid**');
       isFormValid = false;
     }
@@ -87,6 +135,7 @@ const validateForm = (e) => {
 
   // Ensure password matches
   if (password.value !== confirmPassword.value) {
+    const errorContainer = document.querySelector('.confirm-password-invalid');
     formErrorRender(
       confirmPassword,
       errorContainer,
@@ -96,11 +145,55 @@ const validateForm = (e) => {
   }
 
   startBtnLoadingAnimation(e.submitter);
-  sendFormDataToServer('/register', '/confirm', errorContainer);
+  sendFormDataToServer('/register', '/confirm');
 };
 
 const changeEventDescription = () => {
-  const adjectives = ['amazing', 'awesome', 'beautiful', 'breathtaking', 'captivating', 'charming', 'colorful', 'creative', 'delightful', 'energetic', 'exciting', 'exhilarating', 'extraordinary', 'fabulous', 'fantastic', 'fun', 'funky', 'glamorous', 'grand', 'happening', 'hottest', 'inspiring', 'joyful', 'lively', 'magical', 'memorable', 'mind-blowing', 'magnificent', 'outstanding', 'remarkable', 'sensational', 'spectacular', 'stunning', 'superb', 'surprising', 'thrilling', 'unforgettable', 'uplifting', 'vibrant', 'wonderful', 'youthful', 'zany', 'zesty'];
+  const adjectives = [
+    'amazing',
+    'awesome',
+    'beautiful',
+    'breathtaking',
+    'captivating',
+    'charming',
+    'colorful',
+    'creative',
+    'delightful',
+    'energetic',
+    'exciting',
+    'exhilarating',
+    'extraordinary',
+    'fabulous',
+    'fantastic',
+    'fun',
+    'funky',
+    'glamorous',
+    'grand',
+    'happening',
+    'hottest',
+    'inspiring',
+    'joyful',
+    'lively',
+    'magical',
+    'memorable',
+    'mind-blowing',
+    'magnificent',
+    'outstanding',
+    'remarkable',
+    'sensational',
+    'spectacular',
+    'stunning',
+    'superb',
+    'surprising',
+    'thrilling',
+    'unforgettable',
+    'uplifting',
+    'vibrant',
+    'wonderful',
+    'youthful',
+    'zany',
+    'zesty',
+  ];
 
   setTimeout(() => {
     for (const adj of adjectives) {
@@ -109,22 +202,22 @@ const changeEventDescription = () => {
       }, 1000 * calcWordsSpeed(adjectives.indexOf(adj)));
     }
   }, 4000);
-}
+};
 
 const calcWordsSpeed = (current) => {
   if (current <= 1) {
     return 1;
   }
 
-  return (calcWordsSpeed(current - 1) * 0.95) + 1;
-}
+  return calcWordsSpeed(current - 1) * 0.95 + 1;
+};
 
 const changeFormHeaderText = () => {
   const headerText = [
     'Say goodbye to boring weekends with our app.',
     'Expand your social circle and meet new friends.',
     'Create unforgettable memories.',
-    'Join us now and start exploring!'
+    'Join us now and start exploring!',
   ];
 
   const formHeader = document.querySelector('.form-header');
@@ -141,14 +234,18 @@ const changeFormHeaderText = () => {
       }, 7000 * (headerText.indexOf(text) + 1));
     }
   }, 20000);
-}
+};
 
 const imageLoadHandler = () => {
   const imgWrapper = document.querySelector('.img-wrapper');
 
   imgWrapper.childNodes.forEach((child) => {
-    child.addEventListener('load', () => {
+    if (child.complete) {
       child.classList.remove('skeleton');
-    })
-  })
-}
+    } else {
+      child.addEventListener('load', () => {
+        child.classList.remove('skeleton');
+      });
+    }
+  });
+};

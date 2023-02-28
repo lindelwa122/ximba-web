@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<section class='form-section align-items-center d-flex flex-column justify-content-center form-section'>
+<section class='form-section align-items-center d-flex flex-column justify-content-center'>
 
   <div class='forms-wrapper w-100'>
     <div class='hero-section'>
@@ -24,15 +24,17 @@
       <form class='w-100'>
         {% csrf_token %}
   
-        <div class='mb-3'>
+        <div class='form-floating mb-3'>
           <input type='text' class='username form-control input-frame' placeholder='Username' name='Username' required/>
+          <label for='username' class='floating-input-placeholder'>Username</label>
         </div>
   
-        <div class='mb-3'>
+        <div class='form-floating mb-3'>
           <input type='password' class='password form-control input-frame' placeholder='Password' name='Passsword' required/>
+          <label for='password' class='floating-input-placeholder'>Password</label>
         </div>
   
-        <div class='mb-3 error-message'></div>
+        <div class='mb-3 text-center error-message'></div>
   
         <div class='mb-3'>
           <input type='submit' value='Login' class='btn btn-primary w-100 attractive'>

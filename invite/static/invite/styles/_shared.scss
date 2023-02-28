@@ -51,6 +51,10 @@ a {
   color: var(--error-message-color);
 }
 
+.floating-input-placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
 main {
   min-height: 100vh;
 }

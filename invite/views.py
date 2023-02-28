@@ -113,7 +113,7 @@ def confirm_email(request):
         user = User.objects.get(username=request.session['username'])
 
         if int(data.get('code', '')) != user.email_code:
-            return JsonResponse({'message': 'Your code is incorrect. Try checking your emails again.'}, status=400)
+            return JsonResponse({'error_type': 'confirm_code_not_match'}, status=400)
 
         time_difference = localtime() - user.code_generation_date
         if (time_difference).seconds > 916:
@@ -127,7 +127,7 @@ def confirm_email(request):
                 [user.email],
                 fail_silently=False,
             )
-            return JsonResponse({'message': 'The code has expired. A new code has been sent to your emails.'}, status=400)
+            return JsonResponse({'error_type': 'confirm_code_expired'}, status=400)
 
         user.is_email_confirmed = True
         user.save()
@@ -607,7 +607,7 @@ def login_view(request):
         )
 
         if user is None:
-            return JsonResponse({'message': 'Username/Password is incorrect. Try resetting your password.'}, status=403)
+            return JsonResponse({'error_type': 'login'}, status=400)
 
         login(request, user)
         return JsonResponse({}, status=200)
@@ -633,15 +633,15 @@ def new_password(request, username, access):
         # Ensure form data is not empty
         for val in data.values():
             if not val:
-                return JsonResponse({'message': 'No input field must be empty'}, status=400)
+                return JsonResponse({'error_type': 'empty'}, status=400)
 
         # Validate password
         if not (check_upper(password) and check_lower(password) and check_digit(password)):
-            return JsonResponse({'message': 'Password is invalid'}, status=400)
+            return JsonResponse({'error_type': 'password_invalid'}, status=400)
 
         # Ensure that password is the same as confirm-password
         if password != data.get('confirm-password', ''):
-            return JsonResponse({'message': 'Password must match with confirm password'}, status=400)
+            return JsonResponse({'error_type': 'confirm_invalid'}, status=400)
 
         user = User.objects.get(username=username)
         user.set_password(password)
@@ -741,18 +741,18 @@ def register_view(request):
         # Ensure form data is not empty
         for val in data.values():
             if not val:
-                return JsonResponse({'message': 'Every input field is required.'}, status=400)
+                return JsonResponse({'error_type': 'empty'}, status=400)
 
         # Validate password
         if not (check_upper(password) and check_lower(password) and check_digit(password)):
-            return JsonResponse({'message': 'Password is invalid.'}, status=400)
+            return JsonResponse({'error_type': 'password_invalid'}, status=400)
 
         # Ensure that password is the same as confirm-password
         if password != data.get('confirm-password', ''):
-            return JsonResponse({'message': 'Password must match with confirm password.'}, status=400)
+            return JsonResponse({'error_type': 'confirm_invalid'}, status=400)
 
         if User.objects.filter(email=data.get('email', '')).exists():
-            return JsonResponse({'message': 'This email is already registered. Try logging in.'}, status=409)
+            return JsonResponse({'error_type': 'mail_taken'}, status=409)
 
         try:
             user = User.objects.create_user(
@@ -767,7 +767,7 @@ def register_view(request):
             user.save()
 
         except IntegrityError:
-            return JsonResponse({'message': 'Username is already taken. Try a different one'}, status=409)
+            return JsonResponse({'error_type': 'username_taken'}, status=409)
 
         confirm_account_code = User.objects.get(username=username).email_code
 
@@ -783,7 +783,6 @@ def register_view(request):
 
         request.session['username'] = username
 
-
         return JsonResponse({}, status=200)
 
     else:
@@ -798,9 +797,9 @@ def reset_password(request):
         try:
             user = User.objects.get(email=email)
         except ObjectDoesNotExist:
-            return JsonResponse({'message': 'Email is not found in our database'}, status=404)
+            return JsonResponse({'error_type': 'mail_404'}, status=404)
 
-        user.reset_password = generate_hash(20)
+        user.reset_password = uuid4().hex
         user.save()
 
         username = user.username
@@ -814,7 +813,8 @@ def reset_password(request):
             fail_silently=False,
         )
 
-        return JsonResponse({'message': 'A link has been sent to your email, use it to reset your password'}, status=400)
+
+        return JsonResponse({'error_type': 'link_sent'}, status=400)
 
     else:
         return render(request, 'invite/reset_password.html')

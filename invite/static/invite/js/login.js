@@ -5,18 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorContainer = document.querySelector('.error-message');
     document.querySelectorAll('.input-frame').forEach((input) => {
       if (input.value.length === 0) {
-        formErrorRender(
-          input,
-          errorContainer,
-          'Every input field is required**'
-        );
+        formErrorRender(input, errorContainer);
         invalid = true;
       }
     });
 
     if (!invalid) {
       startBtnLoadingAnimation(event.submitter);
-      sendFormDataToServer('/login', '/', errorContainer);
+      sendFormDataToServer('/login', '/');
     }
   });
 

@@ -6,32 +6,56 @@
 
 {% block body %}
 
-<section class='d-flex align-items-center flex-column justify-content-center'>
+<section class='d-flex align-items-center flex-column justify-content-center form-section'>
 
-  <div class='d-flex align-content-center flex-column form'>
-    <img class='logo rounded-circle mb-3'
-      src='{% static "invite/images/app/logo.png" %}'
-      alt='This is a logo'>
-
-    <form>
-      {% csrf_token %}
-
-      <p class='text-center'>The code has been sent to your email. The code will expire in 15 minutes.
-      </p>
-
-      <div class='mb-3'>
-        <input type='number' name='code' class='code form-control input-frame' placeholder='Enter code here'>
+  <div class='forms-wrapper w-100'>
+    <div class='hero-section'>
+      <div class='form-header font-headline text-center'>Your one-stop-shop for all the hottest events.</div>
+      <div class='img-wrapper-login'>
+        <img class='login-img' src='{% static "/invite/images/app/logo.png" %}' alt='logo'>
       </div>
+    </div>
 
-      <div class='mb-3 error-message'></div>
+    <div class='d-flex align-content-center flex-column form'>
+      <img class='logo rounded-circle mb-3'
+        src='{% static "invite/images/app/logo.png" %}'
+        alt='This is a logo'>
 
-      <div class='mb-3'>
-        <input type='submit' class='btn btn-primary w-100' value='Confirm Email'>
-        <button class='btn btn-primary w-100 d-none' disabled>
-          <span class='spinner'></span>
-        </button>
-      </div>
-    </form>
+      <form>
+        {% csrf_token %}
+
+        <p class='text-center'>The code has been sent to your email. The code will expire in 15 minutes.
+        </p>
+
+        <div class='form-floating mb-3'>
+          <input type='number' name='code' class='code form-control input-frame' placeholder='Enter code here'>
+          <label for='code' class='floating-input-placeholder'>Enter code here</label>
+          <div class='error-message feedback-empty code-empty d-none'>
+            Enter the code we sent you.
+          </div>
+          <div class='error-message code-long d-none'>
+            The code must have only 6 digits.
+          </div>
+          <div class='error-message code-nan d-none'>
+            The code must be a number.
+          </div>
+          <div class='error-message code-invalid d-none'>
+            Your code is incorrect! Check your emails.
+          </div>
+          <div class='error-message code-expired d-none'>
+            The code has expired! A new code has been sent to your email.
+          </div>
+        </div>
+
+        <div class='mb-3'>
+          <input type='submit' class='btn btn-primary w-100' value='Confirm Email'>
+          <button class='btn btn-primary w-100 d-none' disabled>
+            <span class='spinner'></span>
+          </button>
+        </div>
+      </form>
+    </div>
+
   </div>
 
 </section>

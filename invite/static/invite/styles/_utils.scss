@@ -10,8 +10,6 @@
   transition: all 0.2s ease-in-out;
 
   &:hover,
-  &:focus,
-  &:active,
   &:disabled {
     // Use a linear-gradient to create a background that fades to transparent at the bottom
     background-image: linear-gradient(to bottom, $theme, transparent);

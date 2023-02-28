@@ -59,7 +59,7 @@
     line-height: 20px;
   }
 }
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:disabled {
+.btn-primary:hover, .btn-primary:disabled {
   background-image: linear-gradient(to bottom, var(--primary-color), transparent);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
@@ -94,7 +94,7 @@
     line-height: 20px;
   }
 }
-.btn-primary-outline:hover, .btn-primary-outline:focus, .btn-primary-outline:active, .btn-primary-outline:disabled {
+.btn-primary-outline:hover, .btn-primary-outline:disabled {
   background-image: linear-gradient(to bottom, var(--background-lg-color), transparent);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
@@ -132,7 +132,7 @@
     line-height: 20px;
   }
 }
-.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .btn-secondary:disabled {
+.btn-secondary:hover, .btn-secondary:disabled {
   background-image: linear-gradient(to bottom, var(--secondary-color), transparent);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
@@ -167,7 +167,7 @@
     line-height: 20px;
   }
 }
-.btn-secondary-outline:hover, .btn-secondary-outline:focus, .btn-secondary-outline:active, .btn-secondary-outline:disabled {
+.btn-secondary-outline:hover, .btn-secondary-outline:disabled {
   background-image: linear-gradient(to bottom, var(--background-lg-color), transparent);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
@@ -455,6 +455,10 @@ a {
 
 .display-error {
   color: var(--error-message-color);
+}
+
+.floating-input-placeholder {
+  color: rgba(0, 0, 0, 0.5);
 }
 
 main {
@@ -929,13 +933,14 @@ section.edit-profile .img-container .skeleton {
     box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.15);
     padding: 20px;
     margin-bottom: 0;
+    min-width: 400px;
     width: 50%;
   }
 }
 @media only screen and (min-width: 992px) {
   .form {
     width: 35%;
-    max-width: 600px;
+    max-width: 500px;
   }
 }
 @media only screen and (min-width: 992px) {
@@ -1018,7 +1023,6 @@ section.form-section .form-header.change-text {
   opacity: 0;
 }
 section.form-section .hero-section {
-  align-items: center;
   display: none;
   flex-direction: column;
   height: 500px;
@@ -1031,7 +1035,6 @@ section.form-section .hero-section {
 }
 section.form-section .hero-section .img-wrapper {
   display: flex;
-  justify-content: center;
   margin-top: 100px;
 }
 section.form-section .hero-section .img-wrapper img {
@@ -1075,9 +1078,9 @@ section.form-section .hero-section .img-wrapper-login {
 }
 section.form-section .hero-section .img-wrapper-login img {
   border-radius: 10px;
-  height: auto;
+  height: 100%;
   transition: all 3s ease-in-out;
-  width: 100%;
+  width: auto;
 }
 section.form-section .hero-section .img-wrapper-login img.low-opacity {
   opacity: 0;

@@ -75,18 +75,13 @@ const isPasswordConfirmed = () => {
 };
 
 // Renders form errors
-const formErrorRender = (inputContainer, errorContainer, message) => {
-  inputContainer.style.borderColor = '#f00';
-  errorContainer.innerText = message;
+const formErrorRender = (inputContainer, errorContainer) => {
+  inputContainer.classList.add('is-invalid');
+  errorContainer.classList.remove('d-none');
 };
 
 // Sends form data to the server
-const sendFormDataToServer = (
-  routeTo,
-  routeNext,
-  errorContainer,
-  method = 'POST'
-) => {
+const sendFormDataToServer = (routeTo, routeNext, method = 'POST') => {
   const data = {};
   const csrfToken = document.querySelector(
     'input[name="csrfmiddlewaretoken"]'
@@ -94,7 +89,14 @@ const sendFormDataToServer = (
 
   // Collect form data
   document.querySelectorAll('.input-frame').forEach((element) => {
+    element.classList.remove('is-invalid');
     data[element.classList[0]] = element.value;
+  });
+
+  document.querySelectorAll('.error-message').forEach((element) => {
+    if (!element.classList.contains('d-none')) {
+      element.classList.add('d-none');
+    }
   });
 
   fetch(routeTo, {
@@ -110,19 +112,83 @@ const sendFormDataToServer = (
 
       if (response.status === 200) {
         window.location.href = routeNext;
-        return;
       }
       return response.json();
     })
-    .then((data) => {
-      formErrorHandler(data.message);
+    .then(({ error_type }) => {
+      console.log(error_type);
+      formErrorHandler(error_type);
     })
     .catch((error) => {
-      errorContainer.innerText = error;
-      console.error(error)
-    })
+      console.error(error);
+    });
 };
 
-const formErrorHandler = (error_type) => {
+const formErrorHandler = (errorType) => {
+  let errorContainer;
+  let passwordField = document.querySelector('.password');
+  let confirmPasswordField = document.querySelector('.confirm-password');
+  let resetEmailField = document.querySelector('.email');
+  let confirmCodeField = document.querySelector('.code');
 
-}
+  switch (errorType) {
+    case 'confirm_code_expired':
+      errorContainer = document.querySelector('.code-expired');
+      formErrorRender(confirmCodeField, errorContainer);
+      throw new Error('Code incorrect.');
+
+    case 'confirm_code_not_match':
+      errorContainer = document.querySelector('.code-invalid');
+      formErrorRender(confirmCodeField, errorContainer);
+      throw new Error('Code incorrect.');
+
+    case 'confirm_invalid':
+      errorContainer = document.querySelector('.confirm-password-invalid');
+      formErrorRender(confirmPasswordField, errorContainer);
+      throw new Error("Passwords don't match.");
+
+    case 'empty':
+      const inputFields = document.querySelectorAll('.input-frame');
+      document.querySelectorAll('.feedback-empty').forEach((el, index) => {
+        formErrorRender(inputFields[index], el);
+      });
+      throw new Error('Form empty');
+
+    case 'link_sent':
+      errorContainer = document.querySelector('.link-sent');
+      errorContainer.style.color = '#3ec70b';
+      emailField.style.borderColor = '#3ec70b';
+      formErrorRender(emailField, errorContainer);
+      throw new Error('Link sent');
+
+    case 'login':
+      errorContainer = document.querySelector('.error-message');
+      errorContainer.textContent =
+        'Username/Password incorrect. Try resetting your password.';
+      document.querySelectorAll('.input-frame').forEach((input) => {
+        input.classList.add('is-invalid');
+      });
+      throw new Error('Username/Password incorrect.');
+
+    case 'mail_404':
+      errorContainer = document.querySelector('.email-404');
+      formErrorRender(resetEmailField, errorContainer);
+      throw new Error('Email not found on our databases');
+
+    case 'mail_taken':
+      errorContainer = document.querySelector('.email-taken');
+      formErrorRender(emailField, errorContainer);
+      throw new Error('Email is already taken');
+
+    case 'password_invalid':
+      errorContainer = document.querySelector('.password-invalid');
+      formErrorRender(passwordField, errorContainer);
+      throw new Error('Password is invalid');
+
+    case 'username_taken':
+      let usernameField = document.querySelector('.username');
+      errorContainer = document.querySelector('.username-taken');
+      formErrorRender(usernameField, errorContainer);
+      throw new Error('Username is already taken');
+  }
+};

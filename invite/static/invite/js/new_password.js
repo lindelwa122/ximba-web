@@ -6,21 +6,47 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault();
     validateForm(event);
   });
+
+  const password = document.querySelector('.password');
+  password.addEventListener('input', () => {
+    isPasswordConfirmed()
+      ? (document.querySelector('.confirm').style.color = '#3ec70b')
+      : (document.querySelector('.confirm').style.color = '#212529');
+  });
 });
 
 const validateForm = (e) => {
   const confirmPassword = document.querySelector('.confirm-password');
-  const errorContainer = document.querySelector('.error-message');
+  let errorContainer;
   const password = document.querySelector('.password');
   let isFormValid = true;
+
+  // Remove the invalid input fields
+  document.querySelectorAll('.input-frame').forEach((input) => {
+    input.classList.remove('is-invalid');
+  });
+
+  // Hide every invalid feedback
+  document.querySelectorAll('.error-message').forEach((el) => {
+    if (!el.classList.contains('d-none')) {
+      el.classList.add('d-none');
+    }
+  });
 
   // Ensure no input field is empty
   document.querySelectorAll('.input-frame').forEach((input) => {
     if (input.value.length === 0) {
-      formErrorRender(input, errorContainer, 'Every input field is required**');
+      const inputName = input.classList[0];
+      errorContainer = document.querySelector(`.${inputName}-empty`);
+
+      formErrorRender(input, errorContainer);
       isFormValid = false;
     }
   });
+
+  if (!isFormValid) {
+    return;
+  }
 
   // Define isPasswordInvalid as list because it creates a very long, unreadable if statement
   const isPasswordInvalid = [
@@ -35,7 +61,8 @@ const validateForm = (e) => {
   // Ensure password is valid
   isPasswordInvalid.forEach((element) => {
     if (element === true) {
-      formErrorRender(password, errorContainer, 'Password is invalid**');
+      let errorContainer = document.querySelector('.password-invalid');
+      formErrorRender(password, errorContainer);
       isFormValid = false;
     }
   });
@@ -47,16 +74,11 @@ const validateForm = (e) => {
 
   // Ensure password matches
   if (password.value !== confirmPassword.value) {
-    formErrorRender(
-      confirmPassword,
-      errorContainer,
-      'Password does not match**'
-    );
+    errorContainer = document.querySelector('.confirm-password-invalid');
+    formErrorRender(confirmPassword, errorContainer);
     return false;
   }
 
-  
-
   startBtnLoadingAnimation(e.submitter);
-  sendFormDataToServer(window.location.pathname, '/login', errorContainer);
+  sendFormDataToServer(window.location.pathname, '/login');
 };
