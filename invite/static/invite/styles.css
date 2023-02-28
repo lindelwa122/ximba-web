@@ -461,6 +461,20 @@ a {
   color: rgba(0, 0, 0, 0.5);
 }
 
+.form-floating > .form-control, .form-floating > .form-control-plaintext, .form-floating > .form-select {
+  height: calc(3rem + 2px);
+}
+@media only screen and (min-width: 600px) {
+  .form-floating > .form-control, .form-floating > .form-control-plaintext, .form-floating > .form-select {
+    height: calc(3.3rem + 2px);
+  }
+}
+@media only screen and (min-width: 992px) {
+  .form-floating > .form-control, .form-floating > .form-control-plaintext, .form-floating > .form-select {
+    height: calc(3.5rem + 2px);
+  }
+}
+
 main {
   min-height: 100vh;
 }
