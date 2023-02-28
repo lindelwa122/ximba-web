@@ -461,6 +461,10 @@ a {
   color: rgba(0, 0, 0, 0.5);
 }
 
+.form-floating > .form-control, .form-floating > .form-control-plaintext, .form-floating > .form-select {
+  height: 0 !important;
+}
+
 main {
   min-height: 100vh;
 }
