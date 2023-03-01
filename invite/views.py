@@ -789,6 +789,23 @@ def register_view(request):
         return render(request, 'invite/register.html')
 
 
+def resend_code(request):
+    username = request.session['username']
+    user = get_object_or_404(User, username=username)
+    code = generate_code()
+    user.email_code = code
+    user.save()
+
+    send_mail(
+        'Confirm your email',
+        f'Hello, {username}. Use this code: {code} to confirm your email.',
+        'portfolio@livingdreams.com',
+        [user.email],
+        fail_silently=False,
+    )
+
+    return JsonResponse({}, status=200)
+
 def reset_password(request):
     if request.method == 'POST':
         data = loads(request.body)

@@ -509,6 +509,14 @@ body.modal-open {
   overflow: hidden;
 }
 
+.complete-setup-container {
+  padding: 0 !important;
+}
+.complete-setup-container div:hover {
+  background-color: var(--bs-gray-100);
+  cursor: pointer;
+}
+
 main {
   width: 100%;
 }
@@ -837,11 +845,11 @@ main {
   margin-bottom: 0;
 }
 .push-notification span {
-  color: var(--secondary-color);
-  cursor: pointer;
+  text-decoration: underline;
 }
 .push-notification span:hover {
-  color: var(--main-text-color);
+  color: var(--secondary-color);
+  cursor: pointer;
 }
 
 .top-nav {
@@ -1098,6 +1106,33 @@ section.form-section .hero-section .img-wrapper-login img {
 }
 section.form-section .hero-section .img-wrapper-login img.low-opacity {
   opacity: 0;
+}
+
+.resend-code {
+  font-family: "Roboto", sans-serif;
+  font-size: 8px;
+  line-height: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+  pointer-events: all;
+  text-decoration: underline;
+}
+@media only screen and (min-width: 600px) {
+  .resend-code {
+    font-size: 10px;
+    line-height: 12px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .resend-code {
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
+.resend-code.disabled {
+  pointer-events: none;
+  text-decoration: none;
 }
 
 .buttons-wrapper button {

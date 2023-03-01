@@ -143,9 +143,7 @@ const editEmailFormHandler = () => {
       .then((response) => {
         if (response.status === 200) {
           errorMessageContainer.textContent = `
-          A confirmation code will be sent to your email.
-          Please reload the page to verify your email address.
-          Important: Before reloading, please double-check that you have entered the correct email. If not, simply reset your email information.
+          Check your email for a confirmation code. Once you receive it, reload the page to verify your email address. Please ensure that you entered the correct email before reloading. If not, reset your email information.
           `;
 
           const parent = document.querySelector('form');
@@ -244,7 +242,7 @@ const editFullNameFormHandler = () => {
     })
       .then((response) => {
         if (response.status === 200) {
-          document.querySelector('.modal-page').style.display = 'none';
+          closeMainModal();
           document.querySelector(
             '.full-name'
           ).textContent = `${firstName.value} ${lastName.value}`;
@@ -344,7 +342,7 @@ const editUsernameFormHandler = () => {
 };
 
 const editUsername = () => {
-  addToMainModalHistory('Edit Username', editUsernameForm, '10px');
+  addToMainModalHistory('Edit Username', editUsernameForm);
 
   (async () => {
     const data = await getDataForEditProfile('/get/username');

@@ -3,6 +3,28 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault();
     validateForm(event);
   });
+
+  const resendCode = document.querySelector('.resend-code');
+  resendCode.addEventListener('click', () => {
+    resendCode.textContent = 'Sending Code...';
+    resendCode.classList.add('disabled');
+    fetch('/resend-code')
+      .then((response) => {
+        if (response.status === 200) {
+          alert('A new code has been sent to your email');
+          return
+        }
+        throw new Error('Couldn\'t send code. Check your internet connection and try again later');
+      })
+      .catch((error) => {
+        alert(error);
+        console.error(error);
+      })
+      .finally(() => {
+        resendCode.textContent = 'Send Code.';
+        resendCode.classList.remove('disabled');
+      });
+  });
 });
 
 const validateForm = (e) => {

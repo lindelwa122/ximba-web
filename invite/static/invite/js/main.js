@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.nav-controller').addEventListener('click', () => {
     rotateAnimation('sm');
     
-    document.querySelectorAll('.nav-icon-wrapper').forEach((el) => {
+    document.querySelectorAll('.nav-icon-wrapper').forEach((el, index) => {
       el.classList.add('hide');
       el.classList.remove('show');
       el.style.width = 0;
@@ -200,8 +200,8 @@ const changeAbout = (textarea, token, e) => {
       return response.json();
     })
     .then((data) => {
+      closeMainModal();
       document.querySelector('.bio').textContent = data.message;
-      document.querySelector('.modal-page').style.display = 'none';
     })
     .catch((error) => {
       document.querySelector('.error-message').textContent = error;
@@ -214,6 +214,15 @@ const editAbout = () => {
 
   // Disable submit button
   document.querySelector('.submit-about').disabled = true;
+
+  (async () => {
+    const data = await getDataForEditProfile('/get/about');
+    document.querySelector('.about').value = data.data;
+  })();
+
+  // Count about length
+  document.querySelector('.about-count').textContent =
+      document.querySelector('.about').value.length;
 
   aboutKeyUpHandler();
   aboutFormHandler();
@@ -240,8 +249,8 @@ const changeProfileImg = (csrfToken, form, e) => {
       return response.json();
     })
     .then(() => {
+      closeMainModal();
       const username = window.location.pathname.split('/')[1];
-      document.querySelector('.modal-page').style.display = 'none';
       fetchProfileImage(username);
     })
     .catch(
@@ -369,12 +378,9 @@ const profileImgForm = () => {
 
 // TOP BAR NOTIFICATION
 
-const pushNotificationContent = (bioSetUp, imageSetUp) => {
-
-}
-
 const pushNotification = () => {
   const pushTopNotification = document.querySelector('.push-notification');
+  pushTopNotification.style.display = 'none';
   fetch('/notification/push/top')
     .then((response) => response.json())
     .then((data) => {
@@ -384,59 +390,45 @@ const pushNotification = () => {
         <p>We're almost finished setting up your profile! <span class='complete-profile-setup'>Press here to finish up.</span></p>
         `;
 
-        document
-          .querySelector('.complete-profile-setup')
-          .addEventListener('click', () => {
-            document.querySelector('.modal-page').style.display =
-              'inline-block';
-            const modalTitle = document.querySelectorAll('.modal-page-title');
-            const modalPage = document.querySelector('.modal-page-content');
-            modalTitle.forEach(
-              (title) => (title.textContent = 'Complete profile setup')
-            );
+        // Event click handler
+        const profileSetUpClickHandlers = () => {
+          const editAboutBtn = document.querySelector('.edit-about');
+          if (editAboutBtn) {
+            editAboutBtn.addEventListener('click', editAbout);
+          }
 
-            // Clean up modalPage main content
-            modalPage.innerHTML = '';
+          const editProfileImgBtn = document.querySelector('.edit-profile-img');
+          if (editProfileImgBtn) {
+            editProfileImgBtn.addEventListener('click', editProfileImg);
+          }
+        }
 
-            modalPage.innerHTML += !data.bioSetUp
+        document.querySelector('.complete-profile-setup').addEventListener('click', () => {
+          addToMainModalHistory('Finish Account Setup', () => {
+            const container = document.createElement('div');
+            container.className = 'complete-setup-container';
+
+            container.innerHTML = '';
+            container.innerHTML += !data.bioSetUp
               ? `
             <div class='border-bottom border-dark px-2 py-3 d-flex justify-content-between edit-about'>
-              <div>Add an About</div>
+              <div>Tell us more about you!</div>
             </div> 
             `
               : '';
 
-            modalPage.innerHTML += !data.imageSetUp
+            container.innerHTML += !data.imageSetUp
               ? `
             <div class='border-bottom border-dark px-2 py-3 d-flex justify-content-between edit-profile-img'>
-              <div>Add a Profile Picture</div>
+              <div>Set up your profile picture</div>
             </div>
             `
               : '';
 
-            if (!data.bioSetUp) {
-              document
-                .querySelector('.edit-about')
-                .addEventListener('click', () => {
-                  editAbout();
-                });
-            }
+            return container;
+          }, [ { func: profileSetUpClickHandlers, values: [] } ]);
+        });
 
-            if (!data.imageSetUp) {
-              document
-                .querySelector('.edit-profile-img')
-                .addEventListener('click', () => {
-                  editProfileImg();
-                });
-            }
-
-            document
-              .querySelector('.modal-page-cancel')
-              .addEventListener('click', () => {
-                modalPage.innerHTML = '';
-                document.querySelector('.modal-page').style.display = 'none';
-              });
-          });
       } else if (data.currentStatus === 'notLoggedIn') {
         pushTopNotification.style.display = 'flex';
         pushTopNotification.className = 'auth-actions-container';

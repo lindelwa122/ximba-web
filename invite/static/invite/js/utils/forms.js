@@ -128,7 +128,7 @@ const formErrorHandler = (errorType) => {
   let errorContainer;
   let passwordField = document.querySelector('.password');
   let confirmPasswordField = document.querySelector('.confirm-password');
-  let resetEmailField = document.querySelector('.email');
+  let emailField = document.querySelector('.email');
   let confirmCodeField = document.querySelector('.code');
 
   switch (errorType) {
@@ -166,13 +166,13 @@ const formErrorHandler = (errorType) => {
       errorContainer.textContent =
         'Username/Password incorrect. Try resetting your password.';
       document.querySelectorAll('.input-frame').forEach((input) => {
-        input.classList.add('is-invalid');
+        formErrorRender(input, errorContainer);
       });
       throw new Error('Username/Password incorrect.');
 
     case 'mail_404':
       errorContainer = document.querySelector('.email-404');
-      formErrorRender(resetEmailField, errorContainer);
+      formErrorRender(emailField, errorContainer);
       throw new Error('Email not found on our databases');
 
     case 'mail_taken':

@@ -151,3 +151,16 @@ section.form-section {
     }
   }
 }
+
+.resend-code {
+  @include body-tiny;
+  cursor: pointer;
+  text-decoration: underline;
+  pointer-events: all;
+  text-decoration: underline;
+}
+
+.resend-code.disabled {
+  pointer-events: none;
+  text-decoration: none;
+}

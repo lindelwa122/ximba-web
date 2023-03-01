@@ -30,12 +30,12 @@
         <div class='mb-3'>
           <div class='row'>
             <div class='form-floating col-6'>
-              <input type='text' name='firstname' class='firstname form-control input-frame' placeholder='First Name'>
+              <input type='text' name='firstname' class='firstname form-control input-frame' placeholder='First Name' required>
              <label for='firstname' style='margin-left: 12px;' class='floating-input-placeholder'>First Name</label>
             </div>
     
             <div class='form-floating col-6'>
-              <input type='text' name='lastname' class='lastname form-control input-frame' placeholder='Last Name'>
+              <input type='text' name='lastname' class='lastname form-control input-frame' placeholder='Last Name' required>
               <label for='lastname' style='margin-left: 12px;' class='floating-input-placeholder'>Last Name</label>
             </div>
           </div>
@@ -46,7 +46,7 @@
 
   
         <div class='form-floating mb-3'>
-          <input type='text' name='username' class='username form-control input-frame' placeholder='Username'>
+          <input type='text' name='username' class='username form-control input-frame' placeholder='Username' required>
           <label for='username' class='floating-input-placeholder'>Username</label>
           <div class='error-message feedback-empty username-empty d-none'>
             Pick a username that represent you!
@@ -63,7 +63,7 @@
         </div>
   
         <div class='form-floating mb-3'>
-          <input type='email' name='email' class='email form-control input-frame' placeholder='Email'>
+          <input type='email' name='email' class='email form-control input-frame' placeholder='Email' required>
           <label for='email' class='floating-input-placeholder'>Email</label>
           <div class='error-message feedback-empty email-empty d-none'>
             Which email should we use?
@@ -73,9 +73,8 @@
           </div>
         </div>
 
-  
         <div class='form-floating mb-3'>
-          <input type='password' name='password' class='password form-control input-frame' placeholder='Password'>
+          <input type='password' name='password' class='password form-control input-frame' placeholder='Password' required>
           <label for='password' class='floating-input-placeholder'>Password</label>
           <div class='error-message feedback-empty password-empty d-none'>
             Choose a password that's unbreakable!
@@ -84,7 +83,6 @@
             That password is a little too weak.
           </div>
         </div>
-
   
         <div class='mb-3 d-none password-help form-help'>
           <div class='char'>Password must have characters between 8 and 16</div>
@@ -95,7 +93,7 @@
         </div>
   
         <div class='form-floating mb-3'>
-          <input type='password' name='confirm-password' class='confirm-password form-control input-frame' placeholder='Confirm Password'>
+          <input type='password' name='confirm-password' class='confirm-password form-control input-frame' placeholder='Confirm Password' required>
           <label for='confirm-password' class='floating-input-placeholder'>Confirm Password</label>
           <div class='error-message feedback-empty confirm-password-empty d-none'>
             Retype your password!
@@ -127,8 +125,6 @@
     </div>
   </div>
 </section>
-
-
 
 <script src='{% static "invite/js/utils/forms.js" %}'></script>
 <script src='{% static "invite/js/register.js" %}'></script>

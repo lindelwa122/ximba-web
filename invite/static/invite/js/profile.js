@@ -45,8 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (elClicked.classList.contains('remove-friend')) {
         removeFriend(elClicked, username);
       }
-      
-    })
+    });
   }
 
   document.querySelector('.following-wrapper').addEventListener('click', () => {

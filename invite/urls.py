@@ -37,6 +37,7 @@ urlpatterns = [
     path('friend/remove', views.delete_friendship, name='delete_friendship'),
     path('register', views.register_view, name='register'),
     path('reset_password', views.reset_password, name='reset_password'),
+    path('resend-code', views.resend_code, name='resend_code'),
     path('search', views.search, name='search_user'),
     path('search/recent', views.recent_search, name='recent_search'),
     path('search/recent/add/<str:username>', views.add_to_recent_searches, name='add_to_recent'),
