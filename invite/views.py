@@ -34,6 +34,43 @@ def find_similar(query, names):
             result.append(name)
     return result
 
+
+# Function that generates a unique username
+def generate_username(name, surname, email, taken_usernames):
+    # Extract the first four letters of the name and surname
+    prefix = (name[:4] + surname[:4]).lower()
+    # Extract the number from the email
+    num = ''.join(filter(str.isdigit, email))
+    # Generate a unique username
+    username = prefix + num
+    while username in taken_usernames:
+        num = str(int(num) + 1)
+        username = prefix + num
+    return username
+
+# Test
+# taken_usernames = ['tlotlo', 'tlotlo50', 'tlotlo10', 'tlomot1', 'tlomot12', 'dragon22']
+# name = input('Enter Name: ')
+# surname = input('Enter Surname: ')
+# email = input('Enter email: ')
+# username_choice = input('Choose a Username!: ')
+
+# # Checks if the user's username choice is not in the 'taken_usernames' list
+# if username_choice not in taken_usernames:
+#     print('You may proceed! 😊')
+    
+# Gives the user a new username using their entry as well as other usernames combining their name, surname and email.
+elif username_choice in taken_usernames:
+    print('Username already taken! Try these usernames: ')
+    username = generate_username(name, surname, email, taken_usernames)
+    for i in range(5):
+        print(f'{username_choice}{i}') 
+    print('\n')    
+    print('Other usernames:')
+    for i in range(5):    
+        print(f"{username}{i}")
+
+
 @login_required(login_url='/login')
 def index(request):
     user = User.objects.get(username=request.user.username)
