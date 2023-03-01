@@ -15,6 +15,12 @@
   }
 }
 
+.convince-user-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
 .count-group-container > div {
   // background-color: var(--background-color-lg);
   border: 1px solid var(--primary-color);
