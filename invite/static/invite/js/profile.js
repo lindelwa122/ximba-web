@@ -298,6 +298,15 @@ const toggleFollowStatusForUser = (action, btn, username, newTextContentAfterFol
       if (response.status === 200) {
         // If the request is successful, update the button's text content and class to reflect the new follow/unfollow status
         btn.textContent = action === 'follow' ? newTextContentAfterFollowAction : 'Follow';
+
+        // Increase/Decrease the following count
+        const followingCount = document.querySelector('.following-count');
+        if (action === 'follow') {
+          followingCount.textContent = parseInt(followingCount.textContent) + 1;
+        } else {
+          followingCount.textContent = parseInt(followingCount.textContent) - 1;
+        }
+        
         btn.classList.replace(initialClassToken, newClassToken);
       } else {
         // If the request fails, throw an error
