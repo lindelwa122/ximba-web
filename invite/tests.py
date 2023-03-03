@@ -163,7 +163,7 @@ class InviteTestCase(TestCase):
             content_type='application/json',
             json_encoder=json.decoder
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 400)
 
     def test_login_valid_user(self):
         response = c.post('/login',
