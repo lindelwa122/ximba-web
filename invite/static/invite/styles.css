@@ -730,11 +730,17 @@ main {
 }
 
 .nav-lg-wrapper {
+  display: none;
   height: 100%;
   padding: 20px;
   position: fixed;
   width: 120px;
   z-index: 9999;
+}
+@media only screen and (min-width: 600px) {
+  .nav-lg-wrapper {
+    display: block;
+  }
 }
 .nav-lg-wrapper .animated-nav-icons-lg {
   display: flex;

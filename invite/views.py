@@ -522,6 +522,14 @@ def get_pending_friends(request, username):
     return JsonResponse({'receivers': serialized_receivers, 'requesters': serialized_requesters}, status=200)
 
 
+def get_popular_accounts(request):
+    popular_users = Following.objects.all().values_list('following').order_by('user')[:5]
+    user_ids = [user_id for (user_id,) in popular_users]
+    users = User.objects.filter(id__in=user_ids)
+    serialized_user_data = serialize_data(users)    
+    return JsonResponse({'popular_users': serialized_user_data})
+
+
 def get_profile_count(request, username):
     username = username.strip()
     user = User.objects.get(username=username)

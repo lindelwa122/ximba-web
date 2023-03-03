@@ -107,13 +107,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-from . import config
-
 # Email configuration
-EMAIL_HOST = config.EMAIL_HOST
-EMAIL_PORT = config.EMAIL_PORT
-EMAIL_HOST_USER = config.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = config.EMAIL_HOST_PASSWORD
+EMAIL_HOST = environ['HOST']
+EMAIL_PORT = environ['EMAIL_PORT']
+EMAIL_HOST_USER = environ['USER']
+EMAIL_HOST_PASSWORD = environ['PASSWORD']
 EMAIL_USE_TLS = True
 
 # Internationalization

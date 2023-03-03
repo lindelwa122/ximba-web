@@ -1,5 +1,27 @@
 // AFTER THE DOM CONTENT HAS LOADED
 document.addEventListener('DOMContentLoaded', () => {
+  const getUserFriends = () => {
+    // Add a button depending if user is authenticated (if user is viewing their profile)
+    fetch(`/is-user-authenticated/${username}`)
+      .then((response) => {
+        if (response.status === 200) {
+          document.querySelector('.view-friends-btn-container').innerHTML = `
+            <button class='btn btn-secondary view-pending-friends'>View Pending Friends</button>
+          `
+        }
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        // Fetch the user's friends data
+        fetchFriends();
+        // Add a load event handler for the friends container
+        friendsContainerLoadHandler();
+        // Add a click event handler for the friends container
+        friendsContainerClickHandler();
+      });
+  }
+
+
   // Get the friends wrapper container element
   const friendsWrapper = document.querySelector('.friends-wrapper');
   // If the container exists, add a click event listener to it
@@ -22,26 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `
         // Return the container element
         return container;
-      });
-
-      // Add a button depending if user is authenticated (if user is viewing their profile)
-      fetch(`/is-user-authenticated/${username}`)
-        .then((response) => {
-          if (response.status === 200) {
-            document.querySelector('.view-friends-btn-container').innerHTML = `
-              <button class='btn btn-secondary view-pending-friends'>View Pending Friends</button>
-            `
-          }
-        })
-        .catch((error) => console.error(error))
-        .finally(() => {
-          // Fetch the user's friends data
-          fetchFriends();
-          // Add a load event handler for the friends container
-          friendsContainerLoadHandler();
-          // Add a click event handler for the friends container
-          friendsContainerClickHandler();
-        });
+      }, [{ func: getUserFriends, values: [] }]);
     });
   }
 
@@ -65,14 +68,11 @@ const showSuggestedFriends = () => {
     `
     // Return the container element
     return container;
-  })
-
-  // Fetch the user's suggested friends data
-  fetchSuggestedFriends();
-  // Add a load event handler for the suggested friends container
-  suggestedFriendsContainerLoadHandler();
-  // Add a click event handler for the suggested friends container
-  suggestedFriendsContainerClickHandler();
+  }, [
+    { func: fetchSuggestedFriends, values: [] },
+    { func: suggestedFriendsContainerClickHandler, values: [] },
+    { func: suggestedFriendsContainerLoadHandler, values: [] }
+  ]);
 }
 
 
@@ -96,7 +96,7 @@ const suggestedFriendsContainerClickHandler = () => {
         case 'DIV':
           // Get the clicked account container
           const accountContainer = event.target.closest('.account-container');
-          
+
           if (accountContainer) {
             // Extract the username of the clicked user
             const username = accountContainer.dataset.username;
@@ -123,8 +123,8 @@ const suggestedFriendsContainerClickHandler = () => {
           }
 
           break;
-      }      
-      
+      }
+
     });
 }
 
@@ -134,13 +134,13 @@ const friendsContainerClickHandler = () => {
   document
     .querySelectorAll('.friends-main-content').forEach((el) => {
       el.addEventListener('click', (event) => {
-  
+
         // Check the tag name of the clicked element
         switch (event.target.tagName) {
           case 'DIV':
             // Get the clicked account container
             const accountContainer = event.target.closest('.account-container');
-            
+
             if (accountContainer) {
               // Extract the username of the clicked user
               const username = accountContainer.dataset.username;
@@ -148,13 +148,13 @@ const friendsContainerClickHandler = () => {
               // Navigate to the clicked user's profile page
               window.location.href = username;
             }
-  
+
             break;
-  
+
           case 'BUTTON':
             // Get the clicked button
             const btnClicked = event.target.closest('.add-friend');
-  
+
             if (btnClicked) {
               // Extract the username of the clicked user
               const username = btnClicked.parentElement.parentElement.dataset.username;
@@ -165,7 +165,7 @@ const friendsContainerClickHandler = () => {
               // Send a friend request to the clicked user
               addFriend(btnClicked, username);
             }
-  
+
             // Get accept friend request button
             const acceptFriendRequestBtn = event.target.closest('.accept-friendship');
             if (acceptFriendRequestBtn) {
@@ -175,7 +175,7 @@ const friendsContainerClickHandler = () => {
               // Accept the friend request from the clicked user
               acceptFriendRequest(acceptFriendRequestBtn, username);
             }
-  
+
             // Get remove friend button
             const removeFriendBtn = event.target.closest('.remove-friend');
             if (removeFriendBtn) {
@@ -185,10 +185,10 @@ const friendsContainerClickHandler = () => {
               // Remove the clicked user from the user's friend list
               removeFriend(removeFriendBtn, username);
             }
-  
+
             break;
-        }      
-        
+        }
+
       });
     })
 }
@@ -197,27 +197,27 @@ const friendsContainerClickHandler = () => {
 const viewPendingFriendsClickHandler = () => {
   // Get the button element
   const btn = document.querySelector('.view-friends');
-  
+
   // Remove the event listener for this button
   btn.removeEventListener('click', viewPendingFriendsClickHandler);
-  
+
   // Replace the CSS class of the button to reflect that we are now viewing pending friends
   btn.classList.replace('view-friends', 'view-pending-friends');
-  
+
   // Change the text of the button to reflect that we are now viewing pending friends
   btn.innerHTML = 'View Friends';
-  
+
   // Add an event listener to the button that will fetch the user's list of friends
   btn.addEventListener('click', fetchFriends);
-  
+
   // Change the title of the modal to reflect that we are now viewing pending friends
   document.querySelectorAll('.modal-page-title').forEach((title) => {
-  title.innerHTML = 'Pending Friends';
+    title.innerHTML = 'Pending Friends';
   });
-  
+
   // Fetch the user's list of pending friends
   fetchPendingFriends();
-  }  
+}
 
 // This function adds a load event listener to the friends container
 const friendsContainerLoadHandler = () => {
@@ -323,7 +323,7 @@ const fetchPendingFriends = () => {
     .then(({ receivers, requesters }) => {
       if ([...receivers, ...requesters].length !== 0) {
         // Render the list of friend request receivers and senders
-        
+
         // Check if user is authenticated
         fetch(`/is-user-authenticated/${username}`)
           .then((response) => {
@@ -400,7 +400,7 @@ const acceptFriendRequest = (btn, username) => {
       if (response.status !== 200) {
         throw new Error('Accepting Request Failed. Try again later');
       }
-      
+
       setTimeout(() => {
         btn.innerHTML = 'Remove Friend';
         btn.classList.replace('accept-friendship', 'remove-friend');
@@ -409,7 +409,7 @@ const acceptFriendRequest = (btn, username) => {
         // Increment the friends count and update the text
         const friendsCount = document.querySelector('.friends-count');
         friendsCount.textContent = parseInt(friendsCount.textContent) + 1;
-        
+
         if (parseInt(friendsCount.textContent) === 1) {
           document.querySelector('.friends-text').innerHTML = 'friend';
         } else {
@@ -448,7 +448,7 @@ const removeFriend = (btn, username) => {
       if (response.status !== 200) {
         throw new Error('Removing Friend Failed. Try again later');
       }
-      
+
       setTimeout(() => {
         btn.innerHTML = 'Add Friend';
         btn.classList.replace('remove-friend', 'add-friend');
@@ -473,7 +473,7 @@ const removeFriend = (btn, username) => {
 }
 
 // RENDER DATA
-const renderUserList = (userData, listType, listContainerClassName, append=false) => {
+const renderUserList = (userData, listType, listContainerClassName, append = false) => {
   let buttonHtml;
   switch (listType) {
     case 'suggestions':
@@ -525,7 +525,7 @@ const renderEmptyContentMessage = (message) => {
     <div class='empty-content-msg'>
       <img class='illustration text-center' src='static/invite/images/illustrations/no_messages.gif' alt='Nothing here by Icons8'>
       <div class='message text-center mb-2'>${message}</div>
-      <button class='btn btn-primary friends-btn' onclick=suggestFriends()>Find Friends</button>
+      <button class='btn btn-primary friends-btn' onclick=showSuggestedFriends()>Find Friends</button>
     </div>
   `
 }

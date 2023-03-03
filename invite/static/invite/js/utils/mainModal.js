@@ -34,8 +34,6 @@ const addContentToMainModal = (title, content, callBack) => {
   // Append the new content
   modalPageContent.append(content());
 
-  console.log(callBack);
-
   // Execute function
   for (const item of callBack || []) {
     const {func, values} = item;

@@ -257,11 +257,16 @@ main {
 }
 
 .nav-lg-wrapper {
+  display: none;
   height: 100%;
   padding: 20px;
   position: fixed;
   width: 120px;
   z-index: 9999;
+
+  @include for-tablets {
+    display: block;
+  }
 
   .animated-nav-icons-lg {
     display: flex;

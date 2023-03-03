@@ -28,6 +28,7 @@ urlpatterns = [
     path('profile/add/about', views.edit_about, name='edit_about'),
     path('profile/add/image', views.edit_profile_img, name='edit_profile_image'),
     path('profile/count/<str:username>', views.get_profile_count, name='profile_count'),
+    path('popular-users', views.get_popular_accounts, name='popular_accounts'),
     path('page-not-found', views.render404, name='render404'),
     path('profile/edit', views.edit_profile, name='edit_profile'),
     path('profile/edit/email', views.edit_email, name='edit_email'),
