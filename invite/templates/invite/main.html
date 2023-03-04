@@ -1,0 +1,117 @@
+{% extends 'invite/layout.html' %}
+
+{% load static %}
+
+{% block body %}
+
+<script src='{% static "invite/js/utils/mainModal.js" %}'></script>
+<script src='{% static "invite/js/main.js" %}'></script>
+<script src='{% static "invite/js/friends.js" %}'></script>
+
+<div class='body'>
+  <div class='nav-lg-wrapper'>
+    <nav class='nav-lg'>
+      <div class='animated-nav-icons-lg'>
+        <div class='nav-icon-wrapper-lg' title='Home Page'>
+          <i class='nav-icon bi bi-house-door'></i>
+        </div>
+        <div class='nav-icon-wrapper-lg search-btn' title='Search'>
+          <i class='nav-icon bi bi-search'></i>
+        </div>
+        <div class='nav-icon-wrapper-lg friends-btn' title='Find Friends'>
+          <i class='nav-icon bi bi-person-add'></i>
+        </div>
+        <div class='nav-icon-wrapper-lg notification' title='Notification'>
+          <i class='nav-icon bi bi-bell'></i>
+        </div>
+        <div class='nav-icon-wrapper-lg' title='Saved Events'>
+          <i class='nav-icon bi bi-bookmark'></i>
+        </div>
+        <div class='nav-icon-wrapper-lg view-profile-btn' title='Profile'>
+          <i class='nav-icon bi bi-person'></i>
+        </div>
+      </div>
+      <div class='nav-controller-lg'>
+        <i class='nav-icon bi bi-arrow-down'></i>
+      </div>
+    </nav>
+  </div>
+
+  <main>
+    <div class='push-notification'>
+      
+    </div>
+    <div class='top-nav'>
+      <div>
+        <span>{% block page-icon %}{% endblock %}</span>
+        <span class='font-headline'>{% block page-title %}{% endblock %}</span>
+      </div>
+      <div>
+        {% block page-icon-extra %}{% endblock %}
+      </div>
+    </div>
+
+    {% block main %}{% endblock %}
+
+    <div class='nav-sm-wrapper'>
+      <nav class='nav-sm'>
+        <div class='nav-icon-wrapper'>
+          <i class='nav-icon bi bi-house-door'></i>
+        </div>
+        <div class='nav-icon-wrapper search-btn'>
+          <i class='nav-icon bi bi-search'></i>
+        </div>
+        <div class='nav-icon-wrapper friends-btn'>
+          <i class='nav-icon bi bi-person-add'></i>
+        </div>
+        <div class='nav-icon-wrapper'>
+          <i class='nav-icon bi bi-bookmark'></i>
+        </div>
+        <div class='nav-icon-wrapper view-profile-btn'>
+          <i class='nav-icon bi bi-person'></i>
+        </div>
+        <div class='nav-controller'>
+          <i class='bi bi-arrow-right'></i>
+        </div>
+      </nav>
+    </div>
+    <div class='modal-overlay'></div>
+  </main>
+
+
+</div>
+
+<div class='modal-page'>
+  {% csrf_token %}
+  <div class='header-sm top-nav'>
+    <div>
+      <span class='modal-go-back'>
+        <i class='bi bi-arrow-left'></i>
+      </span>
+      <span class='font-headline modal-page-title'></span>
+    </div>
+    <span class='modal-page-cancel'> 
+      <i class='bi bi-x'></i>
+    </span>
+  </div>
+  
+  <div class='header border-bottom border-dark p-2 d-flex justify-content-between align-items-center font-title'>
+    <div>
+      <span class='modal-go-back'>
+        <i class='bi bi-arrow-left'></i>
+      </span>
+      <span class='modal-page-title'></span>
+    </div>
+    <span class='modal-page-cancel'> 
+      <i class='bi bi-x-lg'></i>
+    </span>
+  </div>
+
+  <div class='modal-page-content'>
+  </div>
+</div>
+
+<script src='{% static "invite/js/search.js" %}'></script>
+<script src='{% static "invite/js/notifications.js" %}'></script>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100vh;
+  @include body;
+
+  @include for-tablets {
+    background-color: var(--background-color-lg);
+  }
+}
+
+a {
+  @include body-tiny;
+}
+
+main {
+  min-height: 100vh;
+}
+
+.profile-img {
+  border-radius: 10px;
+}
+
+section {
+  min-height: 100vh;
+  padding: $general-padding;
+}
+
+section.form-section {
+  min-height: calc(100vh - 20px);
+}

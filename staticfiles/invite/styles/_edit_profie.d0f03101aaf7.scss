@@ -1,0 +1,53 @@
+section.edit-profile {
+  min-height: 100%;
+  padding: 10px 0;
+
+  .bi:not(.bi-pencil-fill) {
+    font-size: 30px;
+    margin-right: 3px;
+  }
+
+  .bi-pencil-fill {
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 25px;
+  }
+
+  .imp {
+    overflow: hidden;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    word-wrap: break-word;
+  }
+
+  .img-container {
+    position: relative;
+
+    i {
+      color: var(--primary-color);
+      font-size: 40px;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    img {
+      border-radius: 10px;
+      filter: brightness(90%);
+      height: 100%;
+      opacity: 90%;
+      width: 25%;
+    }
+
+    .skeleton {
+      width: 25%;
+      aspect-ratio: 1;
+    }
+  }
+}
+
+.stack {
+  padding: $general-padding !important;
+}

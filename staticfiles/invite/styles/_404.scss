@@ -1,0 +1,14 @@
+section.page-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  img {
+    width: 100%;
+  }
+
+  @include for-tablets {
+    flex-direction: row;
+  }
+}

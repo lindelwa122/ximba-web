@@ -6,71 +6,124 @@
 
 {% block body %}
 
-<section class='align-items-center d-flex flex-column justify-content-center'>
+<section class='form-section'>
 
-  <div class='d-flex align-items-center flex-column form'>
-    <img class='logo rounded-circle'
-      src='https://images.unsplash.com/profile-1633364056312-0319b9fc4586image?dpr=1&auto=format&fit=crop&w=150&h=150&q=60&crop=faces&bg=fff'
-      alt='Profile Pic'>
+  <div class='forms-wrapper'>
+    <div class='hero-section'>
+      <div class='form-header font-headline text-center'>Discover the most <span class='events-description'>exciting</span> events near you.</div>
+      <div class='img-wrapper'>
+        <img class='skeleton' loading='lazy' src='https://images.unsplash.com/photo-1582103287241-2762adba6c36' alt=''>
+        <img class='skeleton' loading='lazy' src='https://images.unsplash.com/photo-1583939003579-730e3918a45a' alt=''>
+        <img class='skeleton' loading='lazy' src='https://images.unsplash.com/photo-1519671845924-1fd18db430b8' alt=''>
+      </div>
+    </div>
 
-    <form class='w-100'>
-
-      <div class='row mb-3'>
-        <div class='col-6'>
-          <input type='text' name='firstname' class='firstname form-control input-frame' placeholder='First Name' required>
+    <div class='d-flex align-items-center flex-column form'>
+      <img class='logo rounded-circle'
+        src='{% static "invite/images/app/logo.png" %}'
+        alt='Profile Pic'>
+  
+      <form class='w-100'>
+  
+        {% csrf_token %}
+  
+        <div class='mb-3'>
+          <div class='row'>
+            <div class='form-floating col-6'>
+              <input type='text' name='firstname' class='firstname form-control input-frame' placeholder='First Name' required>
+             <label for='firstname' style='margin-left: 12px;' class='floating-input-placeholder'>First Name</label>
+            </div>
+    
+            <div class='form-floating col-6'>
+              <input type='text' name='lastname' class='lastname form-control input-frame' placeholder='Last Name' required>
+              <label for='lastname' style='margin-left: 12px;' class='floating-input-placeholder'>Last Name</label>
+            </div>
+          </div>
+          <div class='error-message feedback-empty names-empty d-none'>
+            Don't be shy, tell us your full name!
+          </div>
         </div>
 
-        <div class='col-6'>
-          <input type='text' name='lastname' class='lastname form-control input-frame' placeholder='Last Name' required>
+  
+        <div class='form-floating mb-3'>
+          <input type='text' name='username' class='username form-control input-frame' placeholder='Username' required>
+          <label for='username' class='floating-input-placeholder'>Username</label>
+          <div class='error-message feedback-empty username-empty d-none'>
+            Pick a username that represent you!
+          </div>
+          <div class='error-message feedback-empty username-taken d-none'>
+            Username is taken! Please try another one.
+          </div>
         </div>
-      </div>
 
-      <div class='mb-3'>
-        <input type='text' name='username' class='username form-control input-frame' placeholder='Username' required>
-      </div>
+  
+        <div class='mb-3 d-none username-help form-help'>
+          <div class='user-count'>Username must have a characters between 3 and 16</div>
+          <div class='user'>Username must only contain lowercases and numbers</div>
+        </div>
+  
+        <div class='form-floating mb-3'>
+          <input type='email' name='email' class='email form-control input-frame' placeholder='Email' required>
+          <label for='email' class='floating-input-placeholder'>Email</label>
+          <div class='error-message feedback-empty email-empty d-none'>
+            Which email should we use?
+          </div>
+          <div class='error-message feedback-empty email-taken d-none'>
+            Email is already registered! Try logging in.
+          </div>
+        </div>
 
-      <div class='mb-3 d-none username-help form-help'>
-        <div class='user-count'>Username must have a characters between 3 and 16</div>
-        <div class='user'>Username must only contain lowercases and numbers</div>
-      </div>
+        <div class='form-floating mb-3'>
+          <input type='password' name='password' class='password form-control input-frame' placeholder='Password' required>
+          <label for='password' class='floating-input-placeholder'>Password</label>
+          <div class='error-message feedback-empty password-empty d-none'>
+            Choose a password that's unbreakable!
+          </div>
+          <div class='error-message password-invalid d-none'>
+            That password is a little too weak.
+          </div>
+        </div>
+  
+        <div class='mb-3 d-none password-help form-help'>
+          <div class='char'>Password must have characters between 8 and 16</div>
+          <div class='upper'>Password must have at least one uppercase letter</div>
+          <div class='lower'>Password must have at least one lower letter</div>
+          <div class='number'>Password must have at least one number</div>
+          <div class='symbol'>Password must have at least one symbol</div>
+        </div>
+  
+        <div class='form-floating mb-3'>
+          <input type='password' name='confirm-password' class='confirm-password form-control input-frame' placeholder='Confirm Password' required>
+          <label for='confirm-password' class='floating-input-placeholder'>Confirm Password</label>
+          <div class='error-message feedback-empty confirm-password-empty d-none'>
+            Retype your password!
+          </div>
+          <div class='error-message confirm-password-invalid d-none'>
+            Oops, those passwords don't seem to match up.
+          </div>
+        </div>
 
-      <div class='mb-3'>
-        <input type='email' name='email' class='email form-control input-frame' placeholder='Email' required>
-      </div>
-
-      <div class='mb-3'>
-        <input type='password' name='password' class='password form-control input-frame' placeholder='Password' required>
-      </div>
-
-      <div class='mb-3 d-none password-help form-help'>
-        <div class='char'>Password must have characters between 8 and 16</div>
-        <div class='upper'>Password must have at least one uppercase letter</div>
-        <div class='lower'>Password must have at least one lower letter</div>
-        <div class='number'>Password must have at least one number</div>
-        <div class='symbol'>Password must have at least one symbol</div>
-      </div>
-
-      <div class='mb-3'>
-        <input type='password' name='confirm-password' class='confirm-password form-control input-frame' placeholder='Confirm Password' required>
-      </div>
-
-      <div class='mb-3 d-none confirm-help form-help'>
-        <div class='confirm'>Password must match</div>
-      </div>
-
-      <div class='mb-3 error-message'></div>
-
-      <div>
-        <input type='submit' value='Register' class='btn btn-primary form-control w-100'>
-      </div>
-
-    </form>
-
-    <hr class='w-100'>
-
-    <a type='button' href='' class='btn btn-secondary w-50'>Login</a>
+  
+        <div class='mb-3 d-none confirm-help form-help'>
+          <div class='confirm'>Password must match</div>
+        </div>
+  
+        <div class='mb-3 error-message'></div>
+  
+        <div>
+          <input type='submit' value='Register' class='btn btn-primary form-control w-100 attractive'>
+          <button class='btn btn-primary w-100 d-none' disabled>
+            <span class='spinner'></span>
+          </button>
+        </div>
+  
+      </form>
+  
+      <hr class='w-100'>
+  
+      <a type='button' class='btn btn-secondary w-50' href='{% url "invite:login" %}'>Login</a>
+    </div>
   </div>
-
 </section>
 
 <script src='{% static "invite/js/utils/forms.js" %}'></script>

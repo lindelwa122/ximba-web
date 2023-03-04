@@ -1,0 +1,28 @@
+.error-message {
+  color: var(--error-message-color);
+}
+
+.form {
+  align-items: center;
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  
+  @include for-tablets {
+    border-radius: $border-radius;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    width: 50%;
+  }
+
+  @include for-desktops {
+    width: 30%;
+  }
+}
+
+.form-help {
+  @include body-tiny;
+}
+
