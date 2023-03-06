@@ -561,29 +561,30 @@ def get_user_profile_image(request, username):
     return JsonResponse({'imagePath': get_img_url(profile.profile_img)}, status=200)
 
 
-@login_required(login_url='/login')
 def index(request):
-    user = User.objects.get(username=request.user.username)
-    if not user.is_email_confirmed:
-        user.email_code = generate_code()
-        user.code_generation_date = localtime()
-        user.save()
-        send_mail(
-            'Welcome to GetVyt',
-            f'Hello, {user.first_name}. Use this code: {user.email_code} to confirm your email.',
-            'portfolio@livingdreams.com',
-            [user.email],
-            fail_silently=False,
-        )
-        request.session['username'] = request.user.username
+    return render(request, 'invite/index.html')
 
-        profile = Profile.objects.filter(user=user)
-        if not profile.exists():
-            Profile.objects.create(user=user)
+    # user = User.objects.get(username=request.user.username)
+    # if not user.is_email_confirmed:
+    #     user.email_code = generate_code()
+    #     user.code_generation_date = localtime()
+    #     user.save()
+    #     send_mail(
+    #         'Welcome to GetVyt',
+    #         f'Hello, {user.first_name}. Use this code: {user.email_code} to confirm your email.',
+    #         'portfolio@livingdreams.com',
+    #         [user.email],
+    #         fail_silently=False,
+    #     )
+    #     request.session['username'] = request.user.username
+
+    #     profile = Profile.objects.filter(user=user)
+    #     if not profile.exists():
+    #         Profile.objects.create(user=user)
         
-        return HttpResponseRedirect(reverse('invite:confirm_email'))
+    #     return HttpResponseRedirect(reverse('invite:confirm_email'))
 
-    return HttpResponseRedirect(reverse('invite:profile', kwargs={'username': request.user.username}))
+    # return HttpResponseRedirect(reverse('invite:profile', kwargs={'username': request.user.username}))
 
 
 def is_user_authenticated(request, username):

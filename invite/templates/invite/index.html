@@ -1,16 +1,271 @@
-{% extends 'invite/layout.html' %} 
+{% extends 'invite/main.html' %}
 
-{% block body %}
+{% load static %}
 
-<h1>You are logged in. This is the main page</h1>
+{% block main %}
 
-<a href='{% url "invite:login" %}'>Login</a>
-<a href='{% url "invite:register" %}'>Register</a>
-<a href='{% url "invite:confirm_email" %}'>Confirm email</a>
-<a href='{% url "invite:profile" user.username%}'>Profile</a>
-<a href='{% url "invite:edit_profile" %}'>Edit Profile</a>
-<a href='{% url "invite:main" %}'>Main</a>
-<a href='{% url "invite:logout" %}'>Logout</a>
+<section class='home-page'>
+  <div class='home-nav d-flex justify-content-between align-items-center d-md-none'>
+    <div class='left-nav'>
+      <i class='bi bi-plus-square'></i>
+      <div class='font-headline'>Add Event</div>
+    </div>
+    <div class='right-nav'>
+      <i class='bi bi-bookmark'></i>
+      <i class='bi bi-bell'></i>
+    </div>
+  </div>
+  
+  <div class='stories'>
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1523580494863-6f3031224c94' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/ddf494de0a8742fc87c4cdfd701e9eab.jpeg" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1549451371-64aa98a6f660' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/f174e7488b7d49c2a27adb181be3c5d0.jpg" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1556125574-d7f27ec36a06' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/ea1563943aa64ab0b0b712619d421135.jpg" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1561912774-79769a0a0a7a' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/e656f1f607fb42e5b8a0f9afeaf1747b.jpg" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1569863959165-56dae551d4fc' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/d880d87f38434df3aea1905183293826.jpg" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1642784353782-91bfdd65920c' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/cea054ff703747adba42de444fcffdbc.jpg" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1628436174535-19751abe2799' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1528696892704-5e1122852276' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/0d6c749807284a47bca217fb65c365a4.jpg" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1607892379516-5ff729bbc620' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/3b5f3a9c1d5d48eab69452d1ba3384c0.png" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1659146122775-e87e28ff42d0' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/3c6fdee0f54f41c382acecb3f187e249.jpg" %}' alt='' class='profile-img'>
+    </div>
+  
+    <div class='story-wrapper'>
+      <div class='cover-container'>
+        <img src='https://images.unsplash.com/photo-1609757870622-b35e77dd55db' alt='' class='story-cover'>
+      </div>
+  
+      <img src='{% static "invite/images/profiles/0bf0e5f25af34dc48d2d560dc182823d.jpg" %}' alt='' class='profile-img'>
+    </div>
+  
+  </div>
+
+  <div class='home-body'>
+    <div class='home-main-content'>
+      <div class='navigation d-flex justify-content-between font-title'>
+        <div class='nav-item selected'>All</div>
+        <div class='nav-item'>Nearby</div>
+        <div class='nav-item'>Friends</div>
+        <div class='nav-item'>Following</div>
+        <div class='nav-item'>Upcoming</div>
+      </div>
+    
+      <div class='main'>
+    
+        <div class='post post-wp border-bottom border-dark'>
+    
+          <div class='post-intro'>
+            <div class='user-info d-flex justify-content-between align-items-center'>
+              <div class='d-flex'>
+                <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+                <div class='ms-1'>
+                  <div class='font-body-tiny'>@therealjohndoe</div>
+                  <div>John Doe</div>
+                </div>
+              </div>
+              <div>
+                <button class='btn btn-primary btn-small'>Follow</button>
+              </div>
+            </div>
+    
+            <div class='post-head'>
+              <div class='font-title'>My 21st birthday</div>
+              <div>
+                <i class='bi bi-geo-alt'></i>
+                <span class='ms-1'>Hatfield, Pretoria</span>
+              </div>
+            </div>
+          </div>
+    
+          <div class='img-cover'>
+            <img src='https://images.unsplash.com/photo-1583875762487-5f8f7c718d14' alt=''>
+    
+            <div class='buttons-container'>
+              <div>
+                <button class='btn btn-secondary btn-small'>Limit: 300</button>
+              </div>
+              <div class='d-flex justify-content-end'>
+                <button class='btn btn-secondary btn-small'>Get Ticket ($5)</button>
+              </div>
+            </div>
+          </div>
+    
+          <div class='post-caption'>
+            <div class='short-description'>Hey you guys, I am so happy I am turning 21 next week... <span class='see-more font-body-tiny'>See more</span></div>
+    
+            <div class='post-interactions d-flex align-items-center justify-content-between'>
+              <div class='d-flex align-items-center'>
+                <i class='bi bi-person'></i>
+                <span class='ms-1'>310</span>
+              </div>
+              <div class='d-flex align-items-center'>
+                <i class='bi bi-repeat'></i>
+                <span class='ms-1'>37</span>
+              </div>
+              <div class='d-flex align-items-center'>
+                <i class='bi bi-bookmark'></i>
+                <span class='ms-1'>420</span>
+              </div>
+            </div>
+          </div>
+    
+        </div>
+    
+        <div class='post post-wp border-bottom border-dark'>
+    
+          <div class='post-intro'>
+            <div class='user-info d-flex justify-content-between align-items-center'>
+              <div class='d-flex'>
+                <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+                <div class='ms-1'>
+                  <div class='font-body-tiny'>@therealjohndoe</div>
+                  <div>John Doe</div>
+                </div>
+              </div>
+              <div>
+                <button class='btn btn-primary btn-small'>Follow</button>
+              </div>
+            </div>
+    
+            <div class='post-head'>
+              <div class='font-title'>Soccer Tournament</div>
+              <div>
+                <i class='bi bi-geo-alt'></i>
+                <span class='ms-1'>Hatfield, Pretoria</span>
+              </div>
+            </div>
+          </div>
+    
+          <div class='post-action'>
+            <button class='btn btn-secondary-outline btn-small'>Limit: 120</button>
+            <button class='btn btn-secondary btn-small'>Get Ticket (Free)</button>
+          </div>
+    
+          <div class='post-caption'>
+            <div class='short-description'>It is that time of the year. We meet again on the Red City Stadium for the Mielie Champions Cup. Go to the info page to get more details. <span class='see-more font-body-tiny'>See more</span></div>
+    
+            <div class='post-interactions d-flex align-items-center justify-content-between'>
+              <div class='d-flex align-items-center'>
+                <i class='bi bi-person'></i>
+                <span class='ms-1'>310</span>
+              </div>
+              <div class='d-flex align-items-center'>
+                <i class='bi bi-repeat'></i>
+                <span class='ms-1'>37</span>
+              </div>
+              <div class='d-flex align-items-center'>
+                <i class='bi bi-bookmark'></i>
+                <span class='ms-1'>420</span>
+              </div>
+            </div>
+          </div>
+    
+        </div>
+    
+      </div>
+    </div>
+
+    <div class='top-rated-accounts'>
+      <div class='header d-flex align-items-center'>
+        <i class='bi bi-star-fill'></i><span class='ms-2 font-headline'>Top Rated Accounts</span>
+      </div>
+      <div class='content'>
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@therealjohndoe</div>
+                <div>John Doe</div>
+              </div>
+            </div>
+            <div>
+              <button class='btn btn-primary btn-small'>Follow</button>
+            </div>
+          </div>
+
+          <div class='ratings-container'>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <span>4.3 (1.7 M)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
 
 <!-- Set-ExecutionPolicy Unrestricted -Scope Process -->
 
