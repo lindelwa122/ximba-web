@@ -1,20 +1,133 @@
-section.home-page {
-  padding: 0;
-  overflow: hidden;
-  position: relative;
+.home-body {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  overflow: auto;
 
   @include for-tablets {
-    padding-top: 20px;
+    margin-top: 20px;
   }
 
-  .font-title {
-    @include for-tablets {
-      font-size: 14px;
+  @include for-desktops {
+    justify-content: space-around;
+  }
+}
+
+.home-main-content {
+  margin-bottom: 100px;
+
+  @include for-tablets {
+    width: 50%;
+  }
+
+  @include for-desktops {
+    width: 35%;
+  }
+
+  .img-cover {
+    max-height: 350px;
+    overflow: hidden;
+    position: relative;
+
+    .buttons-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+      left: 0;
+      padding: 10px 20px;
+      position: absolute;
+      top: 0;
+      width: 100%;
     }
 
-    @include for-desktops {
-      font-size: 18px;
+    img {
+      height: 100%;
+      object-fit: cover;
+      width: 100%;
     }
+  }
+
+  .main {
+    @include for-tablets {
+      background-color: var(--background-color);
+      border-radius: 10px 10px 0 0;
+    }
+  }
+
+  .navigation {
+    border-bottom: 1px solid var(--bs-black);
+    padding: 10px 20px 0 20px;
+    
+    @include for-tablets {
+      @include body;
+      background-color: var(--background-color);
+      border: none;
+      border-radius: $border-radius;
+      font-weight: 400;
+      margin-bottom: 10px;
+      padding: 10px 20px;
+    }
+
+    .nav-item {
+      padding: 0 5px;
+
+      @include for-tablets {
+        padding: 2px 8px;
+      }
+    }
+
+    .nav-item:hover,
+    .nav-item.selected {
+      border-bottom: 1px solid var(--bs-black);
+
+      @include for-tablets {
+        background-color: rgba(218, 218, 218, 0.5);
+        border: none;
+        border-radius: $border-radius;
+        cursor: pointer;
+      }
+    }
+
+  }
+
+  .post-action {
+    display: flex;
+    gap: 10px;
+    padding: 0 20px;
+  }
+
+  .post-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 20px;
+  }
+
+  .post-interactions {
+    .bi {
+      font-size: 20px;
+    }
+  }
+
+  .post-intro {
+    padding: 10px 20px;
+
+    img {
+      border-radius: $border-radius;
+      height: auto;
+      width: 60px;
+    }
+
+    .user-info {
+      padding-bottom: 10px;
+    }
+  }
+
+  .see-more {
+    color: var(--tertiary-color);
+    cursor: pointer;
+    text-decoration: underline;
   }
 }
 
@@ -32,18 +145,49 @@ section.home-page {
   }
 }
 
+section.home-page {
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+
+  @include for-desktops {
+    font-size: 16px;
+    line-height: 20px;
+  }
+  
+  @include for-tablets {
+    font-size: 14px;
+    line-height: 18px;
+    padding-top: 20px;
+  }
+
+  .font-headline {
+    @include for-desktops {
+      font-size: 22px;
+      line-height: 30px;
+    }
+  }
+
+  .font-title {
+    @include for-tablets {
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
+}
+
 .stories {
   background-color: var(--background-color);
   border-radius: $border-radius;
   display: flex;
-  padding: 10px 20px;
   flex-wrap: nowrap;
   gap: 20px;
-  overflow-y: auto;
-  width: 100%;
   max-width: 100%;
+  overflow-y: auto;
+  padding: 10px 20px;
   scrollbar-width: none; /* hide the scrollbar in Firefox */
   -ms-overflow-style: none; /* hide the scrollbar and Edge */
+  width: 100%;
 }
 
 .stories::-webkit-scrollbar {
@@ -51,171 +195,37 @@ section.home-page {
 }
 
 .story-wrapper {
-  position: relative;
   align-self: flex-start;
   height: 126px;
+  position: relative;
   width: 113px;
 
   .cover-container {
-    width: 100px;
     height: 120px;
+    width: 100px;
   }
 
   .story-cover {
-    width: 100%;
-    height: 100%;
     border-radius: 10px;
+    height: 100%;
     object-fit: cover;
+    width: 100%;
   }
 
   .profile-img {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 50px;
-    height: auto;
     border-radius: $border-radius;
+    bottom: 0;
+    height: auto;
+    position: absolute;
+    right: 0;
     transform: translateX(10px);
-  }
-}
-
-.home-main-content {
-  margin-bottom: 100px;
-
-  @include for-tablets {
-    width: 50%;
-  }
-
-  @include for-desktops {
-    width: 35%;
-  }
-
-  .navigation {
-    padding: 10px 20px 0 20px;
-    border-bottom: 1px solid var(--bs-black);
-    
-    @include for-tablets {
-      @include body;
-      font-weight: 400;
-      background-color: var(--background-color);
-      border: none;
-      padding: 10px 20px;
-      border-radius: $border-radius;
-      margin-bottom: 10px;
-    }
-
-    .nav-item {
-      padding: 0 5px;
-
-      @include for-tablets {
-        padding: 2px 8px;
-      }
-    }
-
-    .nav-item:hover,
-    .nav-item.selected {
-      border-bottom: 1px solid var(--bs-black);
-
-      @include for-tablets {
-        border: none;
-        border-radius: $border-radius;
-        background-color: rgba(218, 218, 218, 0.5);
-        cursor: pointer;
-      }
-    }
-
-  }
-
-  .post-intro {
-    padding: 10px 20px;
-
-    img {
-      width: 60px;
-      height: auto;
-      border-radius: $border-radius;
-    }
-
-    .user-info {
-      padding-bottom: 10px;
-    }
-  }
-
-  .img-cover {
-    overflow: hidden;
-    max-height: 350px;
-    position: relative;
-
-    .buttons-container {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 10px 20px;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-    }
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  .see-more {
-    color: var(--tertiary-color);
-    text-decoration: underline;
-  }
-
-  .post-interactions {
-    .bi {
-      font-size: 20px;
-    }
-  }
-
-  .post-caption {
-    display: flex;
-    gap: 10px;
-    padding: 10px 20px;
-    flex-direction: column;
-  }
-
-  .post-action {
-    display: flex;
-    gap: 10px;
-    padding: 0 20px;
-  }
-
-  .main {
-    @include for-tablets {
-      background-color: var(--background-color);
-      border-radius: 10px 10px 0 0;
-    }
-  }
-}
-
-.home-body {
-  display: flex;
-  justify-content: center;
-  height: calc(100% - 50px);
-  overflow: auto;
-
-  @include for-tablets {
-    margin-top: 20px;
+    width: 50px;
   }
 }
 
 .top-rated-accounts {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 30%;
-
   .header {
     .bi {
-      font-size: 35px;
       color: var(--secondary-color);
     }
   }
@@ -224,6 +234,29 @@ section.home-page {
     width: 60px;
     height: auto;
     border-radius: $border-radius;
+  }
+}
+
+.top-rated-accounts, .top-rated-events {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  width: 25%;
+
+  @include for-desktops {
+    display: flex;
+  }
+
+  .header {
+    .bi {
+      font-size: 20px;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .user-info {
@@ -238,9 +271,26 @@ section.home-page {
   .ratings-container {
     display: flex;
     gap: 5px;
+    opacity: .7;
 
     .bi {
-      font-size: 20px;
+      font-size: 15px;
     }
+  }
+}
+
+.top-rated-events {
+  img {
+    width: 50px;
+    height: 50%;
+  }
+
+  .bi {
+    color: var(--tertiary-color);
+  }
+
+  .bi-clock {
+    color: var(--bs-black);
+    font-size: 15px;
   }
 }
