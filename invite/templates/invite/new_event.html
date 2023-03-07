@@ -1,0 +1,94 @@
+{% extends 'invite/main.html' %}
+
+{% load static %}
+
+{% block head %}
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css' rel='stylesheet' />
+{% endblock %}
+
+{% block title %} New Event {% endblock %}
+
+{% block main %}
+
+<section class='new-event'>
+  <div class='header d-flex align-items-center'>
+    <img src='{% static "invite/images/app/logo.png" %}' alt='logo' class='logo'/>
+    <div class='font-headline ms-2'>Add New Event</div>
+  </div>
+
+  <div class='main-content'>
+    <form action=''>
+      <div class='form-floating mb-3'>
+        <input class='form-control input-frame' name='title' type='text' placeholder='Event Title'>
+        <label for='title' class='floating-input-placeholder'>Event Title</label>
+      </div>
+
+      <div class='form-floating mb-3'>
+        <div class='text-end'>0/200</div>
+        <textarea class='form-control input-frame' name='description' placeholder='Short Description'></textarea>
+        <label for='description' class='floating-input-placeholder'>Short Description</label>
+      </div>
+
+      <div class='mb-3'>
+        <label for='image'>Event Cover (Optional)</label>
+        <input type='file' class='form-control input-frame' accept='.png, .jpg, .jpeg' name='image' title='Image (Optional)' id='file-input'>
+        <input type='hidden' name='x' id='x-axis'>
+        <input type='hidden' name='y' id='y-axis'>
+        <input type='hidden' name='width' id='width'>
+        <input type='hidden' name='height' id='height'>
+      </div>
+
+      <div class='result mb-3'></div>
+      
+      <div class='mb-3'>
+        <input type='text' class='form-control input-frame' id='location-input' name='location' placeholder='Select location' readonly>
+      </div>
+
+      <div class='mb-3' id='map'></div>
+
+      <div class='mb-3'>
+        <input class='form-control input-frame' name='datetime' type='datetime-local' placeholder='Time'>
+      </div>
+
+      <div class='mb-3 d-flex align-items-center'>
+        <div class='flex-fill d-flex align-items-center'>
+          <input name='event-type' type='radio' value='private'>
+          <label class='ms-1' for='private'>Private</label>
+        </div>
+
+        <div class='flex-fill d-flex align-items-center'>
+          <input name='event-type' type='radio' value='public'>
+          <label class='ms-1' for='public'>Public</label>
+        </div>
+      </div>
+
+      <div class='form-floating mb-3'>
+        <input type='number' name='limit' class='form-control input-frame' placeholder='Attendees Limit (Optional)'>
+        <label for='limit' class='floating-input-placeholder'>Attendees Limit (Optional)</label>
+      </div>
+
+      <div class='mb-3 d-flex align-items-center'>
+        <div class='flex-fill d-flex align-items-center'>
+          <input name='access' type='radio' value='no-access'>
+          <label class='ms-1' for='no-access'>Without QR Code</label>
+        </div>
+
+        <div class='flex-fill d-flex align-items-center'>
+          <input name='access' type='radio' value='with-access'>
+          <label class='ms-1' for='with-access'>With QR Code</label>
+        </div>
+      </div>
+
+      <div class='buttons-container d-flex justify-content-between align-items-center'>
+        <button class='btn btn-primary-outline w-50'>Add More Info</button>
+        <input type='submit' class='btn btn-primary w-50' value='Publish'>
+      </div>
+
+    </form>
+  </div>
+</section>
+
+<script src='{% static "invite/js/newEvent.js" %}'></script>
+
+{% endblock %}

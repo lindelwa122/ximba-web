@@ -1901,4 +1901,83 @@ section.home-page {
   font-size: 15px;
 }
 
+section.new-event {
+  margin-bottom: 100px;
+  /* Hide the default radio input appearance */
+  /* Set the background color of the radio input when not checked */
+  /* Set the background color of the radio input when checked */
+  /* Hide the label for the radio input */
+}
+section.new-event .buttons-container {
+  gap: 10px;
+}
+section.new-event input[type=radio] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  display: inline-block;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--primary-color);
+}
+section.new-event input[type=radio]:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.2s ease-out;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #fff;
+}
+section.new-event input[type=radio]:checked:before {
+  transform: translate(-50%, -50%) scale(1);
+  background-color: blue;
+}
+section.new-event input[type=radio] + label {
+  font-size: 16px;
+  line-height: 1.5;
+}
+section.new-event .logo {
+  width: 20%;
+  height: auto;
+}
+@media only screen and (min-width: 600px) {
+  section.new-event .logo {
+    width: 10%;
+  }
+}
+section.new-event #map {
+  height: 0;
+  width: 100%;
+  transition: height 2s ease-in-out;
+}
+section.new-event .main-content {
+  display: flex;
+  justify-content: center;
+}
+section.new-event .main-content form {
+  width: 100%;
+}
+@media only screen and (min-width: 600px) {
+  section.new-event .main-content form {
+    background-color: var(--background-color);
+    border-radius: 10px;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    width: 60%;
+  }
+}
+@media only screen and (min-width: 992px) {
+  section.new-event .main-content form {
+    width: 35%;
+  }
+}
+
 /*# sourceMappingURL=styles.css.map */

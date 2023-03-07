@@ -634,6 +634,10 @@ def main(request):
     return render(request, 'invite/main.html')
 
 
+def new_event(request):
+    return render(request, 'invite/new_event.html')
+
+
 def new_password(request, username, access):
     if request.method == 'POST':
         data = loads(request.body)

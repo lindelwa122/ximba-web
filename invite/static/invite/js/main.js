@@ -259,7 +259,7 @@ const changeProfileImg = (csrfToken, form, e) => {
     .finally(stopBtnLoadingAnimation);
 };
 
-const cropImage = () => {
+const cropImage = (aspectRatio=1) => {
   // Initialize variables
   const result = document.querySelector('.result');
   const imageXAxis = document.querySelector('#x-axis');
@@ -297,7 +297,7 @@ const cropImage = () => {
 
           // init cropper
           new Cropper(img, {
-            aspectRatio: 1,
+            aspectRatio: aspectRatio,
             crop(event) {
               saveImageValue(
                 event.detail.x,

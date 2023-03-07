@@ -43,5 +43,6 @@ urlpatterns = [
     path('search/recent', views.recent_search, name='recent_search'),
     path('search/recent/add/<str:username>', views.add_to_recent_searches, name='add_to_recent'),
     path('unfollow/<str:username>', views.unfollow, name='unfollow'),
+    path('new-event', views.new_event, name='new_event'),
     path('<str:username>', views.profile, name='profile')
 ]
