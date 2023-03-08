@@ -289,6 +289,47 @@ def edit_profile_img(request):
         return JsonResponse({}, status=200)
 
 
+def save_event(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        if not title:
+            return JsonResponse({'error_type': 'event_title_empty'}, status=400)
+
+        description = request.POST.get('description')
+        if not description:
+            return JsonResponse({'error_type': 'event_description_empty'}, status=400)
+
+        location = request.POST.get('location')
+        if not location:
+            return JsonResponse({'error_type': 'event_location_empty'}, status=400)
+
+        datetimeInfo = request.POST.get('datetime')
+        if not datetimeInfo:
+            return JsonResponse({'error_type': 'event_datetime_empty'}, status=400)
+
+        selectedType = request.POST.get('selectedType')
+        if selectedType == 'null':
+            return JsonResponse({'error_type': 'event_selected_type_empty'}, status=400)
+
+        selectedAccess = request.POST.get('selectedAccess')
+        if selectedAccess == 'null':
+            return JsonResponse({'error_type': 'event_selected_access_empty'}, status=400)
+
+        from datetime import datetime
+
+        datetime_obj = datetime.strptime(datetimeInfo, '%Y-%m-%dT%H:%M')
+
+        Event.objects.create(
+            user=request.user,
+            title=title,
+            description=description,
+            datetime=datetime_obj,
+            location=location 
+        )
+
+        return JsonResponse({}, status=200)
+
+
 def find_users(query, threshold=80):
     # Get all users from the database
     users = User.objects.all()

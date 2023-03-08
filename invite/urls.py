@@ -40,6 +40,7 @@ urlpatterns = [
     path('reset_password', views.reset_password, name='reset_password'),
     path('resend-code', views.resend_code, name='resend_code'),
     path('search', views.search, name='search_user'),
+    path('new-event/publish', views.save_event, name='save_event'),
     path('search/recent', views.recent_search, name='recent_search'),
     path('search/recent/add/<str:username>', views.add_to_recent_searches, name='add_to_recent'),
     path('unfollow/<str:username>', views.unfollow, name='unfollow'),

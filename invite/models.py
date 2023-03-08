@@ -12,6 +12,21 @@ class User(AbstractUser):
   def __str__(self):
     return self.username
 
+class Event(models.Model):
+  user = models.ForeignKey(User, models.CASCADE, related_name='user_event')
+  title = models.CharField(max_length=50)
+  description = models.CharField(max_length=500)
+  cover = models.ImageField(upload_to='invite/static/invite/images/events/covers', null=True, blank=True)
+  location = models.CharField(max_length=100)
+  datetime = models.DateTimeField()
+  public = models.BooleanField(default=True)
+  attendees_allowed = models.IntegerField(null=True, blank=True)
+  ticket_price = models.FloatField(default=0)
+  currency_conversion = models.CharField(max_length=5, default='USD')
+
+  def __str__(self):
+    return f'{self.title} posted by {self.user.username}'
+
 class Friend(models.Model):
   PENDING = 'pending'
   ACCEPTED = 'accepted'

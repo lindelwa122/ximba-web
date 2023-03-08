@@ -18,48 +18,68 @@
   </div>
 
   <div class='main-content'>
-    <form action=''>
+    <form class='new-event-form'>
+      {% csrf_token %}
+
       <div class='form-floating mb-3'>
-        <input class='form-control input-frame' name='title' type='text' placeholder='Event Title'>
+        <input class='title form-control input-frame' name='title' type='text' placeholder='Event Title'>
         <label for='title' class='floating-input-placeholder'>Event Title</label>
+        <div class='error-message feedback-empty title-empty d-none'>
+          Please choose a relevant title for your event.
+        </div>
       </div>
 
       <div class='form-floating mb-3'>
-        <div class='text-end'>0/200</div>
-        <textarea class='form-control input-frame' name='description' placeholder='Short Description'></textarea>
+        <textarea class='description-input form-control input-frame' name='description' placeholder='Short Description' style='height: 250px'></textarea>
+        <div class='text-end'><span class='text-description-count'>0</span>/500</div>
         <label for='description' class='floating-input-placeholder'>Short Description</label>
+        <div class='error-message feedback-empty description-empty d-none'>
+          Provide a brief description of your event within 100-500 characters.
+        </div>
       </div>
 
       <div class='mb-3'>
         <label for='image'>Event Cover (Optional)</label>
         <input type='file' class='form-control input-frame' accept='.png, .jpg, .jpeg' name='image' title='Image (Optional)' id='file-input'>
-        <input type='hidden' name='x' id='x-axis'>
-        <input type='hidden' name='y' id='y-axis'>
-        <input type='hidden' name='width' id='width'>
-        <input type='hidden' name='height' id='height'>
+        <input type='hidden' name='x' id='x-axis' class='x input-frame'>
+        <input type='hidden' name='y' id='y-axis' class='y input-frame'>
+        <input type='hidden' name='width' id='width' class='width input-frame'>
+        <input type='hidden' name='height' id='height' class='height input-frame'>
       </div>
 
       <div class='result mb-3'></div>
       
       <div class='mb-3'>
-        <input type='text' class='form-control input-frame' id='location-input' name='location' placeholder='Select location' readonly>
+        <input type='text' class='location-input form-control input-frame' id='location-input' name='location' placeholder='Select location' readonly>
+        <div class='error-message feedback-empty location-empty d-none'>
+          Don't forget to include the location of your event.
+        </div>
       </div>
 
       <div class='mb-3' id='map'></div>
 
       <div class='mb-3'>
-        <input class='form-control input-frame' name='datetime' type='datetime-local' placeholder='Time'>
+        <input class='datetime form-control input-frame' name='datetime' type='datetime-local' placeholder='Time'>
+        <div class='error-message feedback-empty datetime-empty d-none'>
+          Please provide the date and time of your event.
+        </div>
       </div>
 
-      <div class='mb-3 d-flex align-items-center'>
-        <div class='flex-fill d-flex align-items-center'>
-          <input name='event-type' type='radio' value='private'>
-          <label class='ms-1' for='private'>Private</label>
+      <div class='mb-3'>
+        <div class='d-flex align-items-center'>
+          <div class='flex-fill d-flex align-items-center'>
+            <input name='event-type' type='radio' value='private'>
+            <label class='ms-1' for='private'>Private</label>
+          </div>
+  
+          <div class='flex-fill d-flex align-items-center'>
+            <input name='event-type' type='radio' value='public'>
+            <label class='ms-1' for='public'>Public</label>
+          </div>
         </div>
-
-        <div class='flex-fill d-flex align-items-center'>
-          <input name='event-type' type='radio' value='public'>
-          <label class='ms-1' for='public'>Public</label>
+        
+        <div class='error-message feedback-empty event-type-empty d-none'>
+          Select one of the available options.
         </div>
       </div>
 
@@ -68,27 +88,40 @@
         <label for='limit' class='floating-input-placeholder'>Attendees Limit (Optional)</label>
       </div>
 
-      <div class='mb-3 d-flex align-items-center'>
-        <div class='flex-fill d-flex align-items-center'>
-          <input name='access' type='radio' value='no-access'>
-          <label class='ms-1' for='no-access'>Without QR Code</label>
+      <div class='mb-3'>
+        <div class='d-flex align-items-center'>
+          <div class='flex-fill d-flex align-items-center'>
+            <input name='access' type='radio' value='no-access'>
+            <label class='ms-1' for='no-access'>Without QR Code</label>
+          </div>
+  
+          <div class='flex-fill d-flex align-items-center'>
+            <input name='access' type='radio' value='with-access'>
+            <label class='ms-1' for='with-access'>With QR Code</label>
+          </div>
         </div>
-
-        <div class='flex-fill d-flex align-items-center'>
-          <input name='access' type='radio' value='with-access'>
-          <label class='ms-1' for='with-access'>With QR Code</label>
+        
+        <div class='error-message feedback-empty access-empty d-none'>
+          Select one of the available options.
         </div>
       </div>
 
       <div class='buttons-container d-flex justify-content-between align-items-center'>
         <button class='btn btn-primary-outline w-50'>Add More Info</button>
-        <input type='submit' class='btn btn-primary w-50' value='Publish'>
+        <div class='w-50'>
+          <input type='submit' value='Publish' class='btn btn-primary w-100'>
+          <button class='btn btn-primary w-100 d-none' disabled>
+            <span class='spinner'></span>
+          </button>
+        </div>
       </div>
 
     </form>
   </div>
 </section>
 
+<div class='open-ai'></div>
+<script src='{% static "invite/js/utils/forms.js" %}'></script>
 <script src='{% static "invite/js/newEvent.js" %}'></script>
 
 {% endblock %}
