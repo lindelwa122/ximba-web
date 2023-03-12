@@ -18,7 +18,7 @@
   </div>
 
   <div class='main-content'>
-    <form class='new-event-form'>
+    <form class='new-event-form' action='/post' method='post' enctype='multipart/form-data'> 
       {% csrf_token %}
 
       <div class='form-floating mb-3'>
@@ -31,7 +31,11 @@
 
       <div class='form-floating mb-3'>
         <textarea class='description-input form-control input-frame' name='description' placeholder='Short Description' style='height: 250px'></textarea>
-        <div class='text-end'><span class='text-description-count'>0</span>/500</div>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='for-flex-structure'></div>
+          <div class='description-help-generator d-none link'>Need some ideas?</div>
+          <div class='text-end'><span class='text-description-count'>0</span>/500</div>
+        </div>
         <label for='description' class='floating-input-placeholder'>Short Description</label>
         <div class='error-message feedback-empty description-empty d-none'>
           Provide a brief description of your event within 100-500 characters.
@@ -84,7 +88,7 @@
       </div>
 
       <div class='form-floating mb-3'>
-        <input type='number' name='limit' class='form-control input-frame' placeholder='Attendees Limit (Optional)'>
+        <input type='number' name='limit' class='attendees-limit form-control input-frame' placeholder='Attendees Limit (Optional)'>
         <label for='limit' class='floating-input-placeholder'>Attendees Limit (Optional)</label>
       </div>
 

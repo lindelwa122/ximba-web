@@ -20,12 +20,39 @@ class Event(models.Model):
   location = models.CharField(max_length=100)
   datetime = models.DateTimeField()
   public = models.BooleanField(default=True)
+  ticket_access = models.BooleanField(default=False)
   attendees_allowed = models.IntegerField(null=True, blank=True)
   ticket_price = models.FloatField(default=0)
   currency_conversion = models.CharField(max_length=5, default='USD')
 
   def __str__(self):
-    return f'{self.title} posted by {self.user.username}'
+    return f'{self.title} posted by {self.user.username}: Public => {self.public}'
+
+class Ticket(models.Model):
+  event = models.ForeignKey(Event, models.CASCADE, related_name='ticket')
+  owner = models.ForeignKey(User, models.CASCADE, related_name='ticket_owner')
+  identifier = models.CharField(max_length=50)
+  expired = models.BooleanField(default=False)
+  datetime = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f'{self.owner} has a ticket for {self.event.title}'
+
+class SavedEvent(models.Model):
+  user = models.ForeignKey(User, models.CASCADE, related_name='user_saved')
+  event = models.ManyToManyField(Event, related_name='saved_events')
+
+class EventActionsCount(models.Model):
+  event = models.ForeignKey(Event, models.CASCADE, related_name='event_actions')
+  attendees = models.ManyToManyField(User, related_name='event_attendees')
+  saves = models.ManyToManyField(SavedEvent, related_name='event_saves')
+
+class PrivateEventViewers(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='private_event')
+    viewers = models.ManyToManyField(User, related_name='private_events')
+
+    def __str__(self):
+      return f'{self.event} can be viewed by only friends.'
 
 class Friend(models.Model):
   PENDING = 'pending'

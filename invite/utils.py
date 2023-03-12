@@ -61,7 +61,7 @@ def get_img_url(image):
     # Join the list
     return '/'.join(image_url_array)
 
-def serialize_data(data):
+def serialize_data(data: list):
     ls = []
     for user in data:
         profile = Profile.objects.filter(user=user).first()
@@ -69,6 +69,34 @@ def serialize_data(data):
             'username': user.username,
             'fullName': f'{user.first_name} {user.last_name}',
             'image': get_img_url(profile.profile_img) if profile else ''
+        }
+        ls.append(obj)
+    return ls
+
+def convert_datetime_to_timestamp(datetime):
+    timestamp = datetime.timestamp()
+    return timestamp * 1000
+
+def serialize_post(data: list, user):
+    ls = []
+    for post in data:
+        event_actions_count = EventActionsCount.objects.get(event=post)
+        attendees = event_actions_count.attendees.count()
+        saves = event_actions_count.saves.count()
+
+        obj = {
+            'id': post.id,
+            'title': post.title,
+            'location': post.location,
+            'description': post.description,
+            'cover': get_img_url(post.cover) if post.cover else False,
+            'timestamp': convert_datetime_to_timestamp(post.datetime),
+            'publisher': serialize_data([post.user]),
+            'with_ticket': post.ticket_access,
+            'ticket_secured': Ticket.objects.filter(event=post, owner=user).exists(),
+            'attendance_limit': post.attendees_allowed,
+            'attendees': attendees,
+            'saves': saves
         }
         ls.append(obj)
     return ls

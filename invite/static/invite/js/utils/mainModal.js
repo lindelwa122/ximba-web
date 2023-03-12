@@ -3,6 +3,7 @@ let index = 0;
 
 const addContentToMainModal = (title, content, callBack) => {
   const modalPage = document.querySelector('.modal-page');
+  const modalPageContent = document.querySelector('.modal-page-content');
   
   // Disable scrolling
   document.querySelector('body').classList.add('modal-open');
@@ -11,20 +12,19 @@ const addContentToMainModal = (title, content, callBack) => {
   document.querySelector('.modal-overlay').classList.add('active');
 
   // Disable scrolling while the modal is still transitioning
-  modalPage.style.overflow = 'hidden';
+  modalPageContent.style.overflow = 'hidden';
   
   // Enable scrolling when the transition is over.
   // The reason I don't listen for the 'transitionend' event is 
   // because I get undesired effects
-  setInterval(() => {
-    modalPage.style.overflow = 'auto';
+  setTimeout(() => {
+    modalPageContent.style.overflow = 'auto';
   }, 1000);
 
   // Display the modal
   modalPage.classList.add('show');
 
   const modalTitle = document.querySelectorAll('.modal-page-title');
-  const modalPageContent = document.querySelector('.modal-page-content');
   // Set the title of the modal
   modalTitle.forEach((t) => (t.textContent = title));
 

@@ -13,7 +13,7 @@
   }
 }
 
-.home-main-content {
+.home-main-content, .events-container {
   margin-bottom: 100px;
 
   @include for-tablets {
@@ -48,7 +48,7 @@
     }
   }
 
-  .main {
+  .events-main {
     @include for-tablets {
       background-color: var(--background-color);
       border-radius: 10px 10px 0 0;
@@ -124,7 +124,7 @@
     }
   }
 
-  .see-more {
+  .link {
     color: var(--tertiary-color);
     cursor: pointer;
     text-decoration: underline;
@@ -145,7 +145,7 @@
   }
 }
 
-section.home-page {
+section.home-page, .events-container {
   overflow: hidden;
   padding: 0;
   position: relative;
@@ -159,6 +159,11 @@ section.home-page {
     font-size: 14px;
     line-height: 18px;
     padding-top: 20px;
+  }
+
+  a {
+    color: var(--bs-black); 
+    text-decoration: none;
   }
 
   .font-headline {
@@ -294,3 +299,32 @@ section.home-page {
     font-size: 15px;
   }
 }
+
+.event-more-info {
+  display: flex;
+  flex-direction: column;
+  height: 0;
+  transition: all .5s ease-in-out;
+  overflow: hidden;
+  gap: 5px;
+}
+
+.location-actions-container {
+  .route-profile {
+    height: 0;
+    overflow: hidden;
+    transition: height 1s ease-in-out;
+  }
+}
+
+// #instructions {
+//   position: fixed;
+//   margin: 20px;
+//   width: 35%;
+//   top: 0;
+//   bottom: 20%;
+//   padding: 20px;
+//   background-color: #fff;
+//   overflow-y: scroll;
+//   font-family: sans-serif;
+// }

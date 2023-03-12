@@ -1,6 +1,12 @@
 section.new-event {
   margin-bottom: 100px;
 
+  .link {
+    cursor: pointer;
+    color: var(--secondary-color);
+    // text-decoration: underline;
+  }
+
   .buttons-container {
     gap: 10px;
   }

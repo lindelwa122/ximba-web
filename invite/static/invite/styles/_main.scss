@@ -61,7 +61,7 @@ main {
   left: 0;
   margin: auto;
   max-height: 100%;
-  overflow: auto;
+  overflow: hidden;
   position: fixed;
   right: 0;
   transition: all .5s ease-in-out;
@@ -79,26 +79,6 @@ main {
 
   @include for-desktops {
     width: 30%;
-  }
-
-  /* For webkit-based browsers */
-  &::-webkit-scrollbar {
-    width: 5px;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--grey-scrollbar-color);
-    border-radius: 10px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    border-radius: 10px;
-    margin: 5px;
-  }
-  
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: var(--secondary-color);
   }
 
   .bi-arrow-left:hover, .bi-x-lg:hover {
@@ -123,6 +103,26 @@ main {
 
     @include for-desktops {
       height: calc(100% - 50px);
+    }
+
+    /* For webkit-based browsers */
+    &::-webkit-scrollbar {
+      width: 5px;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--grey-scrollbar-color);
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      border-radius: 10px;
+      margin: 5px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--secondary-color);
     }
   }
 

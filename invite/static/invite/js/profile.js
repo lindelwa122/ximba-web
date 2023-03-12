@@ -336,10 +336,12 @@ const toggleFollowStatusForUser = (action, btn, username, newTextContentAfterFol
 
         // Increase/Decrease the following count
         const followingCount = document.querySelector('.following-count');
-        if (action === 'follow') {
-          followingCount.textContent = parseInt(followingCount.textContent) + 1;
-        } else {
-          followingCount.textContent = parseInt(followingCount.textContent) - 1;
+        if (followingCount) {
+          if (action === 'follow') {
+            followingCount.textContent = parseInt(followingCount.textContent) + 1;
+          } else {
+            followingCount.textContent = parseInt(followingCount.textContent) - 1;
+          }
         }
 
         btn.classList.replace(initialClassToken, newClassToken);

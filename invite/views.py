@@ -1,3 +1,4 @@
+from datetime import datetime
 from io import BytesIO
 from json import dumps, loads
 from tempfile import NamedTemporaryFile
@@ -315,20 +316,105 @@ def save_event(request):
         if selectedAccess == 'null':
             return JsonResponse({'error_type': 'event_selected_access_empty'}, status=400)
 
-        from datetime import datetime
+        attendance_limit = request.POST.get('limit')
+        if not attendance_limit:
+            attendance_limit = 0
 
         datetime_obj = datetime.strptime(datetimeInfo, '%Y-%m-%dT%H:%M')
 
-        Event.objects.create(
+        public = False if selectedType == 'private' else True
+
+        ticket = True if selectedAccess == 'with-access' else False
+
+        event = Event.objects.create(
             user=request.user,
             title=title,
             description=description,
             datetime=datetime_obj,
-            location=location 
+            location=location,
+            public=public,
+            ticket_access=ticket,
+            attendees_allowed=attendance_limit
         )
+
+        EventActionsCount.objects.create(event=event)
+
+        if not public:
+            friends = Friend.objects.filter(user=request.user, status=Friend.ACCEPTED)
+            friends_list = [relationship.friend for relationship in friends]
+            allowed_viewers = PrivateEventViewers.objects.create(event=event)
+            allowed_viewers.viewers.set(friends_list)
+
+        from django.utils.datastructures import MultiValueDictKeyError
+        
+        try:
+            image_file = request.FILES['image']
+        except MultiValueDictKeyError:
+            pass
+        else:
+            if image_file:
+                x = 0 if (int(float(request.POST.get('x'))) < 0) else int(
+                float(request.POST.get('x')))
+                y = 0 if (int(float(request.POST.get('y'))) < 0) else int(
+                    float(request.POST.get('y')))
+                width = int(float(request.POST.get('width')))
+                height = int(float(request.POST.get('height')))
+
+                # get the file extension
+                file_ext = image_file.name.split('.')[-1]
+
+                with NamedTemporaryFile(dir='invite/static/invite/images/temp', suffix=file_ext, delete=False) as temp:
+                    temp.write(image_file.file.read())
+                    temp.seek(0)
+
+                    with default_storage.open(temp.name, 'rb') as f:
+                        image = Image.open(f)
+
+                        # Crop image
+                        cropped_image = image.crop((x, y, x + width, y + height))
+
+                        # Create a BytesIO object
+                        image_io = BytesIO()
+
+                        # Save the image to the BytesIO object
+                        cropped_image.save(image_io, format='JPEG')
+
+                        # Seek to the beginning of the file
+                        image_io.seek(0)
+
+                        # generate a random hash for the image name
+                        random_hash = uuid4().hex
+
+                        # rename the file
+                        new_file_name = f'{random_hash}.{file_ext}'
+
+                        # saving image
+                        event.cover.save(
+                            new_file_name, File(image_io), save=False
+                        )
+                        event.save()
 
         return JsonResponse({}, status=200)
 
+
+def get_event_access(request, event_id):
+    ticket_id = uuid4().hex
+    user = request.user
+
+    event = get_object_or_404(Event, id=event_id, ticket_access=True)
+
+    if Ticket.objects.filter(event=event, owner=user).exists():
+        return JsonResponse({'error': 'Ticket already exists'}, status=409)
+
+    Ticket.objects.create(event=event, owner=user, identifier=ticket_id)
+
+    saved_event, created = SavedEvent.objects.get_or_create(user=user)
+    if created:
+        saved_event.event.set([event])
+    else:
+        saved_event.event.add(event)
+
+    return JsonResponse({}, status=200)
 
 def find_users(query, threshold=80):
     # Get all users from the database
@@ -488,6 +574,55 @@ def get_data(request, get_query):
         return JsonResponse({'error': 'User not authenticated'}, status=409)
 
 
+def get_user_data(request, username):
+    try:
+        user = User.objects.get(username=username.strip())
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'User does not exist'}, status=404)
+
+    profile = Profile.objects.get(user=user)
+
+    obj = {
+        'username': user.username,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'profile_image': get_img_url(profile.profile_img)
+    }
+
+    return JsonResponse({'user_data': obj}, status=200)
+
+
+def get_events(request):
+    user = request.user
+    public_events = Event.objects.filter(public=True).exclude(user=user)
+    allowed_private_events = PrivateEventViewers.objects.filter(viewers=user).values('event_id')
+    private_events = Event.objects.filter(public=False).filter(id__in=allowed_private_events)
+    events = public_events.union(private_events)
+    return JsonResponse({'events': serialize_post(events, user)}, status=200)
+
+def get_ticket_info(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    ticket = get_object_or_404(Ticket, event=event)
+    user = request.user
+    serialized_event_data = serialize_post([ticket.event], user)
+
+    obj =  {
+        'event_id': event_id,
+        'title': serialized_event_data[0]['title'],
+        'location': serialized_event_data[0]['location'],
+        'timestamp': serialized_event_data[0]['timestamp'],
+        'identifier': ticket.identifier,
+        'expired': ticket.expired
+    }
+
+    return JsonResponse({'ticket_info': obj}, status=200)
+
+def get_saved_events(request):
+    user =  request.user
+    events = SavedEvent.objects.get(user=user)
+    serialized_data = serialize_post(events.event.all(), user)
+    return JsonResponse({'events': serialized_data}, status=200)
+
 def get_followings(request, username):
     user = User.objects.get(username=username.strip())
     followings = Following.objects.filter(user=user)
@@ -645,6 +780,11 @@ def is_user_following(request, other_user):
     following = Following.objects.filter(user=user, following=other_user)
     answer = 'YES' if following.exists() else 'NO'
 
+    return JsonResponse({'answer': answer}, status=200)
+
+
+def is_user_logged_in(request):
+    answer = 'YES' if request.user.is_authenticated else 'NO'
     return JsonResponse({'answer': answer}, status=200)
 
 
