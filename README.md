@@ -36,23 +36,27 @@ If you are using GitHub Desktop, click on the "Current Branch" tab and a dropdow
 - Create a virtual environment using the following command: `python3 -m venv <env_name>`. Replace <env_name> with the desired name for your virtual environment.
 
 - Activate the virtual environment using the following command: 
-  ```# Linux/MacOS
-  source <env_name>/bin/activate
-
-   # Windows
-  <env_name>\Scripts\activate
-  ```
-
+  - Bash (Linux/MacOS)
+    ```Bash
+    source <env_name>/bin/activate
+    ```
+  - PowerShell (Windows)
+    ```PowerShell
+    <env_name>\Scripts\activate
+    ```
   Note: On Windows, if you encounter an error while running the above command, you can temporarily fix it by running `Set-ExecutionPolicy Unrestricted -Scope Process`.
 
 - After activating the virtual environment, navigate to the repository main directory.
-- To deactivate the virtual environment, use the following command: `# Linux/MacOS
-deactivate
+- To deactivate the virtual environment, use the following command: 
 
-  ``` # Windows
-  <env_name>\deactivate
-  ```
-  
+  - Bash (Linux/MacOS)
+    ```Bash
+    deactivate
+    ```
+  - PowerShell (Windows)
+    ```PowerShell
+    <env_name>\Scripts\deactivate.bat
+    ```
 ## 4. Install the required packages
 
 Install the required packages from the requirements.txt file by running the following command: `pip install -r requirements.txt`.
