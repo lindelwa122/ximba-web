@@ -1,3 +1,5 @@
+from json import dumps
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.timezone import localtime
@@ -22,11 +24,23 @@ class Event(models.Model):
   public = models.BooleanField(default=True)
   ticket_access = models.BooleanField(default=False)
   attendees_allowed = models.IntegerField(null=True, blank=True)
+  attendees = models.ManyToManyField(User, related_name='attendees')
   ticket_price = models.FloatField(default=0)
-  currency_conversion = models.CharField(max_length=5, default='USD')
+  keywords = models.CharField(max_length=500)
+  currency_conversion = models.CharField(max_length=5, default='ZAR')
+  draft = models.BooleanField(default=False)
 
   def __str__(self):
     return f'{self.title} posted by {self.user.username}: Public => {self.public}'
+  
+class EventMoreInfo(models.Model):
+  event = models.ForeignKey(Event, models.CASCADE, related_name='more_info')
+  html = models.JSONField(default=list)
+
+  def save(self, *args, **kwargs):
+    if isinstance(self.html, list):
+      self.html = dumps(self.html)
+    super().save(*args, **kwargs)
 
 class Ticket(models.Model):
   event = models.ForeignKey(Event, models.CASCADE, related_name='ticket')
@@ -41,11 +55,6 @@ class Ticket(models.Model):
 class SavedEvent(models.Model):
   user = models.ForeignKey(User, models.CASCADE, related_name='user_saved')
   event = models.ManyToManyField(Event, related_name='saved_events')
-
-class EventActionsCount(models.Model):
-  event = models.ForeignKey(Event, models.CASCADE, related_name='event_actions')
-  attendees = models.ManyToManyField(User, related_name='event_attendees')
-  saves = models.ManyToManyField(SavedEvent, related_name='event_saves')
 
 class PrivateEventViewers(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='private_event')
@@ -141,3 +150,6 @@ class ProfileSetUp(models.Model):
 class Recent(models.Model):
   user = models.ForeignKey(User, models.CASCADE, related_name='recent_user')
   recent = models.ForeignKey(User, models.CASCADE, related_name='recent_recent')
+
+class WaitingList(models.Model):
+  email = models.CharField(max_length=50)

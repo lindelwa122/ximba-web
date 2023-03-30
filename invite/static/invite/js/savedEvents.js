@@ -1,17 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelector('.saved-events-btn').addEventListener('click', () => {
-    fetchSavedEvents();
-    addToMainModalHistory('Saved events', () => {
-      const container = document.createElement('div');
-      container.className = 'saved-events-container';
-      container.innerHTML = `
-        <div class='skeleton skeleton-card'></div>
-        <div class='skeleton skeleton-card'></div>
-        <div class='skeleton skeleton-card'></div>
-      `;
-      return container;
-    }, [{ func: fetchSavedEvents, values: [] }]);
-  });
+  document.querySelectorAll('.saved-events-btn').forEach((el) => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
+        icon.classList.remove('selected');
+      });
+      
+      document.querySelector('.saved-events-btn').classList.add('selected');
+  
+      addToMainModalHistory('Saved events', () => {
+        const container = document.createElement('div');
+        container.className = 'saved-events-container';
+        container.innerHTML = `
+          <div>
+            <div class='skeleton skeleton-card'></div>
+            <div class='skeleton skeleton-card'></div>
+            <div class='skeleton skeleton-card'></div>
+          </div>
+        `;
+        return container;
+      }, [{ func: fetchSavedEvents, values: [] }]);
+    });
+
+    loadEventHandler();
+  })
 });
 
 const fetchSavedEvents = () => {
@@ -24,6 +35,101 @@ const fetchSavedEvents = () => {
 
 const renderSavedEventsImage = (image) => {
   return image ? `<div class='img-cover me-2'><img src='${image}' alt='event-cover'></div>` : '';
+}
+
+const eventsContainerClickHandler = (containerClassName) => {
+  const container = document.querySelector(`.${containerClassName}`);
+  container.addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+      let button = event.target.closest('.follow-btn');
+      if (button) {
+        const username = button.parentElement.parentElement.dataset.username;
+        followUserInSavedEvents(button, username);
+        return;
+      }
+
+      button = event.target.closest('.get-ticket');
+      if (button) {
+        const post = event.target.closest('.post');
+        const eventId = post.dataset.eventid;
+        const bookmarkIcon = post.querySelector('.bi-bookmark');
+        const savedCount = post.querySelector('.saves-count');
+        const attendeesIcon = post.querySelector('.bi-person');
+        const attendeesCount = post.querySelector('.attendees-count');
+        getTicket(button, eventId, bookmarkIcon, savedCount, attendeesIcon, attendeesCount);
+        return;
+      }
+
+      button = event.target.closest('.view-ticket');
+      if (button) {
+        const post = event.target.closest('.post');
+        const eventId = parseInt(post.dataset.eventid);
+        addToMainModalHistory('Ticket', () => {
+          const container = document.createElement('div');
+          container.classList = 'ticket-container';
+          container.innerHTML = `
+            <div class='skeleton skeleton-card'></div>
+          `;
+          return container;
+        }, [{ func: fetchTicketData, values: [eventId] }]);
+        return;
+      }
+    }
+
+    if (event.target.classList.contains('see-more')) {
+      const post = event.target.closest('.post');
+      showHideEventInfoToggle(post);
+      return;
+    }
+
+    if (event.target.classList.contains('exact-location')) {
+      const post = event.target.closest('.post');
+      showExactLocation(post);
+      return;
+    }
+
+    if (event.target.classList.contains('bi-bookmark')) {
+      const post = event.target.closest('.post');
+      const eventId = post.dataset.eventid;
+      const savedCount = post.querySelector('.saves-count');
+      const saveBtn = post.querySelector('.bi-bookmark');
+      saveEvent(eventId, saveBtn, savedCount);
+    }
+
+    if (event.target.classList.contains('bi-bookmark-fill')) {
+      const post = event.target.closest('.post');
+      const eventId = post.dataset.eventid;
+      const savedCount = post.querySelector('.saves-count');
+      const savedIcon = post.querySelector('.bi-bookmark-fill');
+      unsavedEvent(eventId, savedIcon, savedCount);
+    }
+
+    if (event.target.classList.contains('bi-person')) {
+      const post = event.target.closest('.post');
+      const eventId = post.dataset.eventid;
+      const attendeesIcon = post.querySelector('.bi-person');
+      const attendeesCount = post.querySelector('.attendees-count');
+      const savedIcon = post.querySelector('.bi-bookmark');
+      const savedCount = post.querySelector('.saves-count');
+      const ticketBtn = post.querySelector('.get-ticket');
+      addAttendee(eventId, attendeesIcon, attendeesCount, savedIcon, savedCount, ticketBtn, Boolean(savedIcon));
+    }
+
+    if (event.target.classList.contains('bi-person-fill')) {
+      const post = event.target.closest('.post');
+      const eventId = post.dataset.eventid;
+      const attendeesIcon = post.querySelector('.bi-person-fill');
+      const attendeesCount = post.querySelector('.attendees-count');
+      const ticketBtn = post.querySelector('.view-ticket');
+      removeAttendee(eventId, attendeesIcon, attendeesCount, ticketBtn);
+    }
+
+    if (event.target.classList.contains('more-info')) {
+      const post = event.target.closest('.post');
+      const eventId = post.dataset.eventid;
+      window.location.href = `/more-info/${eventId}/event/view`;
+    }
+  });
 }
 
 const savedEventsContainerClickHandler = (e, events) => {
@@ -77,10 +183,48 @@ const renderSavedEvents = (events) => {
           </div>
         </div>
         <div class='d-flex align-items-center'>
-          <button class='btn btn-primary btn-small me-2 view-ticket'>Ticket</button>
+          ${renderTicket(event.with_ticket, event.ticket_secured)}
           <i class='bi bi-x'></i>
         </div>
       </div>
     `).join('')}
   `;
+}
+
+const renderTicket = (with_ticket, ticket_secured) => {
+  if (with_ticket) {
+      return ticket_secured ? 
+      `<button class='btn btn-primary btn-small me-2 view-ticket'>Ticket</button>` :
+      `<button class='btn btn-primary-outline btn-small me-2 get-ticket'>Get Ticket</button>`;
+  } else {
+    return '';
+  }
+}
+
+const followUserInSavedEvents = (btn, username) => {
+  btn.disabled = true;
+
+  fetch(`/follow/${username}`)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error(`Could't follow ${username}. Click their username to try again.`);
+      }
+
+      btn.classList.replace('btn-primary', 'btn-secondary-outline');
+      btn.classList.remove('follow-btn');
+      btn.textContent = 'Following';
+    })
+    .catch((error) => {
+      console.error(error);
+      alert(error);
+    })
+    .finally(() => btn.disabled = false);
+}
+
+const loadEventHandler = () => {
+  document.querySelector('.modal-page-content').addEventListener('load', (event) => {
+    if (event.target.tagName === 'IMG') {
+      event.target.classList.remove('skeleton');
+    }
+  }, true);
 }

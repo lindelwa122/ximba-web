@@ -12,10 +12,10 @@
 
 .body {
   display: flex;
+  // height: 100%;
 
   main {
     min-height: 100%;
-    overflow: hidden;
     position: relative;
   }
 }
@@ -37,9 +37,10 @@ body.modal-open {
 
 main {
   width: 100%;
-
+  
   @include for-tablets {
     margin-left: 120px;
+    width: calc(100% - 120px);
   }
 }
 

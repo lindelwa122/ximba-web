@@ -144,6 +144,7 @@ const validateForm = (e) => {
     return false;
   }
 
+
   startBtnLoadingAnimation(e.submitter);
   sendFormDataToServer('/register', '/confirm');
 };

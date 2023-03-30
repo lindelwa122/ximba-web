@@ -92,4 +92,27 @@ section.new-event {
       }
     }
   }
+
+  .paid-options {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s ease-in-out;
+  }
+  
+  .amount-container {
+    display: flex;
+    align-items: center;
+    background-color: var(--bs-gray-400);
+    border-radius: 10px;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s ease-in-out;
+  }
+
+  .currency {
+    width: 20%;
+    padding: $general-padding;
+    display: flex;
+    justify-content: center;
+  }
 }

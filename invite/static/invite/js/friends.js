@@ -50,7 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add click event listeners to all elements with the class 'friends-btn'
   document.querySelectorAll('.friends-btn').forEach((btn) => {
-    btn.addEventListener('click', showSuggestedFriends);
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
+        icon.classList.remove('selected');
+      });
+      
+      document.querySelector('.friends-btn').classList.add('selected');
+
+      showSuggestedFriends()
+    });
   });
 });
 

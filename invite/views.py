@@ -16,7 +16,7 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from django.utils.timezone import localtime
+from django.utils.timezone import localtime, now
 from fuzzywuzzy import process
 
 from .models import *
@@ -290,8 +290,9 @@ def edit_profile_img(request):
         return JsonResponse({}, status=200)
 
 
-def save_event(request):
+def create_event(request):
     if request.method == 'POST':
+
         title = request.POST.get('title')
         if not title:
             return JsonResponse({'error_type': 'event_title_empty'}, status=400)
@@ -316,6 +317,19 @@ def save_event(request):
         if selectedAccess == 'null':
             return JsonResponse({'error_type': 'event_selected_access_empty'}, status=400)
 
+        selectedPaidOptions = request.POST.get('selectedPaidOptions')
+        ticketPrice = request.POST.get('amount')
+        if selectedAccess == 'with-access':
+            if selectedPaidOptions == 'null':
+                return JsonResponse({'error_type': 'event_paid_options_empty'}, status=400)
+
+            if selectedPaidOptions == 'paid':
+                try:
+                    if ticketPrice == 'null' or int(ticketPrice) <= 0:
+                        return JsonResponse({'error_type': 'event_ticket_price_invalid'}, status=400)
+                except ValueError:
+                        return JsonResponse({'error_type': 'event_ticket_price_invalid'}, status=400)
+
         attendance_limit = request.POST.get('limit')
         if not attendance_limit:
             attendance_limit = 0
@@ -326,6 +340,14 @@ def save_event(request):
 
         ticket = True if selectedAccess == 'with-access' else False
 
+        keywords = request.POST.get('keywords')
+        keywords_len = len(keywords.strip().split(','))
+
+        if keywords_len < 3 or keywords_len > 5:
+            return JsonResponse({'error_type': 'event_keywords_invalid'}, status=400) 
+
+        draft = True if request.POST.get('draft') == 'true' else False
+
         event = Event.objects.create(
             user=request.user,
             title=title,
@@ -334,10 +356,17 @@ def save_event(request):
             location=location,
             public=public,
             ticket_access=ticket,
-            attendees_allowed=attendance_limit
+            attendees_allowed=attendance_limit,
+            ticket_price=int(ticketPrice) if selectedPaidOptions == 'paid' else 0,
+            keywords=keywords,
+            draft=draft
         )
 
-        EventActionsCount.objects.create(event=event)
+        if draft:
+            EventMoreInfo.objects.create(event=event)
+            url = f'/more-info/{event.pk}/edit'
+        else:
+            url = '/home'
 
         if not public:
             friends = Friend.objects.filter(user=request.user, status=Friend.ACCEPTED)
@@ -394,7 +423,7 @@ def save_event(request):
                         )
                         event.save()
 
-        return JsonResponse({}, status=200)
+        return JsonResponse({'next_route': url}, status=200)
 
 
 def get_event_access(request, event_id):
@@ -406,7 +435,13 @@ def get_event_access(request, event_id):
     if Ticket.objects.filter(event=event, owner=user).exists():
         return JsonResponse({'error': 'Ticket already exists'}, status=409)
 
+    if event.attendees_allowed > 0:
+        if event.attendees.count() >= event.attendees_allowed:
+            return JsonResponse({'error': 'The number of attendees has reached the limit'}, status=401)
+        
     Ticket.objects.create(event=event, owner=user, identifier=ticket_id)
+
+    event.attendees.add(user)
 
     saved_event, created = SavedEvent.objects.get_or_create(user=user)
     if created:
@@ -415,6 +450,53 @@ def get_event_access(request, event_id):
         saved_event.event.add(event)
 
     return JsonResponse({}, status=200)
+
+
+def add_attendee(request):
+    user = request.user
+    data = loads(request.body)
+    event_id = int(data.get('eventId', ''))
+    method = data.get('method', '')
+
+    if method == 'normal':
+        event = get_object_or_404(Event, id=event_id)
+
+        if event.ticket_access:
+            return JsonResponse(
+                {'error': 'The event has a ticket access and must be accessed through a different route'}, 
+            status=400)
+
+        if event.attendees_allowed > 0:
+            if event.attendees.count() >= event.attendees_allowed:
+                return JsonResponse({'error': 'The number of attendees has reached the limit'}, status=401)
+
+        event.attendees.add(user)
+
+        saved_events, created = SavedEvent.objects.get_or_create(user=user)
+        if created:
+            saved_events.event.set([event])
+        else:
+            saved_events.event.add(event)
+
+        return JsonResponse({}, status=200)
+
+def save_event(request):
+    if request.method == 'POST':
+        data = loads(request.body)
+        event_id = int(data.get('eventId', ''))
+        event = get_object_or_404(Event, id=event_id)
+
+        saved_event, created = SavedEvent.objects.get_or_create(user=request.user)
+        if created:
+            saved_event.event.set([event])
+        else:
+            if saved_event.event.contains(event):
+                return JsonResponse({'error': 'Event already saved'}, status=200)
+            
+            saved_event.event.add(event)
+
+        return JsonResponse({}, status=200)
+
 
 def find_users(query, threshold=80):
     # Get all users from the database
@@ -592,18 +674,139 @@ def get_user_data(request, username):
     return JsonResponse({'user_data': obj}, status=200)
 
 
+def unsave_event(request):
+    if request.method == 'DELETE':
+        user = request.user
+        data = loads(request.body)
+        event_id = int(data.get('eventId', ''))
+
+        event = get_object_or_404(Event, id=event_id)
+
+        is_user_attendee = event.attendees.contains(user)
+
+        if event.ticket_access and is_user_attendee:
+            return JsonResponse({'error': 'Cannot remove events with ticket access.'}, status=400)
+
+        saved_events = get_object_or_404(SavedEvent, user=user, event=event)
+
+        saved_events.event.remove(event)
+
+        return JsonResponse({}, status=200)
+
+
+def remove_attendee(request):
+    if request.method == 'DELETE':
+        user = request.user
+        data = loads(request.body)
+        event_id = int(data.get('eventId', ''))
+        method = data.get('method', '')
+
+        event = get_object_or_404(Event, id=event_id)
+
+        if method == 'normal':
+
+            if event.ticket_access:
+                return JsonResponse({'error': 'Incorrect method. Try "free" method.'}, status=400)
+
+            event.attendees.remove(user)
+
+            return JsonResponse({}, status=200)
+
+        elif method == 'free':
+            if event.ticket_price != 0:
+                return JsonResponse({'error': 'Incorrect method. Try another method'}, status=401)
+
+            ticket = get_object_or_404(Ticket, event=event, owner=user)
+            ticket.delete()
+
+            event.attendees.remove(user)
+
+            return JsonResponse({}, status=200)
+
 def get_events(request):
+    username = request.GET.get('username')
     user = request.user
-    public_events = Event.objects.filter(public=True).exclude(user=user)
+
+    if username:
+        user = get_object_or_404(User, username=username)   
+        events = Event.objects.filter(user=user).order_by('-datetime')
+        return JsonResponse({'events': serialize_post(events, user)}, status=200)
+        
+    public_events = Event.objects.filter(public=True, draft=False).exclude(user=user)
     allowed_private_events = PrivateEventViewers.objects.filter(viewers=user).values('event_id')
     private_events = Event.objects.filter(public=False).filter(id__in=allowed_private_events)
     events = public_events.union(private_events)
     return JsonResponse({'events': serialize_post(events, user)}, status=200)
 
-def get_ticket_info(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
-    ticket = get_object_or_404(Ticket, event=event)
+import requests
+from django.conf import settings
+
+def get_events_nearby(request):
     user = request.user
+
+    # Get the user's current location using Mapbox's geocoding API
+    location = request.GET.get('location')
+
+    geocoding_url = f'https://api.mapbox.com/geocoding/v5/mapbox.places/{location}.json?access_token={settings.MAPBOX_ACCESS_TOKEN}'
+    response = requests.get(geocoding_url)
+    location_data = response.json()
+
+    # Extract the coordinates from the geocoding response
+    coordinates = location_data['features'][0]['geometry']['coordinates']
+    longitude = coordinates[0]
+    latitude = coordinates[1]
+
+    # Filter the events based on distance from the user's location
+    distance = request.GET.get('distance', 500)  # default to 10 kilometers
+    events = Event.objects.filter(
+        public=True,
+    )
+
+    from geopy.distance import geodesic
+
+    nearby_events = []
+    for event in events:
+        # Parse the latitude and longitude values from the location field
+        event_longitude, event_latitude = event.location.split(',')
+        event_latitude = float(event_latitude)
+        event_longitude = float(event_longitude)
+
+        # Calculate the distance between the user's location and the event's location
+        distance_in_km = geodesic((latitude, longitude), (event_latitude, event_longitude)).km
+
+        print(distance_in_km)
+
+        # If the event is within the specified distance, add it to the nearby_events list
+        if distance_in_km <= float(distance):
+            nearby_events.append(event)
+
+    return JsonResponse({'events': serialize_post(nearby_events, user)}, status=200)
+
+
+def get_events_filter(request, filter_by):
+    user = request.user
+
+    if filter_by == 'upcoming':
+        events = Event.objects.filter(datetime__gte=now()).exclude(user=user)
+        return JsonResponse({'events': serialize_post(events, user)}, status=200)
+
+    if filter_by == 'friends':
+        filter_method = Friend.objects.filter(user=user, status=Friend.ACCEPTED).values('friend_id')
+
+    elif filter_by == 'following':
+        filter_method = Following.objects.filter(user=user).values('following_id')
+
+    allowed_private_events = PrivateEventViewers.objects.filter(viewers=user).values('event_id')
+    public_events = Event.objects.filter(public=True).filter(user_id__in=filter_method)
+    private_events = Event.objects.filter(public=False, user_id__in=filter_method, id__in=allowed_private_events)
+    events = public_events.union(private_events)
+    return JsonResponse({'events': serialize_post(events, user)}, status=200)
+   
+
+def get_ticket_info(request, event_id):
+    user = request.user
+    event = get_object_or_404(Event, id=event_id)
+    ticket = get_object_or_404(Ticket, event=event, owner=user)
     serialized_event_data = serialize_post([ticket.event], user)
 
     obj =  {
@@ -617,11 +820,13 @@ def get_ticket_info(request, event_id):
 
     return JsonResponse({'ticket_info': obj}, status=200)
 
+
 def get_saved_events(request):
     user =  request.user
     events = SavedEvent.objects.get(user=user)
     serialized_data = serialize_post(events.event.all(), user)
     return JsonResponse({'events': serialized_data}, status=200)
+
 
 def get_followings(request, username):
     user = User.objects.get(username=username.strip())
@@ -716,6 +921,20 @@ def get_profile_count(request, username):
     return JsonResponse({'friendsCount': friends, 'followingCount': following, 'followersCount': followers}, status=200)
 
 
+def get_event_stats(request, event_id):
+    event = Event.objects.get(id=int(event_id))
+    user_saved_event = SavedEvent.objects.filter(user=request.user, event=event).exists()
+    event_saves_count = SavedEvent.objects.filter(event=event).count()
+    return JsonResponse(
+        {
+            'attendees': event.attendees, 
+            'saves': event_saves_count,
+            'userSavedEvent': user_saved_event
+        }, 
+        status=200
+    )
+
+
 def get_user_bio(request, username):
     try:
         user = User.objects.get(username=username)
@@ -735,6 +954,63 @@ def get_user_profile_image(request, username):
     profile = Profile.objects.get(user=user)
 
     return JsonResponse({'imagePath': get_img_url(profile.profile_img)}, status=200)
+
+
+def get_event_draft(request, event_id):
+    user = request.user
+    event = get_object_or_404(Event, id=event_id, user=user)
+    additional_info = get_object_or_404(EventMoreInfo, event=event)
+    return JsonResponse({'info': dumps(additional_info.html)}, status=200)
+
+
+def event_more_info_render(request, event_id):
+    event = EventMoreInfo.objects.filter(event__id=event_id)
+    if not event.exists():
+        return HttpResponseRedirect(reverse('invite:render404'))
+    return render(request, 'invite/more-info-view.html')
+
+
+def view_more_info(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    additional_info = get_object_or_404(EventMoreInfo, event=event)
+    return JsonResponse({'info': dumps(additional_info.html)}, status=200)
+
+
+def more_info(request, event_id):
+    from urllib.parse import unquote
+    user = request.user
+    if request.method == 'GET':
+        try:
+            Event.objects.get(id=event_id, user=user, draft=True)
+        except ObjectDoesNotExist:
+            return HttpResponseRedirect(reverse('invite:render404'))
+        
+        return render(request, 'invite/more-event-info.html')
+
+    elif request.method == 'PUT':
+        
+        data = unquote(request.body.decode('utf-8'))
+        html_content = loads(data)
+        event = get_object_or_404(Event, id=event_id, user=user)
+
+        add_info, _ = EventMoreInfo.objects.get_or_create(event=event)
+        add_info.html = html_content
+        add_info.save()
+
+        return JsonResponse({}, status=200)
+
+    elif request.method == 'POST':
+        data = unquote(request.body.decode('utf-8'))
+        html_content = loads(data)
+        event = get_object_or_404(Event, id=event_id, user=user)
+        event.draft = False
+        event.save()
+
+        add_info, _ = EventMoreInfo.objects.get_or_create(event=event)
+        add_info.html = html_content
+        add_info.save()
+
+        return JsonResponse({}, status=200)
 
 
 def index(request):
@@ -850,7 +1126,15 @@ def new_password(request, username, access):
         return render(request, 'invite/new_password.html')
 
 
-def profile(request, username):
+def get_username(request):
+    username = request.user.username
+    return JsonResponse({'username': username}, status=200)
+
+
+def profile(request, username=None):
+    if not username:
+        username = request.user.username
+
     username = username.strip()
 
     # Try to get user
@@ -1052,3 +1336,16 @@ def unfollow(request, username):
     connection[0].delete()
 
     return JsonResponse({}, status=200)
+
+def landing_page(request):
+    return render(request, 'invite/landing-page.html')
+
+def add_to_waiting_list(request):
+    email = request.GET.get('email')
+    waiting = WaitingList.objects.filter(email=email)
+    if waiting.exists():
+        return JsonResponse({'error': 'conflict'}, status=409)
+
+    WaitingList.objects.create(email=email)
+    return JsonResponse({}, status=200)
+

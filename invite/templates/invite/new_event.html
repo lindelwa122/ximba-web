@@ -12,8 +12,8 @@
 {% block main %}
 
 <section class='new-event'>
-  <div class='header d-flex align-items-center'>
-    <img src='{% static "invite/images/app/logo.png" %}' alt='logo' class='logo'/>
+  <div class='header mb-3 d-flex align-items-center'>
+    <img src='{% static "invite/images/app/logo.svg" %}' alt='logo' class='logo'/>
     <div class='font-headline ms-2'>Add New Event</div>
   </div>
 
@@ -39,6 +39,20 @@
         <label for='description' class='floating-input-placeholder'>Short Description</label>
         <div class='error-message feedback-empty description-empty d-none'>
           Provide a brief description of your event within 100-500 characters.
+        </div>
+      </div>
+
+      <div class='mb-3 tags-container'></div>
+
+      <div class='mb-3'>
+        <div>Write keywords related to your event (Min is 3)</div>
+        <div class='form-floating'>
+          <input type='text' name='tags' class='tags form-control input-frame' placeholder='Tags (ex. "wedding", "fun", "party")'>
+          <label for='tags' class='floating-input-placeholder'>Tags (ex. 'wedding', 'fun', 'party')</label>
+        </div>
+
+        <div class='error-message feedback-empty tags-invalid d-none'>
+          You can only add between 3 and 5 tags.
         </div>
       </div>
 
@@ -71,12 +85,12 @@
 
       <div class='mb-3'>
         <div class='d-flex align-items-center'>
-          <div class='flex-fill d-flex align-items-center'>
+          <div class='w-50 d-flex align-items-center'>
             <input name='event-type' type='radio' value='private'>
             <label class='ms-1' for='private'>Private</label>
           </div>
   
-          <div class='flex-fill d-flex align-items-center'>
+          <div class='w-50 d-flex align-items-center'>
             <input name='event-type' type='radio' value='public'>
             <label class='ms-1' for='public'>Public</label>
           </div>
@@ -87,20 +101,15 @@
         </div>
       </div>
 
-      <div class='form-floating mb-3'>
-        <input type='number' name='limit' class='attendees-limit form-control input-frame' placeholder='Attendees Limit (Optional)'>
-        <label for='limit' class='floating-input-placeholder'>Attendees Limit (Optional)</label>
-      </div>
-
       <div class='mb-3'>
         <div class='d-flex align-items-center'>
-          <div class='flex-fill d-flex align-items-center'>
-            <input name='access' type='radio' value='no-access'>
+          <div class='w-50 d-flex align-items-center'>
+            <input name='access' class='no-access-input' type='radio' value='no-access'>
             <label class='ms-1' for='no-access'>Without QR Code</label>
           </div>
   
-          <div class='flex-fill d-flex align-items-center'>
-            <input name='access' type='radio' value='with-access'>
+          <div class='w-50 d-flex align-items-center'>
+            <input name='access' class='access-input' type='radio' value='with-access'>
             <label class='ms-1' for='with-access'>With QR Code</label>
           </div>
         </div>
@@ -110,13 +119,56 @@
         </div>
       </div>
 
+      <div class='mb-3'>
+        <div class='paid-options'>
+          <div class='form-floating mb-3'>
+            <input type='number' name='limit' class='attendees-limit form-control input-frame' placeholder='Attendees Limit (Optional)'>
+            <label for='limit' class='floating-input-placeholder'>Attendees Limit (Optional)</label>
+          </div>
+  
+          <div>
+            <div class='d-flex align-items-center'>
+              <div class='w-50 d-flex align-items-center'>
+                <input name='paid-options' type='radio' class='free-option' value='free'>
+                <label class='ms-1' for='free'>Free Access</label>
+              </div>
+      
+              <div class='w-50 d-flex align-items-center'>
+                <input name='paid-options' type='radio' class='paid-option' value='paid'>
+                <label class='ms-1' for='paid'>Paid Access</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class='error-message feedback-empty paid-options-empty d-none'>
+          Select one of the available options.
+        </div>
+      </div>
+
+      <div class='mb-3'>
+        <div class='amount-container'>
+          <div class='currency w-25'>R</div>
+          <div class='form-floating w-75'>
+            <input type='number' class='amount form-control input-frame' placeholder='Amount in Rands (ex. R25.50)'>
+            <label for='amount' class='floating-input-placeholder'>Amount in Rands (ex. R25)</label>
+          </div>
+        </div>
+  
+        <div class='error-message feedback-empty amount-invalid d-none'>
+          The price of a ticket must be bigger than 0.
+        </div>
+      </div>
+
       <div class='buttons-container d-flex justify-content-between align-items-center'>
-        <button class='btn btn-primary-outline w-50'>Add More Info</button>
         <div class='w-50'>
-          <input type='submit' value='Publish' class='btn btn-primary w-100'>
-          <button class='btn btn-primary w-100 d-none' disabled>
-            <span class='spinner'></span>
+          <button type='submit' class='btn btn-primary-outline no-immediate-load submit-button w-100'>
+            Add More Info
           </button>
+        </div>
+
+        <div class='w-50'>
+          <input type='submit' value='Publish' class='btn btn-primary w-100 publish'>
         </div>
       </div>
 
@@ -124,7 +176,6 @@
   </div>
 </section>
 
-<div class='open-ai'></div>
 <script src='{% static "invite/js/utils/forms.js" %}'></script>
 <script src='{% static "invite/js/newEvent.js" %}'></script>
 

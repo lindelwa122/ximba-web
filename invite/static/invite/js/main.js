@@ -33,7 +33,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.querySelectorAll('.view-profile-btn').forEach((el) => {
-    el.addEventListener('click', () => window.location.href = '/');
+    el.addEventListener('click', () => {
+      fetch('/get-username')
+        .then((response) => response.json())
+        .then(({ username }) => {
+          window.location.href = `/${username}`;
+        })
+        .catch((error) => console.error(error));
+    });
+  });
+
+  document.querySelectorAll('.home').forEach((el) => {
+    el.addEventListener('click', () => window.location.href = '/home');
+  });
+
+  document.querySelectorAll('.add-new-event').forEach((el) => {
+    el.addEventListener('click', () => window.location.href = '/new-event');
   });
 });
 
@@ -93,7 +108,6 @@ const rotateAnimation = (device) => {
     navController.classList.add('rotate');
   }
 };
-
 
 const shrinkExpandAnimation = () => {
   const nav = document.querySelector('.nav-sm');
@@ -377,7 +391,6 @@ const profileImgForm = () => {
 };
 
 // TOP BAR NOTIFICATION
-
 const pushNotification = () => {
   const pushTopNotification = document.querySelector('.push-notification');
   pushTopNotification.style.display = 'none';
@@ -451,18 +464,35 @@ const pushNotification = () => {
     });
 };
 
-
 // Check if the user is viewing their profile
 const checkProfileAuthenticity = () => {
-  const username = window.location.pathname.split('/')[1];
+  const url =  window.location.pathname.split('/');
 
-  fetch(`/is-user-authenticated/${username}`)
-    .then((response) => {
-      if (response.status === 200) {
-        document.querySelectorAll('.view-profile-btn').forEach((el) => {
-          el.classList.add('selected');
-        })
-      }
-    })
-    .catch((error) => console.error(error));
+  if (url.length === 2) {
+    const username = url[1];
+  
+    fetch(`/is-user-authenticated/${username}`)
+      .then((response) => {
+        if (response.status === 200) {
+          document.querySelectorAll('.view-profile-btn').forEach((el) => {
+            el.classList.add('selected');
+          })
+        }
+      })
+      .catch((error) => console.error(error));
+  }
+}
+
+// Format date and time
+const formattedDateTime = (timestamp) => {
+  const date = new Date(timestamp);
+  const userLocale = navigator.language;
+  const options = { day: 'numeric', month: 'short', year: 'numeric' }
+  const dateStr = date.toLocaleDateString(userLocale, options)
+
+  const timeOptions = { hour: 'numeric', minute: 'numeric' }
+  const timeStr = date.toLocaleTimeString(userLocale, timeOptions);
+
+  const datetimeStr = `${dateStr}, ${timeStr}`;
+  return datetimeStr;
 }

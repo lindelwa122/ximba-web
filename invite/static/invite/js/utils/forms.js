@@ -180,6 +180,13 @@ const formErrorHandler = (errorType) => {
       formErrorRender(eventDatetimeInput, errorContainer);
       throw new Error('Datetime empty');
 
+    case 'event_keywords_invalid':
+      const keywordsInput = document.querySelector('.tags');
+      errorContainer = document.querySelector('.tags-invalid');
+      formErrorRender(keywordsInput, errorContainer);
+      window.scrollTo(0, 0);
+      throw new Error('Keywords invalid');
+
     case 'event_selected_type_empty':
       errorContainer = document.querySelector('.event-type-empty');
       errorContainer.classList.remove('d-none');
@@ -189,6 +196,16 @@ const formErrorHandler = (errorType) => {
       errorContainer = document.querySelector('.access-empty');
       errorContainer.classList.remove('d-none');
       throw new Error('Event access options not selected');
+
+    case 'event_paid_options_empty':
+      errorContainer = document.querySelector('.paid-options-empty');
+      errorContainer.classList.remove('d-none');
+      throw new Error('Event paid options not selected');
+
+    case 'event_ticket_price_invalid':
+      errorContainer = document.querySelector('.amount-invalid');
+      errorContainer.classList.remove('d-none');
+      throw new Error('Event ticket price invalid');
 
     case 'link_sent':
       errorContainer = document.querySelector('.link-sent');

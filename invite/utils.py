@@ -1,4 +1,5 @@
-from random import randint, choices
+from random import randint, choices, shuffle, random
+from django.db.models.functions import Random
 from string import hexdigits
 
 from .models import *
@@ -77,12 +78,13 @@ def convert_datetime_to_timestamp(datetime):
     timestamp = datetime.timestamp()
     return timestamp * 1000
 
-def serialize_post(data: list, user):
+def serialize_post(data, user):
     ls = []
+
     for post in data:
-        event_actions_count = EventActionsCount.objects.get(event=post)
-        attendees = event_actions_count.attendees.count()
-        saves = event_actions_count.saves.count()
+        saved_event = SavedEvent.objects.filter(user=user, event=post).exists()
+        saved_count = SavedEvent.objects.filter(event=post).count()
+        event_more_info = EventMoreInfo.objects.filter(event=post).exists()
 
         obj = {
             'id': post.id,
@@ -94,9 +96,16 @@ def serialize_post(data: list, user):
             'publisher': serialize_data([post.user]),
             'with_ticket': post.ticket_access,
             'ticket_secured': Ticket.objects.filter(event=post, owner=user).exists(),
+            'ticket_price': post.ticket_price,
             'attendance_limit': post.attendees_allowed,
-            'attendees': attendees,
-            'saves': saves
+            'attendees': post.attendees.count(),
+            'saves': saved_count,
+            'user_saved_event': saved_event,
+            'attending': post.attendees.contains(user),
+            'keywords': post.keywords,
+            'more_info': event_more_info
         }
         ls.append(obj)
+    
+    shuffle(ls)
     return ls

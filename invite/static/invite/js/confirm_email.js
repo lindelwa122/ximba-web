@@ -62,5 +62,5 @@ const validateForm = (e) => {
   }
 
   startBtnLoadingAnimation(e.submitter);
-  sendFormDataToServer('/confirm', '/');
+  sendFormDataToServer('/confirm', '/home');
 };

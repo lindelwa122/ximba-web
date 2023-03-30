@@ -49,3 +49,9 @@
     text-decoration: none;
   }
 }
+
+.saved-events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

@@ -1,7 +1,118 @@
 document.addEventListener('DOMContentLoaded', () => {
-  getEvents();
+  eventsContainerLoadHandler();
   eventsContainerClickHandler('index-events-container');
+  getEvents();
+
+  document.querySelector('.filter-by-friends').addEventListener('click', () => {
+    filterEvents('friends');
+  });
+
+  document.querySelector('.filter-by-following').addEventListener('click', () => {
+    filterEvents('following');
+  });
+
+  document.querySelector('.filter-by-upcoming').addEventListener('click', () => {
+    filterEvents('upcoming');
+  });
+
+  document.querySelector('.filter-by-nearby').addEventListener('click', () => {
+    filterByNearBy();
+  })
+
+  document.querySelector('.all-index').addEventListener('click', () => {
+    document.querySelectorAll('.index-filter').forEach((el) => {
+      el.classList.remove('selected');
+    });
+  
+    document.querySelector('.all-index').classList.add('selected');
+
+    eventsSkeleton();
+
+    getEvents();
+  });
 });
+
+const filterByNearBy = () => {
+  eventsSkeleton();
+
+  document.querySelectorAll('.index-filter').forEach((el) => {
+    el.classList.remove('selected');
+  });
+
+  document.querySelector('.filter-by-nearby').classList.add('selected');
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var latitude = position.coords.latitude;
+      var longitude = position.coords.longitude;
+      
+      fetch(`/events/get/filter/nearby?location=${longitude},${latitude}`)
+        .then((response) => response.json())
+        .then(({ events }) => {
+          if (events.length === 0) {
+            document.querySelector('.index-events-container').innerHTML = 'Currently, there are no events nearby :(';
+          } else {
+            renderEvents(events, 'index-events-container');
+          }
+        })
+        .catch((error) => console.error(error));
+    });
+  } else {
+    alert('To find nearby events, we need your permission to access your location. Please enable location services for this website. Without your permission, we won\'t be able to show you events near you.');
+  }
+}
+
+const eventsSkeleton = () => {
+  document.querySelector('.index-events-container').innerHTML = `
+    <div class='post events-loading-container'>
+      <div class='user-info d-flex justify-content-between align-items-center'>
+        <div class='d-flex'>
+          <div class='skeleton profile-img'></div>
+          <div class='skeleton name ms-2'></div>
+        </div>
+        <div>
+          <div class='skeleton button'></div>
+        </div>
+      </div>
+
+      <div class='skeleton buttons mt-3'></div>
+      <div class='skeleton text-line mt-3'></div>
+      <div class='skeleton text-line mt-2'></div>
+      <div class='skeleton text-line mt-2 shorter'></div>
+
+      <div class='d-flex justify-content-between mt-3'>
+        <div class='skeleton item'></div>
+        <div class='skeleton item'></div>
+        <div class='skeleton item'></div>
+      </div>
+    </div>
+  `;
+}
+
+const filterEvents = (filterMethod) => {
+  document.querySelectorAll('.index-filter').forEach((el) => {
+    el.classList.remove('selected');
+  });
+
+  document.querySelector(`.filter-by-${filterMethod}`).classList.add('selected');
+
+  eventsSkeleton();
+
+  fetch(`/events/get/filter/${filterMethod}`)
+    .then((response) => response.json())
+    .then(({ events }) => {
+      renderEvents(events, 'index-events-container');
+    })
+    .catch((error) => console.error(error));
+}
+
+const eventsContainerLoadHandler = () => {
+  document.querySelector('.index-events-container').addEventListener('load', (event) => {
+    if (event.target.tagName === 'IMG') {
+      event.target.classList.remove('skeleton');
+    }
+  }, true);
+}
 
 const getEvents = () => {
   fetch('/events/get').then((response) => response.json())
@@ -13,7 +124,7 @@ const getEvents = () => {
 
 const userLogStatus = async () => {
   try {
-    const response = await fetch('logged-in')
+    const response = await fetch('/logged-in')
     if (response.status !== 200) {
       throw new Error('Couldn\'t check user log status');
     }
@@ -27,7 +138,7 @@ const userLogStatus = async () => {
 
 const isUserFollowingPublisher = async (username) => {
   try {
-    const response = await fetch(`check/is-user-following/${username}`)
+    const response = await fetch(`/check/is-user-following/${username}`)
     const { answer } = await response.json();
     return answer;
   } catch(error) {
@@ -54,7 +165,7 @@ const renderUserInfo = async (user) => {
   const htmlString = `
     <div class='user-info d-flex justify-content-between align-items-center' data-username='${user.username}'>
       <div class='d-flex'>
-        <img src='${user.image}' alt='${user.username} profile image'>
+        <img src='${user.image}' class='skeleton' alt='${user.username} profile image'>
         <div class='ms-1'>
           <div class='font-body-tiny'><a href='/${user.username}'>@${user.username}</a></div>
           <div>${user.fullName}</div>
@@ -70,8 +181,6 @@ const renderUserInfo = async (user) => {
 }
 
 const mapboxAccessToken = 'pk.eyJ1IjoibnFhYmVuaGxlIiwiYSI6ImNsZXd6bjIwajBqdDUzb2tjY2lmamhqaWIifQ.3OexVyKsfjbGleSJhc3JxQ';
-
-
 
 const reverseGeocode = async (longitude, latitude) => {
   const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${mapboxAccessToken}`;
@@ -119,20 +228,7 @@ const getMapCoordinates = (locationString) => {
   return { longitude, latitude };
 }
 
-const formattedDateTime = (timestamp) => {
-  const date = new Date(timestamp);
-  const userLocale = navigator.language;
-  const options = { day: 'numeric', month: 'short', year: 'numeric' }
-  const dateStr = date.toLocaleDateString(userLocale, options)
-
-  const timeOptions = { hour: 'numeric', minute: 'numeric' }
-  const timeStr = date.toLocaleTimeString(userLocale, timeOptions);
-
-  const datetimeStr = `${dateStr}, ${timeStr}`;
-  return datetimeStr;
-}
-
-const renderImage = (image, ticket, ticket_secured, attendees) => {
+const renderImage = (image, ticket, ticket_secured, attendees, price) => {
   if (image) {
     const setTicket = ticket ? true : false;
 
@@ -140,7 +236,7 @@ const renderImage = (image, ticket, ticket_secured, attendees) => {
     if (setTicket) {
       ticketBtn = ticket_secured ? 
       `<button class='btn btn-primary btn-small view-ticket'>View Ticket</button>` :
-      `<button class='btn btn-secondary btn-small get-ticket'>Get Ticket (Free)</button>`;
+      `<button class='btn btn-secondary btn-small get-ticket'>Get Ticket (${price===0 ? 'Free' : `R${price}`})</button>`;
     } else {
       ticketBtn = '';
     }
@@ -150,7 +246,7 @@ const renderImage = (image, ticket, ticket_secured, attendees) => {
 
     return `
       <div class='img-cover'>
-        <img src='${image}' alt='Event Cover'>
+        <img src='${image}' class='skeleton' alt='Event Cover'>
         <div class='buttons-container'>
           <div>
             ${limitBtn}
@@ -166,12 +262,12 @@ const renderImage = (image, ticket, ticket_secured, attendees) => {
   return '';
 }
 
-const renderPostActions = (access, ticket_secured, attendance_limit) => {
+const renderPostActions = (access, ticket_secured, attendance_limit, price) => {
   let ticketButton;
   if (access) {
     ticketButton = ticket_secured ?
     `<button class='btn btn-primary btn-small view-ticket'>View Ticket</button>` :
-    `<button class='btn btn-secondary btn-small get-ticket'>Get Ticket (Free)</button>`;
+    `<button class='btn btn-secondary btn-small get-ticket'>Get Ticket (${price===0 ? 'Free' : `R${price}`})</button>`;
   } else {
     ticketButton = '';
   }
@@ -207,16 +303,16 @@ const renderEvents = (posts, containerClassName) => {
             </div>
           </div>
 
-          ${!event.cover ? renderPostActions(event.with_ticket, event.ticket_secured, event.attendance_limit) : ''}
+          ${!event.cover ? renderPostActions(event.with_ticket, event.ticket_secured, event.attendance_limit, event.ticket_price) : ''}
 
-          ${renderImage(event.cover, event.with_ticket, event.ticket_secured, event.attendance_limit)}
+          ${renderImage(event.cover, event.with_ticket, event.ticket_secured, event.attendance_limit, event.ticket_price)}
 
           <div class='post-caption'>
             <div class='short-description'>${event.description} <span class='see-more show link font-body-tiny'>See more</span></div>
 
             <div class='post-interactions d-flex align-items-center justify-content-between'>
               <div class='d-flex align-items-center'>
-                <i class='bi bi-person'></i>
+                <i class='bi ${event.attending ? 'bi-person-fill' : 'bi-person'}'></i>
                 <span class='ms-1 attendees-count'>${event.attendees}</span>
               </div>
               <div class='d-flex align-items-center'>
@@ -224,7 +320,7 @@ const renderEvents = (posts, containerClassName) => {
                 <span class='ms-1'>37</span>
               </div>
               <div class='d-flex align-items-center'>
-                <i class='bi bi-bookmark save-event'></i>
+                <i class='bi ${event.user_saved_event ? 'bi-bookmark-fill' : 'bi-bookmark'} save-event'></i>
                 <span class='ms-1 saves-count'>${event.saves}</span>
               </div>
             </div>
@@ -238,6 +334,13 @@ const renderEvents = (posts, containerClassName) => {
                 <i class='bi bi-clock'></i>
                 <span class='ms-2 datetime'>${datetime}</span>
               </div>
+              ${event.more_info ? `
+                <div>
+                  <i class='bi bi-info-circle'></i>
+                  <span class='ms-2 link more-info' data-id='${event.id}'>More info</a></span>
+                </div>
+              ` : ''}
+              <div class='tags-container'>${keywordsDisplay(event.keywords)}</div>
             </div>
           </div>
         </div>
@@ -245,7 +348,19 @@ const renderEvents = (posts, containerClassName) => {
   })).then((htmlStrings) => {
     document.querySelector(`.${containerClassName}`).innerHTML = htmlStrings.join('');
   });
-};
+}
+
+const keywordsDisplay = (keywords) => {
+  const keywordsArr = keywords.split(',');
+
+  const htmlStrings = keywordsArr.map((keyword) => {
+    return `
+      <div>${keyword}</div>
+    `
+  });
+
+  return htmlStrings.join('');
+}
 
 const showHideEventInfoToggle = (post) => {
   const moreInfo = post.querySelector('.event-more-info');
@@ -270,11 +385,8 @@ const showHideEventInfoToggle = (post) => {
   }
 }
 
-const getTicket = (btn, eventId) => {
+const getTicket = (btn, eventId, bookmarkIcon, savedCount, attendeesIcon, attendeesCount) => {
   const id = parseInt(eventId);
-
-  console.log(id);
-
   const prevInnerHTML = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving your ticket...';
@@ -286,8 +398,20 @@ const getTicket = (btn, eventId) => {
           alert('Ticket added to your saved events.');
           btn.classList.replace('btn-secondary', 'btn-primary');
           btn.classList.replace('get-ticket', 'view-ticket');
+
+          if (bookmarkIcon) {
+            bookmarkIcon.classList.replace('bi-bookmark', 'bi-bookmark-fill');
+            savedCount.textContent = parseInt(savedCount.textContent) + 1;
+          }
+
+          attendeesIcon.classList.replace('bi-person', 'bi-person-fill');
+          attendeesCount.textContent = parseInt(attendeesCount.textContent) + 1;
           btn.innerHTML = 'View Ticket';
           break;
+
+        case 401:
+          alert('Sorry, this event has reached the maximum number of attendees.')
+          throw new Error('Maximum number of attendees reached');
           
         case 404:
           alert('Event not found.');
@@ -340,7 +464,7 @@ const ticketPageHTML = async (ticket, error) => {
       </div>
       <div class='qr-code-wrapper'>
         <qr-code class='qrcode'>
-          <img src='/static/invite/images/app/logo.png' slot='icon'>
+          <img src='/static/invite/images/app/logo.svg' slot='icon'>
         </qr-code>
       </div>
     `;
@@ -362,52 +486,132 @@ const fetchTicketData = (id) => {
     });
 }
 
-const eventsContainerClickHandler = (containerClassName) => {
-  const container = document.querySelector(`.${containerClassName}`);
-  container.addEventListener('click', (event) => {
-    if (event.target.tagName === 'BUTTON') {
-      let button = event.target.closest('.follow-btn');
-      if (button) {
-        const username = button.parentElement.parentElement.dataset.username;
-        addFollow(button, username);
+const removeAttendee = (id, icon, count, ticket, method='normal') => {
+  fetch('/event/remove/attendee',{
+    method: 'DELETE',
+    body: JSON.stringify({ eventId: id, method: method }),
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+    }
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        icon.classList.replace('bi-person-fill', 'bi-person')
+        count.textContent = parseInt(count.textContent) - 1;
+
+        if (ticket) {
+          ticket.classList.replace('btn-primary', 'btn-secondary');
+          ticket.classList.replace('view-ticket', 'get-ticket');
+          ticket.textContent = 'Get Ticket (Free)';
+        }
+      } else if (response.status === 400) {
+        const removeTicket = confirm('Are you sure you want to remove your ticket? This action cannot be undone?');
+        if (removeTicket) {
+          removeAttendee(id, icon, count, ticket, 'free');
+        }
+      } else {
+        throw new Error('An error occurred. Please try again later!');
+      }
+    })
+    .catch((error) => {
+      alert(error);
+      console.error(error);
+    })
+}
+
+const unsavedEvent = (id, savedIcon, savedCount) => {
+  fetch('/saved-event/delete', {
+    method: 'DELETE',
+    body: JSON.stringify({ eventId: id }),
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
+  })
+    .then((response) => {
+      if ((response.status === 200)) {
+        savedIcon.classList.replace('bi-bookmark-fill', 'bi-bookmark');
+        savedCount.textContent = parseInt(savedCount.textContent) - 1;
+      } else if (response.status === 400) {
+        alert('You can\'t remove this event because you already own the ticket. Try removing the ticket by pressing the attendees icon (person icon).');
+      } else {
+        throw new Error('An error occurred, try removing this event later.');
+      }
+    })
+    .catch((error) => {
+      alert(error);
+      console.error(error);
+    })
+}
+
+const addAttendee = (id, attendeesIcon, attendeesCount, savedIcon, savedCount, ticketBtn, updateSavedCount=false, method='normal') => {
+  fetch('/event/add/attendee', {
+    method: 'POST',
+    body: JSON.stringify({ eventId: id, method: method }),
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        attendeesIcon.classList.replace('bi-person', 'bi-person-fill');
+        attendeesCount.textContent = parseInt(attendeesCount.textContent) + 1;
+
+        if (updateSavedCount) {
+          savedIcon.classList.replace('bi-bookmark', 'bi-bookmark-fill');
+          savedCount.textContent = parseInt(savedCount.textContent) + 1;
+        }
         return;
+      } else if (response.status === 400) {
+        getTicket(ticketBtn, id, savedIcon, savedCount, attendeesIcon, attendeesCount);
+      } else if (response.status === 401) {
+        alert('Sorry, this event has reached the maximum number of attendees.');
       }
+    })
+    .catch((error) => {
+      alert('Sorry an error occurred and we couldn\'t add you as an attendee. Please save this event and try again later');
+      console.error(error);
+    })
+}
 
-      button = event.target.closest('.get-ticket');
-      if (button) {
-        const post = event.target.closest('.post');
-        const eventId = post.dataset.eventid;
-        getTicket(button, eventId);
-        return;
+const saveEvent = (id, btn, count) => {
+  fetch('/event/save', {
+    method: 'POST',
+    body: JSON.stringify({ eventId: id }),
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
+  })
+    .then((response) => {
+      switch (response.status) {
+        case 200:
+          btn.classList.replace('bi-bookmark', 'bi-bookmark-fill');
+          count.textContent = parseInt(count.textContent) + 1;
+          break;
+
+        case 409:
+          alert('This event is already added to your saved list.');
+          break;
+
+        default:
+          alert('We couldn\'t add this event to your saved list. Please reload, search for the event and try again!');
+          break;
       }
+    })
+}
 
-      button = event.target.closest('.view-ticket');
-      if (button) {
-        const post = event.target.closest('.post');
-        const eventId = parseInt(post.dataset.eventid);
-        addToMainModalHistory('Ticket', () => {
-          const container = document.createElement('div');
-          container.classList = 'ticket-container';
-          container.innerHTML = `
-            <div class='skeleton skeleton-card'></div>
-          `;
-          return container;
-        }, [{ func: fetchTicketData, values: [eventId] }]);
+const getCookie = (name) => {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
       }
-    }
-
-    if (event.target.classList.contains('see-more')) {
-      const post = event.target.closest('.post');
-      showHideEventInfoToggle(post);
-      return;
-    }
-
-    if (event.target.classList.contains('exact-location')) {
-      const post = event.target.closest('.post');
-      showExactLocation(post);
-      return;
-    }
-  });
+  }
+  return cookieValue;
 }
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibnFhYmVuaGxlIiwiYSI6ImNsZXd6bjIwajBqdDUzb2tjY2lmamhqaWIifQ.3OexVyKsfjbGleSJhc3JxQ';
@@ -630,8 +834,6 @@ function getDirections(destination, directionsType) {
     });
   })
 }
-
-
 
 const addFollow = (btn, username) => {
   btn.disabled = true;

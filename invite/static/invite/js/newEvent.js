@@ -1,8 +1,129 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoibnFhYmVuaGxlIiwiYSI6ImNsZXd6bjIwajBqdDUzb2tjY2lmamhqaWIifQ.3OexVyKsfjbGleSJhc3JxQ';
 
+const retrieveEventLocation = () => {
+  document.querySelector('#map').style.height = '300px';
+
+  getUserLocation((position) => {
+    const lat = position ? position.coords.latitude : 0;
+    const long = position ? position.coords.longitude : 0;
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [long, lat],
+      zoom: 7
+    });
+
+    const marker = new mapboxgl.Marker()
+      .setLngLat([long, lat])
+      .addTo(map);
+
+    const locationInput = document.getElementById("location-input");
+
+    locationInput.value = long + "," + lat;
+
+    map.on('click', (event) => {
+      marker.setLngLat(event.lngLat);
+      locationInput.value = event.lngLat.lng + "," + event.lngLat.lat;
+    });
+  });
+}
+
+const getUserLocation = (callback) => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      callback(position);
+    }, (error) => {
+      callback(null);
+    });
+  } else {
+    callback(null);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelector('#location-input').addEventListener('click', showMap);
-  cropImage(3/2);
+  document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
+    icon.classList.remove('selected');
+  });
+
+  document.querySelector('.add-new-event').classList.add('selected');
+
+  document.querySelector('#location-input').addEventListener('click', retrieveEventLocation);
+  cropImage(3 / 2);
+
+  const tagsArray = [];
+
+  document.querySelector('.access-input').addEventListener('input', () => {
+    const paidOptionsContainer = document.querySelector('.paid-options');
+    paidOptionsContainer.style.height = paidOptionsContainer.scrollHeight + 'px';
+  });
+
+  document.querySelector('.tags-container').addEventListener('click', (event) => {
+    if (event.target.classList.contains('bi-x')) {
+      const parent = event.target.parentElement;
+      const index = parent.dataset.index;
+      tagsArray[parseInt(index)] = null;
+      parent.remove();
+    }
+  });
+
+  const tagsInput = document.querySelector('.tags');
+  tagsInput.addEventListener('input', (event) => {
+    const tagsContainer = document.querySelector('.tags-container');
+
+    if (tagsInput.value === ' ') {
+      tagsInput.value = '';
+      return;
+    }
+
+    if (event.data === ' ' || event.data === ',') {
+
+      const nullCount = tagsArray.filter((el) => el === null).length;
+      const arrSize = tagsArray.length - nullCount;
+
+      if (arrSize >= 5) {
+        document.querySelector('.tags-invalid').classList.remove('d-none');
+        tagsInput.value = '';
+        return;
+      }
+
+      const keyword = tagsInput.value.trim().replace(',', '');
+
+      if (!tagsArray.includes(keyword)) {
+        const tag = document.createElement('div');
+        tag.dataset.index = tagsArray.length;
+        tagsArray.push(keyword);
+        tag.innerHTML = keyword;
+        const xIcon = document.createElement('i');
+        tag.appendChild(xIcon);
+        console.log(tagsArray);
+        xIcon.classList = 'bi bi-x';
+        tagsContainer.appendChild(tag);
+      }
+
+      tagsInput.value = '';
+    }
+  });
+
+  document.querySelector('.no-access-input').addEventListener('input', () => {
+    const paidOptionsContainer = document.querySelector('.paid-options');
+    paidOptionsContainer.style.height = 0;
+
+    const priceContainer = document.querySelector('.amount-container');
+    priceContainer.style.height = 0;
+
+    document.querySelector('.free-option').checked = true;
+  });
+
+  document.querySelector('.paid-option').addEventListener('input', () => {
+    const priceContainer = document.querySelector('.amount-container');
+    priceContainer.style.height = (priceContainer.scrollHeight + 35) + 'px';
+  })
+
+  document.querySelector('.free-option').addEventListener('input', () => {
+    const priceContainer = document.querySelector('.amount-container');
+    priceContainer.style.height = 0;
+  })
 
   const textCount = document.querySelector('.text-description-count');
   const description = document.querySelector('.description-input');
@@ -34,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   ideaGeneratorLink.addEventListener('click', async () => {
-    console.log('I am called');
     ideaGeneratorLink.textContent = 'Generating Idea...';
     ideaGeneratorLink.style.pointerEvents = 'none';
     const idea = await generateIdeas(title.value);
@@ -52,12 +172,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelector('.new-event-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    validateNewEventForm(event);
+    const button = event.submitter;
+    if (button.tagName === 'INPUT') {
+      validateNewEventForm(button, tagsArray, false, 'input');
+    } else if (button.tagName === 'BUTTON') {
+      validateNewEventForm(button, tagsArray, true, 'button');
+    }
   });
-})
+});
 
 
-const validateNewEventForm = (e) => {
+const validateNewEventForm = (btn, tags, draft, btnType) => {
   // At the start we assume the form is valid
   let isFormValid = true;
 
@@ -82,7 +207,7 @@ const validateNewEventForm = (e) => {
     isFormValid = false;
     window.scrollTo(0, 0);
   }
-  
+
   // Validate event description
   const eventDescription = document.querySelector('.description-input');
   if (eventDescription.value.length < 100 || eventDescription.value.length > 500) {
@@ -109,7 +234,7 @@ const validateNewEventForm = (e) => {
   }
 
   // Validate event type radio input
-  let selectedEventTypeValue = null; 
+  let selectedEventTypeValue = null;
   document.querySelectorAll('input[name="event-type"]').forEach((eventType) => {
     if (eventType.checked) {
       selectedEventTypeValue = eventType.value;
@@ -134,20 +259,55 @@ const validateNewEventForm = (e) => {
     isFormValid = false;
   }
 
+  let selectedPaidOptions = null;
+  let amount = null;
+  if (selectedEventQRCodeValue === 'with-access') {
+    document.querySelectorAll('input[name="paid-options"]').forEach((input) => {
+      if (input.checked) {
+        selectedPaidOptions = input.value;
+      }
+    });
+
+    if (!selectedPaidOptions) {
+      document.querySelector('.paid-options-empty').classList.remove('d-none');
+      isFormValid = false;
+    }
+
+    if (selectedPaidOptions === 'paid') {
+      const price = document.querySelector('.amount');
+      if (price.value.length === 0 || parseInt(price.value) <= 0) {
+        document.querySelector('.amount-invalid').classList.remove('d-none');
+        isFormValid = false;
+      } else {
+        amount = parseInt(price.value);
+      }
+    }
+  }
+
+  const keywords = tags.filter((el) => el !== null);
+  if (keywords === 0 || keywords > 5) {
+    document.querySelector('.tags-invalid').classList.remove('d-none');
+    window.scrollTo(0, 0);
+    isFormValid = false;
+  }
+
   // Ensure form is valid
   if (!isFormValid) {
     return false;
   }
 
-  publishNewEvent(
-    e,
-    eventTitle.value,
-    eventDescription.value,
-    locationInput.value,
-    datetimeInput.value,
-    selectedEventTypeValue,
-    selectedEventQRCodeValue
-  );
+  publishNewEvent(btn, btnType, {
+    title: eventTitle.value,
+    description: eventDescription.value,
+    location: locationInput.value,
+    datetime: datetimeInput.value,
+    selectedType: selectedEventTypeValue,
+    selectedAccess: selectedEventQRCodeValue,
+    selectedPaidOptions: selectedPaidOptions,
+    amount: amount,
+    keywords: keywords,
+    draft: draft
+  });
 }
 
 let titleIdea = '';
@@ -155,7 +315,7 @@ let ideas = [];
 let ideaIndex = 0;
 const generateIdeas = async (title) => {
   if (titleIdea === title) {
-    ideaIndex = ideaIndex === 4 ? 0 : (ideaIndex+1);
+    ideaIndex = ideaIndex === 4 ? 0 : (ideaIndex + 1);
     return ideas[ideaIndex]
   }
 
@@ -194,20 +354,20 @@ const generateDescription = (title) => {
       headers: requestHeaders,
       body: JSON.stringify(requestBody)
     })
-    .then((response) => response.json())
-    .then(({ choices }) => {
-      // Process the API response
-      const ideas = choices.map(choice => choice.text);
-      resolve(ideas);
-    })
-    .catch(error => {
-      console.error(error);
-      reject(error);
-    });
+      .then((response) => response.json())
+      .then(({ choices }) => {
+        // Process the API response
+        const ideas = choices.map(choice => choice.text);
+        resolve(ideas);
+      })
+      .catch(error => {
+        console.error(error);
+        reject(error);
+      });
   });
 }
 
-const publishNewEvent = (event, title, description, location, datetime, selectedType, selectedAccess) => {
+const publishNewEvent = (button, buttonType, eventData) => {
   const eventCover = document.querySelector('#file-input').files[0];
   const xAxis = document.querySelector('#x-axis').value;
   const yAxis = document.querySelector('#y-axis').value;
@@ -216,25 +376,37 @@ const publishNewEvent = (event, title, description, location, datetime, selected
   const attendanceLimit = document.querySelector('.attendees-limit').value;
 
   const form = new FormData();
-  form.append('title', title);
-  form.append('description', description);
+  form.append('title', eventData['title']);
+  form.append('description', eventData['description']);
   form.append('image', eventCover);
   form.append('x', xAxis);
   form.append('y', yAxis);
   form.append('width', width);
   form.append('height', height);
-  form.append('location', location);
-  form.append('datetime', datetime);
-  form.append('selectedType', selectedType);
-  form.append('selectedAccess', selectedAccess);
+  form.append('location', eventData['location']);
+  form.append('datetime', eventData['datetime']);
+  form.append('selectedType', eventData['selectedType']);
+  form.append('selectedAccess', eventData['selectedAccess']);
   form.append('limit', attendanceLimit);
+  form.append('selectedPaidOptions', eventData['selectedPaidOptions']);
+  form.append('amount', eventData['amount']);
+  form.append('keywords', eventData['keywords']);
+  form.append('draft', eventData['draft']);
 
   const csrfToken = document.querySelector(
     'input[name="csrfmiddlewaretoken"]'
   ).value;
 
-  startBtnLoadingAnimation(event.submitter);
-  
+  button.disabled = true;
+  let prev;
+  if (buttonType === 'button') {
+    prev = button.textContent;
+    button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Saving...';
+  } else {
+    prev = button.value;
+    prev.value = 'Publishing...';
+  }
+
   fetch('/new-event/publish', {
     method: 'POST',
     body: form,
@@ -242,61 +414,27 @@ const publishNewEvent = (event, title, description, location, datetime, selected
       'X-CSRFToken': csrfToken,
     },
   })
-  .then((response) => {
-      // Remove the loading animation
-      stopBtnLoadingAnimation();
-
+    .then((response) => {
       if (response.status === 200) {
-        alert('Your event has been published.')
-        window.location.href = '/';
+        alert('Your event has been published.');
       }
       return response.json();
     })
-    .then(({ error_type }) => {
-      console.log(error_type);
-      formErrorHandler(error_type);
+    .then((data) => {
+      if (data.next_route) {
+        window.location.href = data.next_route;
+        return;
+      }
+
+      formErrorHandler(data.error_type);
     })
     .catch((error) => (console.error(error)))
-    .finally(stopBtnLoadingAnimation);
-}
-
-const showMap = () => {
-  document.querySelector('#map').style.height = '300px';
-
-  getLocation((position) => {
-    const lat = position ? position.coords.latitude : 0;
-    const long = position ? position.coords.longitude : 0;
-
-    const map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [long, lat],
-      zoom: 7
+    .finally(() => {
+      if (buttonType === 'button') {
+        button.innerHTML = prev;
+      } else {
+        button.value = prev;
+      }
+      button.disabled = false;
     });
-
-    const marker = new mapboxgl.Marker()
-      .setLngLat([long, lat])
-      .addTo(map);
-      
-    const locationInput = document.getElementById("location-input");
-
-    locationInput.value = long + "," + lat;
-
-    map.on('click', (event) => {
-      marker.setLngLat(event.lngLat);
-      locationInput.value = event.lngLat.lng + "," + event.lngLat.lat;
-    }); 
-  });
-}
-
-const getLocation = (callback) => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition((position) => {
-      callback(position);
-    }, (error) => {
-      callback(null);
-    });
-  } else {
-    callback(null);
-  }
 }
