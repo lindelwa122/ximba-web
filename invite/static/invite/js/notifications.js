@@ -1,5 +1,11 @@
 document.querySelectorAll('.notification').forEach((el) => {
   el.addEventListener('click', () => {
+    document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
+      icon.classList.remove('selected');
+    });
+    
+    document.querySelector('.notification').classList.add('selected');
+
     addToMainModalHistory('Notifications', () => {
       const container = document.createElement('div');
       container.className = 'notifications-container';

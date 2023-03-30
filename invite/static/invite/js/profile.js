@@ -1,6 +1,10 @@
 const username = window.location.pathname.split('/')[1];
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
+    icon.classList.remove('selected');
+  });
+  
   fetchCount(username);
   fetchBio(username);
   fetchProfileImage(username);
@@ -89,8 +93,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelector('.followers-wrapper').addEventListener('click', () => {
     displayFollowers();
-  })
+  });
+
+  getPosts();
 });
+
+// Get user's posts
+const getPosts = () => {
+  const username = window.location.pathname.replace('/', '');
+  console.log(username);
+  fetch(`events/get?username=${username}`)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error('Couldn\'t fetch posts. Try reloading the page and if this persist, contact support.');
+      }
+      return response.json();
+    })
+    .then(({ events }) => {
+      renderProfileEvents(events);
+    })
+    .catch((error) => console.error(error));
+}
+
+const renderCoverImage = (image) => {
+  return image ? `
+    <div class='post-img-wrapper me-2'>
+      <img class='h-100' class='skeleton'
+      src='${image}' alt='Event Image' />
+    </div>` : '';
+}
+
+const renderProfileEvents = (events) => {
+  document.querySelector('.events-list').innerHTML += `
+    ${events.map((event) => `
+      <div class='d-flex align-items-center justify-content-between border-bottom border-dark event-post'>
+          <div class='overflow-hidden'>
+            <div class='d-flex align-items-center mb-2'>
+              ${renderCoverImage(event.cover)}
+              <span class='font-title'>${event.title}</span>
+            </div>
+            <div class='d-flex justify-content-between align-items-center'>
+              <p class='font-body'>
+                ${event.description}
+              </p>
+            </div>
+            <small class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1'>${formattedDateTime(event.timestamp)}</span>
+            </small>
+          </div>
+          <i class='bi bi-three-dots-vertical'></i>
+        </div>`
+    ).join('')}
+  `
+}
 
 const countGroupDisplay = () => {
   const container = document.createElement('div');
@@ -271,7 +327,6 @@ const clickEventHandlerInsideCountGroup = (btnClass, btnClickHandler) => {
   });
 }
 
-
 const displayError = (error) => {
   const errorWrapper = document.createElement('div');
   errorWrapper.className = 'display-error';
@@ -336,10 +391,12 @@ const toggleFollowStatusForUser = (action, btn, username, newTextContentAfterFol
 
         // Increase/Decrease the following count
         const followingCount = document.querySelector('.following-count');
-        if (action === 'follow') {
-          followingCount.textContent = parseInt(followingCount.textContent) + 1;
-        } else {
-          followingCount.textContent = parseInt(followingCount.textContent) - 1;
+        if (followingCount) {
+          if (action === 'follow') {
+            followingCount.textContent = parseInt(followingCount.textContent) + 1;
+          } else {
+            followingCount.textContent = parseInt(followingCount.textContent) - 1;
+          }
         }
 
         btn.classList.replace(initialClassToken, newClassToken);
@@ -398,7 +455,6 @@ const fetchFollowingUsers = () => {
       displayError(error);
     });
 }
-
 
 // FETCH FOLLOWERS USER'S DATA
 

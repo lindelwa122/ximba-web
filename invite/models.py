@@ -1,3 +1,5 @@
+from json import dumps
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.timezone import localtime
@@ -11,6 +13,55 @@ class User(AbstractUser):
 
   def __str__(self):
     return self.username
+
+class Event(models.Model):
+  user = models.ForeignKey(User, models.CASCADE, related_name='user_event')
+  title = models.CharField(max_length=50)
+  description = models.CharField(max_length=500)
+  cover = models.ImageField(upload_to='invite/static/invite/images/events/covers', null=True, blank=True)
+  location = models.CharField(max_length=100)
+  datetime = models.DateTimeField()
+  public = models.BooleanField(default=True)
+  ticket_access = models.BooleanField(default=False)
+  attendees_allowed = models.IntegerField(null=True, blank=True)
+  attendees = models.ManyToManyField(User, related_name='attendees')
+  ticket_price = models.FloatField(default=0)
+  keywords = models.CharField(max_length=500)
+  currency_conversion = models.CharField(max_length=5, default='ZAR')
+  draft = models.BooleanField(default=False)
+
+  def __str__(self):
+    return f'{self.title} posted by {self.user.username}: Public => {self.public}'
+  
+class EventMoreInfo(models.Model):
+  event = models.ForeignKey(Event, models.CASCADE, related_name='more_info')
+  html = models.JSONField(default=list)
+
+  def save(self, *args, **kwargs):
+    if isinstance(self.html, list):
+      self.html = dumps(self.html)
+    super().save(*args, **kwargs)
+
+class Ticket(models.Model):
+  event = models.ForeignKey(Event, models.CASCADE, related_name='ticket')
+  owner = models.ForeignKey(User, models.CASCADE, related_name='ticket_owner')
+  identifier = models.CharField(max_length=50)
+  expired = models.BooleanField(default=False)
+  datetime = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f'{self.owner} has a ticket for {self.event.title}'
+
+class SavedEvent(models.Model):
+  user = models.ForeignKey(User, models.CASCADE, related_name='user_saved')
+  event = models.ManyToManyField(Event, related_name='saved_events')
+
+class PrivateEventViewers(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='private_event')
+    viewers = models.ManyToManyField(User, related_name='private_events')
+
+    def __str__(self):
+      return f'{self.event} can be viewed by only friends.'
 
 class Friend(models.Model):
   PENDING = 'pending'
@@ -99,3 +150,6 @@ class ProfileSetUp(models.Model):
 class Recent(models.Model):
   user = models.ForeignKey(User, models.CASCADE, related_name='recent_user')
   recent = models.ForeignKey(User, models.CASCADE, related_name='recent_recent')
+
+class WaitingList(models.Model):
+  email = models.CharField(max_length=50)

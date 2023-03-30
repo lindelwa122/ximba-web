@@ -1,16 +1,354 @@
-{% extends 'invite/layout.html' %} 
+{% extends 'invite/main.html' %}
 
-{% block body %}
+{% load static %}
 
-<h1>You are logged in. This is the main page</h1>
+{% block head %}
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css' rel='stylesheet' />
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://unpkg.com/@bitjson/qr-code@1.0.2/dist/qr-code.js"></script>
+{% endblock %}
 
-<a href='{% url "invite:login" %}'>Login</a>
-<a href='{% url "invite:register" %}'>Register</a>
-<a href='{% url "invite:confirm_email" %}'>Confirm email</a>
-<a href='{% url "invite:profile" user.username%}'>Profile</a>
-<a href='{% url "invite:edit_profile" %}'>Edit Profile</a>
-<a href='{% url "invite:main" %}'>Main</a>
-<a href='{% url "invite:logout" %}'>Logout</a>
+
+{% block main %}
+
+<section class='home-page'>
+  <div class='d-flex justify-content-center logo-sm d-md-none'>
+    <img class='logo' src='{% static "/invite/images/app/logo.svg" %}' alt='logo'>
+  </div>
+  <div class='home-nav d-flex justify-content-between align-items-center d-md-none'>
+    <div class='left-nav'>
+      <i class='bi bi-plus-square add-new-event'></i>
+      <div class='font-headline'>Add Event</div>
+    </div>
+    <div class='right-nav'>
+      <i class='bi bi-bookmark'></i>
+      <i class='bi bi-bell'></i>
+    </div>
+  </div>
+  
+  <div class='logo-wrapper d-none d-md-block'>
+    <img class='logo' src='{% static "/invite/images/app/logo.svg" %}' alt='logo'>
+  </div>
+
+  <div class='home-body'>
+    <div class='top-rated-accounts'>
+      <div class='header d-flex align-items-center'>
+        <i class='bi bi-star-fill'></i><span class='ms-2 font-headline'>Top Rated Organisers</span>
+      </div>
+      <div class='index-content'>
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@therealjohndoe</div>
+                <div>John Doe</div>
+              </div>
+            </div>
+            <div>
+              <button class='btn btn-primary btn-small'>Follow</button>
+            </div>
+          </div>
+
+          <div class='ratings-container'>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <span>4.3 (1.7 M)</span>
+          </div>
+        </div>
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@therealjohndoe</div>
+                <div>John Doe</div>
+              </div>
+            </div>
+            <div>
+              <button class='btn btn-primary btn-small'>Follow</button>
+            </div>
+          </div>
+  
+          <div class='ratings-container'>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <span>4.3 (1.7 M)</span>
+          </div>
+        </div>
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@therealjohndoe</div>
+                <div>John Doe</div>
+              </div>
+            </div>
+            <div>
+              <button class='btn btn-primary btn-small'>Follow</button>
+            </div>
+          </div>
+  
+          <div class='ratings-container'>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <span>4.3 (1.7 M)</span>
+          </div>
+        </div>
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@therealjohndoe</div>
+                <div>John Doe</div>
+              </div>
+            </div>
+            <div>
+              <button class='btn btn-primary btn-small'>Follow</button>
+            </div>
+          </div>
+  
+          <div class='ratings-container'>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <span>4.3 (1.7 M)</span>
+          </div>
+        </div>
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@therealjohndoe</div>
+                <div>John Doe</div>
+              </div>
+            </div>
+            <div>
+              <button class='btn btn-primary btn-small'>Follow</button>
+            </div>
+          </div>
+  
+          <div class='ratings-container'>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <i class='bi bi-star-fill'></i>
+            <span>4.3 (1.7 M)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class='home-main-content'>
+      <div class='navigation d-flex justify-content-between font-title'>
+        <div class='nav-item index-filter selected all-index'>All</div>
+        <div class='nav-item index-filter filter-by-nearby'>Nearby</div>
+        <div class='nav-item index-filter filter-by-friends'>Friends</div>
+        <div class='nav-item index-filter filter-by-following'>Following</div>
+        <div class='nav-item index-filter filter-by-upcoming'>Upcoming</div>
+      </div>
+    
+      <div class='events-main'>
+
+        <div class='index-events-container'>
+          <div class='post events-loading-container'>
+            <div class='user-info d-flex justify-content-between align-items-center'>
+              <div class='d-flex'>
+                <div class='skeleton profile-img'></div>
+                <div class='skeleton name ms-2'></div>
+              </div>
+              <div>
+                <div class='skeleton button'></div>
+              </div>
+            </div>
+
+            <div class='skeleton buttons mt-3'></div>
+            <div class='skeleton text-line mt-3'></div>
+            <div class='skeleton text-line mt-2'></div>
+            <div class='skeleton text-line mt-2 shorter'></div>
+
+            <div class='d-flex justify-content-between mt-3'>
+              <div class='skeleton item'></div>
+              <div class='skeleton item'></div>
+              <div class='skeleton item'></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class='top-rated-events'>
+      <div class='header d-flex align-items-center'>
+        <i class='bi bi-star-fill'></i><span class='ms-2 font-headline'>Trending Events</span>
+      </div>
+      <div class='index-content'>
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@kkevin07</div>
+                <div class='font-title'>Mr & Mrs Khumalo's Wedding</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1 font-body-tiny'>6 Feb 2023</span>
+            </div>
+  
+            <div class='ratings-container'>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <span>4.3 (1.7 M)</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@kkevin07</div>
+                <div class='font-title'>Mr & Mrs Khumalo's Wedding</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1 font-body-tiny'>6 Feb 2023</span>
+            </div>
+  
+            <div class='ratings-container'>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <span>4.3 (1.7 M)</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@kkevin07</div>
+                <div class='font-title'>Mr & Mrs Khumalo's Wedding</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1 font-body-tiny'>6 Feb 2023</span>
+            </div>
+  
+            <div class='ratings-container'>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <span>4.3 (1.7 M)</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@kkevin07</div>
+                <div class='font-title'>Mr & Mrs Khumalo's Wedding</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1 font-body-tiny'>6 Feb 2023</span>
+            </div>
+  
+            <div class='ratings-container'>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <span>4.3 (1.7 M)</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class='user-info'>
+          <div class='d-flex justify-content-between align-items-center'>
+            <div class='d-flex'>
+              <img src='{% static "invite/images/profiles/a4c31db4c6b142f890ee9f08e426cce1.jpg" %}' alt=''>
+              <div class='ms-1'>
+                <div class='font-body-tiny'>@kkevin07</div>
+                <div class='font-title'>Mr & Mrs Khumalo's Wedding</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class='d-flex align-items-center'>
+              <i class='bi bi-clock'></i>
+              <span class='ms-1 font-body-tiny'>6 Feb 2023</span>
+            </div>
+  
+            <div class='ratings-container'>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <i class='bi bi-star-fill'></i>
+              <span>4.3 (1.7 M)</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src='{% static "invite/js/index.js" %}'></script>
 
 <!-- Set-ExecutionPolicy Unrestricted -Scope Process -->
 

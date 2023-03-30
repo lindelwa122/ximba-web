@@ -1,0 +1,22 @@
+{% extends 'invite/main.html' %}
+
+{% load static %}
+
+{% block title %} More Info {% endblock %}
+
+{% block main %} 
+
+<section class='more-event-info'>
+  <div class='header mb-3 d-flex align-items-center'>
+    <img src='{% static "invite/images/app/logo.svg" %}' alt='logo' class='logo'/>
+  </div>
+
+  <div class='main-content'>
+    <div class='text-container'></div>
+  </div>
+</section>
+
+<script type='text/javascript' src='{% static "invite/js/index.js" %}'></script>
+<script type='text/javascript' src='{% static "invite/js/moreInfoView.js" %}'></script>
+
+{% endblock %}

@@ -1,0 +1,118 @@
+section.new-event {
+  margin-bottom: 100px;
+
+  .link {
+    cursor: pointer;
+    color: var(--secondary-color);
+    // text-decoration: underline;
+  }
+
+  .buttons-container {
+    gap: 10px;
+  }
+
+  // .result {
+  //   height: 300px;
+  // }
+
+  /* Hide the default radio input appearance */
+  input[type=radio] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+    display: inline-block;
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--primary-color);
+  }
+
+  /* Set the background color of the radio input when not checked */
+  input[type=radio]:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease-out;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #fff;
+  }
+
+  /* Set the background color of the radio input when checked */
+  input[type=radio]:checked:before {
+    transform: translate(-50%, -50%) scale(1);
+    background-color: blue;
+  }
+
+  /* Hide the label for the radio input */
+  input[type=radio] + label {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+
+  .logo {
+    width: 20%;
+    height: auto;
+
+    @include for-tablets {
+      width: 10%;
+    }
+  }
+
+  #map {
+    height: 0;
+    width: 100%;
+    transition: height 1s ease-in-out;
+  }
+
+  .main-content {
+    display: flex;
+    justify-content: center;
+
+    form {
+      width: 100%;
+
+      @include for-tablets {
+        background-color: var(--background-color);
+        border-radius: $border-radius;
+        box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.15);
+        padding: 10px;
+        width: 60%;
+      }
+
+      @include for-desktops {
+        width: 35%;
+      }
+    }
+  }
+
+  .paid-options {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s ease-in-out;
+  }
+  
+  .amount-container {
+    display: flex;
+    align-items: center;
+    background-color: var(--bs-gray-400);
+    border-radius: 10px;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s ease-in-out;
+  }
+
+  .currency {
+    width: 20%;
+    padding: $general-padding;
+    display: flex;
+    justify-content: center;
+  }
+}

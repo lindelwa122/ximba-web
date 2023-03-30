@@ -1,10 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.submit-button').forEach((button, index) => {
     button.addEventListener('click', (e) => {
-      startBtnLoadingAnimation(e, index);
+      if (!button.classList.contains('no-immediate-load')) {
+        startBtnLoadingAnimation(e, index);
+      }
     });
   });
 });
+
+
 
 const startBtnLoadingAnimation = (event, index = 0) => {
   let spinner;
@@ -14,6 +18,8 @@ const startBtnLoadingAnimation = (event, index = 0) => {
     const text = button.children[0];
     text.style.display = 'none';
     spinner = button.children[1];
+    // Store the index in localstorage for stopping the animation later on
+    localStorage.setItem('clickedButtonIndex', index);
   } else if (button.nodeName === 'INPUT') {
     button.style.display = 'none';
     spinnerContainer = button.nextElementSibling;
@@ -25,14 +31,12 @@ const startBtnLoadingAnimation = (event, index = 0) => {
   button.disabled = true;
   spinner.style.display = 'inline-block';
 
-  // Store the index in localstorage for stopping the animation later on
-  localStorage.setItem('clickedButtonIndex', index);
 };
 
 const stopBtnLoadingAnimation = () => {
   const index = localStorage.getItem('clickedButtonIndex');
   const allSubmitButtons = document.querySelectorAll('.submit-button');
-  const button = allSubmitButtons.length !== 0 ? allSubmitButtons[index] : document.querySelector('input[type="submit"]');
+  const button = index ? allSubmitButtons[index] : document.querySelector('input[type="submit"]');
   let spinner;
 
   if (button.nodeName === 'BUTTON') {
@@ -45,6 +49,9 @@ const stopBtnLoadingAnimation = () => {
     spinner = spinnerContainer.children[0];
     button.style.display = 'inline-block';
   }
+
+  // Clear localStorage
+  localStorage.removeItem('clickedButtonIndex');
 
   // Enable button
   button.removeAttribute('disabled');

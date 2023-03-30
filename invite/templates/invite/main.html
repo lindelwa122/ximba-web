@@ -12,7 +12,7 @@
   <div class='nav-lg-wrapper'>
     <nav class='nav-lg'>
       <div class='animated-nav-icons-lg'>
-        <div class='nav-icon-wrapper-lg' title='Home Page'>
+        <div class='nav-icon-wrapper-lg home' title='Home Page'>
           <i class='nav-icon bi bi-house-door'></i>
         </div>
         <div class='nav-icon-wrapper-lg search-btn' title='Search'>
@@ -21,10 +21,13 @@
         <div class='nav-icon-wrapper-lg friends-btn' title='Find Friends'>
           <i class='nav-icon bi bi-person-add'></i>
         </div>
+        <div class='nav-icon-wrapper-lg add-new-event' title='Add New Event'>
+          <i class='nav-icon bi bi-plus-square'></i>
+        </div>
         <div class='nav-icon-wrapper-lg notification' title='Notification'>
           <i class='nav-icon bi bi-bell'></i>
         </div>
-        <div class='nav-icon-wrapper-lg' title='Saved Events'>
+        <div class='nav-icon-wrapper-lg saved-events-btn' title='Saved Events'>
           <i class='nav-icon bi bi-bookmark'></i>
         </div>
         <div class='nav-icon-wrapper-lg view-profile-btn' title='Profile'>
@@ -55,7 +58,7 @@
 
     <div class='nav-sm-wrapper'>
       <nav class='nav-sm'>
-        <div class='nav-icon-wrapper'>
+        <div class='nav-icon-wrapper home'>
           <i class='nav-icon bi bi-house-door'></i>
         </div>
         <div class='nav-icon-wrapper search-btn'>
@@ -64,7 +67,7 @@
         <div class='nav-icon-wrapper friends-btn'>
           <i class='nav-icon bi bi-person-add'></i>
         </div>
-        <div class='nav-icon-wrapper'>
+        <div class='nav-icon-wrapper saved-events-btn'>
           <i class='nav-icon bi bi-bookmark'></i>
         </div>
         <div class='nav-icon-wrapper view-profile-btn'>
@@ -111,7 +114,9 @@
   </div>
 </div>
 
+<script src='{% static "invite/js/index.js" %}'></script>
 <script src='{% static "invite/js/search.js" %}'></script>
 <script src='{% static "invite/js/notifications.js" %}'></script>
+<script src='{% static "invite/js/savedEvents.js" %}'></script>
 
 {% endblock %}

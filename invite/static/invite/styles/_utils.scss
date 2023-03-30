@@ -40,6 +40,11 @@
   }
 }
 
+.btn-danger {
+  border: none;
+  @include button(var(--error-message-color), var(--main-text-color));
+}
+
 .btn-primary {
   border: none;
   @include button(var(--primary-color), var(--main-text-color));

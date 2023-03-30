@@ -1,4 +1,5 @@
-from random import randint, choices
+from random import randint, choices, shuffle, random
+from django.db.models.functions import Random
 from string import hexdigits
 
 from .models import *
@@ -61,7 +62,7 @@ def get_img_url(image):
     # Join the list
     return '/'.join(image_url_array)
 
-def serialize_data(data):
+def serialize_data(data: list):
     ls = []
     for user in data:
         profile = Profile.objects.filter(user=user).first()
@@ -71,4 +72,40 @@ def serialize_data(data):
             'image': get_img_url(profile.profile_img) if profile else ''
         }
         ls.append(obj)
+    return ls
+
+def convert_datetime_to_timestamp(datetime):
+    timestamp = datetime.timestamp()
+    return timestamp * 1000
+
+def serialize_post(data, user):
+    ls = []
+
+    for post in data:
+        saved_event = SavedEvent.objects.filter(user=user, event=post).exists()
+        saved_count = SavedEvent.objects.filter(event=post).count()
+        event_more_info = EventMoreInfo.objects.filter(event=post).exists()
+
+        obj = {
+            'id': post.id,
+            'title': post.title,
+            'location': post.location,
+            'description': post.description,
+            'cover': get_img_url(post.cover) if post.cover else False,
+            'timestamp': convert_datetime_to_timestamp(post.datetime),
+            'publisher': serialize_data([post.user]),
+            'with_ticket': post.ticket_access,
+            'ticket_secured': Ticket.objects.filter(event=post, owner=user).exists(),
+            'ticket_price': post.ticket_price,
+            'attendance_limit': post.attendees_allowed,
+            'attendees': post.attendees.count(),
+            'saves': saved_count,
+            'user_saved_event': saved_event,
+            'attending': post.attendees.contains(user),
+            'keywords': post.keywords,
+            'more_info': event_more_info
+        }
+        ls.append(obj)
+    
+    shuffle(ls)
     return ls

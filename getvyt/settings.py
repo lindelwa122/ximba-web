@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'invite.middleware.CustomErrorHandlerMiddleware',
 ]
 
 ROOT_URLCONF = 'getvyt.urls'
@@ -107,6 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Email configuration
 EMAIL_HOST = environ['HOST']
 EMAIL_PORT = environ['EMAIL_PORT']
@@ -138,3 +140,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Csrf settings
 CSRF_TRUSTED_ORIGINS = ['https://getvyt-web-production.up.railway.app', 'http://127.0.0.1:8000']
+
+MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibnFhYmVuaGxlIiwiYSI6ImNsZXd6bjIwajBqdDUzb2tjY2lmamhqaWIifQ.3OexVyKsfjbGleSJhc3JxQ'

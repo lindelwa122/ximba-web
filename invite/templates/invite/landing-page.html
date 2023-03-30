@@ -1,0 +1,235 @@
+{% extends 'invite/layout.html' %}
+
+{% load static %}
+
+{% block body %}
+
+<section class='landing-page'>
+  <header>
+    <div class='logo-container'>
+      <img class='logo' src='{% static "invite/images/app/logo.svg" %}' alt='logo'>
+    </div>
+
+    <div class='contacts-container'>
+      <div>
+        <i class='bi bi-envelope'></i>
+        <span>nqabenhlemlaba22@gmail.com</span>
+      </div>
+      <div>
+        <i class='bi bi-phone'></i>
+        <span>+27 83 604 1037</span>
+      </div>
+      <div>
+        <i class='bi bi-whatsapp'></i>
+        <span>+27 73 343 2260</span>
+      </div>
+    </div>
+  </header>
+
+  <div class='hero-section'>
+    <div class='shade'></div>
+    <div class='hero-text'>
+      <h1>An event platform for <span class='colored'>University</span> students.</h1>
+      <div class='colored'>Discover your favourite events near you.</div>
+      <button class='join-waitlist'>Join the waitlist</button>
+    </div>
+    <div class='hero-image'>
+      <img src='https://ik.imagekit.io/2ajtfwyor/Ximba/hero-img_p8N1OFYGp.jpg' alt='Photo by Anthony DELANOIX
+      '>
+    </div>
+  </div>
+
+  <div class='page-main'>
+    <div class='info-display'>
+      <div class='img-cover hidden hidden-left'>
+        <img src='{% static "invite/images/illustrations/discover.svg" %}' alt='illustrations by icons8'>
+      </div>
+      <div class='text-container hidden hidden-right'>
+        <div class='text-large'>Discover the hottest <span class='colored'>events</span> all in one place.</div>
+      </div>
+    </div>
+    <div class='line-container'>
+      <hr>
+    </div>
+
+    <div class='info-display alternate'>
+      <div class='text-container hidden hidden-left'>
+        <div class='text-large'>Clean up after events and start <span class='colored'>earning</span>.</div>
+      </div>
+      <div class='img-cover hidden hidden-right'>
+        <img src='{% static "invite/images/illustrations/cleaning.svg" %}' alt='Lady cleaning the floor'>
+      </div>
+    </div>
+    <div class='line-container'>
+      <hr>
+    </div>
+
+    <div class='info-display'>
+
+      <div class='card p-3 hidden hidden-left'>
+        <div class='d-flex profile mb-3'>
+          <div class='profile-cover'>
+            <img src='{% static "invite/images/profiles/0d6c749807284a47bca217fb65c365a4.jpg" %}' alt=''>
+          </div>
+          <div class='ms-2 name'>
+            <div>@saradoe</div>
+            <div>Sara Doe</div>
+          </div>
+        </div>
+        <div class='with mb-3'>
+          <span>with</span>
+          <span> <span class='username'>johndoe</span>,</span>
+          <span> <span class='username'>kkevin07</span>,</span>
+          <span> and <span class='username'>sara</span></span>
+        </div>
+        <div class='story mb-3'>
+          At a wild party, one of the guests suddenly decided to climb up the curtains and hang from the ceiling, much
+          to the surprise of the other guests. She then proceeded to spin around while singing a popular song, and when
+          she stopped she was upside down with her legs dangling in the air. Everyone was in shock, but then started
+          laughing hysterically, as it was such an unexpected and hilarious sight!
+        </div>
+        <div class='interactions w-100 d-flex justify-content-between'>
+          <div class='d-flex align-items-center'>
+            <span class='icon'>😂</span>
+            <span class='ms-1'>125</span>
+          </div>
+          <div class='d-flex align-items-center'>
+            <i class="bi bi-chat-right-text icon"></i>
+            <span class='ms-1'>75</span>
+          </div>
+          <div class='d-flex align-items-center'>
+            <i class="bi bi-repeat icon"></i>
+            <span class='ms-1'>12</span>
+          </div>
+        </div>
+      </div>
+
+      <div class='text-container hidden hidden-right'>
+        <div class='text-large'>Relive your event experiences and share your <span class='colored'>stories</span> with
+          others.</div>
+      </div>
+    </div>
+    <div class='line-container'>
+      <hr>
+    </div>
+
+    <div class='info-display alternate'>
+      <div class='text-container hidden hidden-left'>
+        <div class='text-large'>(For event organisers): Know your audience better. Get powerful <span
+            class='colored'>insights</span> into your attendees.</div>
+      </div>
+      <div class='img-cover hidden hidden-right'>
+        <img class='stats-illustration' src='{% static "invite/images/illustrations/statistics.gif" %}' alt='illustrations by icons8'>
+      </div>
+    </div>
+    <div class='line-container'>
+      <hr>
+    </div>
+
+    <div class='container'>
+      <div class='title'>We do more</div>
+      <div class='more row row-cols-2 row-cols-md-4'>
+        <div class='mb-4 mb-md-0 hidden hidden-left'>
+          <div class='img-container'>
+            <img class='illustrations' src='{% static "invite/images/illustrations/friends.svg" %}' alt=''>
+          </div>
+          <div>Join a community and meet new friends.</div>
+        </div>
+
+        <div class='mb-4 mb-md-0 hidden hidden-left'>
+          <div class='img-container'>
+            <img class='illustrations' src='{% static "invite/images/illustrations/group-tickets.svg" %}' alt=''>
+          </div>
+          <div>Buy a group ticket for all of your friends.</div>
+        </div>
+
+        <div class='hidden hidden-right'>
+          <div class='img-container'>
+            <img class='illustrations' src='{% static "invite/images/illustrations/marketing.svg" %}' alt=''>
+          </div>
+          <div>For event organisers: Reduce your marketing costs and find the right audience right here.</div>
+        </div>
+
+        <div class='hidden hidden-right'>
+          <div class='img-container'>
+            <img class='illustrations' src='{% static "invite/images/illustrations/refund.svg" %}' alt=''>
+          </div>
+          <div>Get refunded in seconds.</div>
+        </div>
+      </div>
+    </div>
+    <div class='line-container'>
+      <hr>
+    </div>
+
+    <img class='experiences-display' src='{% static "invite/images/app/memories-landing-page.svg" %}'>
+    <div class='line-container'>
+      <hr>
+    </div>
+
+    <div class='about-us'>
+      <div class='text hidden hidden-left'>
+        At our core, we believe that events are more than just fleeting moments in time. They're stories that shape our
+        lives and forge lasting connections. From the excitement of planning to the bittersweet feeling of saying
+        goodbye, we're here to help you capture every moment of your event journey. With our powerful tools, you can
+        save and share your memories, relive your favorite moments, and connect with others who share your passions. Let
+        us be your guide and partner as you write your own unforgettable story.
+      </div>
+
+      <div class='img-container hidden hidden-right'>
+        <video controls loop muted>
+          <source src='https://ik.imagekit.io/2ajtfwyor/Ximba/Save_B4eGl7ckC.mp4' type='video/mp4'>
+        </video>
+      </div>
+    </div>
+  </div>
+
+  <div class='footer'>
+    <div class='contact-details-sm'>
+      <div>
+        <i class='bi bi-envelope'></i>
+        <span>nqabenhlemlaba22@gmail.com</span>
+      </div>
+      <div>
+        <i class='bi bi-phone'></i>
+        <span>+27 83 604 1037</span>
+      </div>
+      <div>
+        <i class='bi bi-whatsapp'></i>
+        <span>+27 73 343 2260</span>
+      </div>
+    </div>
+    <img class='logo' src='{% static "invite/images/app/logo.svg" %}' alt='logo'>
+  </div>
+
+  <div class='waitlist-join-wrapper p-3'>
+    <div class='d-flex justify-content-end mb-2'>
+      <i class='bi bi-x remove'></i>
+    </div>
+
+    <div class='waitlist-content'>
+      <form class='waitlist-form'>
+        <input class='email form-control input-frame mb-3' type='email' placeholder='Your email' required>
+        <input class='btn w-100 btn-primary submit-form' type='submit' value='Join'>
+      </form>
+    </div>
+  </div>
+
+</section>
+
+<script type='text/javascript'>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.remove('hidden-left', 'hidden-right');
+      } 
+    });
+  });
+
+  const elementToObserve = document.querySelectorAll('.hidden');
+  elementToObserve.forEach((element) => observer.observe(element));
+</script>
+
+<script type='text/javascript' src='{% static "invite/js/landingPage.js" %}'></script>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+.saved-events-container {
+  .img-cover {
+    width: 20%;
+    aspect-ratio: 1;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .event {
+    border: 1px solid var(--primary-color);
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .title {
+    font-weight: 500;
+    @include for-tablets {
+      font-size: medium;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .bi-x {
+    font-size: 20px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .bi-clock {
+    font-size: 15px;
+  }
+}
+
+.events-container {
+  width: 100%;
+  padding: 0 !important;
+
+  a {
+    color: var(--bs-black);
+    text-decoration: none;
+  }
+}
+
+.saved-events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

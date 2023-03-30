@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!invalid) {
       startBtnLoadingAnimation(event.submitter);
-      sendFormDataToServer('/login', '/');
+      sendFormDataToServer('/login', '/home');
     }
   });
 

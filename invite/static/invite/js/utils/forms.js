@@ -154,6 +154,59 @@ const formErrorHandler = (errorType) => {
       });
       throw new Error('Form empty');
 
+    case 'event_title_empty':
+      const eventTitleInput = document.querySelector('.title');
+      errorContainer = document.querySelector('.title-empty');
+      formErrorRender(eventTitleInput, errorContainer);
+      window.scrollTo(0, 0);
+      throw new Error('Title empty');
+
+    case 'event_description_empty':
+      const eventDescriptionInput = document.querySelector('.description-input');
+      errorContainer = document.querySelector('.description-empty');
+      formErrorRender(eventDescriptionInput, errorContainer);
+      window.scrollTo(0, 0);
+      throw new Error('Description empty');
+
+    case 'event_location_empty':
+      const eventLocationInput = document.querySelector('.location-input');
+      errorContainer = document.querySelector('.location-empty');
+      formErrorRender(eventLocationInput, errorContainer);
+      throw new Error('Location empty');
+
+    case 'event_datetime_empty':
+      const eventDatetimeInput = document.querySelector('.datetime');
+      errorContainer = document.querySelector('.datetime-empty');
+      formErrorRender(eventDatetimeInput, errorContainer);
+      throw new Error('Datetime empty');
+
+    case 'event_keywords_invalid':
+      const keywordsInput = document.querySelector('.tags');
+      errorContainer = document.querySelector('.tags-invalid');
+      formErrorRender(keywordsInput, errorContainer);
+      window.scrollTo(0, 0);
+      throw new Error('Keywords invalid');
+
+    case 'event_selected_type_empty':
+      errorContainer = document.querySelector('.event-type-empty');
+      errorContainer.classList.remove('d-none');
+      throw new Error('Event type options not selected');
+
+    case 'event_selected_access_empty':
+      errorContainer = document.querySelector('.access-empty');
+      errorContainer.classList.remove('d-none');
+      throw new Error('Event access options not selected');
+
+    case 'event_paid_options_empty':
+      errorContainer = document.querySelector('.paid-options-empty');
+      errorContainer.classList.remove('d-none');
+      throw new Error('Event paid options not selected');
+
+    case 'event_ticket_price_invalid':
+      errorContainer = document.querySelector('.amount-invalid');
+      errorContainer.classList.remove('d-none');
+      throw new Error('Event ticket price invalid');
+
     case 'link_sent':
       errorContainer = document.querySelector('.link-sent');
       errorContainer.style.color = '#3ec70b';

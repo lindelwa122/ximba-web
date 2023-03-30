@@ -1,0 +1,43 @@
+.ticket-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  .qr-code-wrapper {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+
+  @include for-desktops {
+    font-size: 16px;
+    line-height: 20px;
+  }
+  
+  @include for-tablets {
+    font-size: 14px;
+    line-height: 18px;
+    padding-top: 20px;
+  }
+
+  .font-headline {
+    @include for-desktops {
+      font-size: 22px;
+      line-height: 30px;
+    }
+  }
+
+  .font-title {
+    @include for-tablets {
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
+}
