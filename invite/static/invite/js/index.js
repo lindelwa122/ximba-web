@@ -156,7 +156,7 @@ const renderUserInfo = async (user) => {
     if (followingUser === 'YES') {
       button = `<button class='btn btn-secondary-outline btn-small'>Following</button>`;
     } else {
-      button = `<button class='btn btn-primary btn-small follow-btn'>Follow</button>`;
+      button = `<button class='btn btn-primary btn-small follow-btn ${user.username}-follow'>Follow</button>`;
     }
   } else {
     button = `<button class='btn btn-primary btn-small'>Follow</button>`;

@@ -204,15 +204,23 @@ const renderTicket = (with_ticket, ticket_secured) => {
 const followUserInSavedEvents = (btn, username) => {
   btn.disabled = true;
 
+  const updateButtonContent = (button) => {
+    button.classList.replace('btn-primary', 'btn-secondary-outline');
+    button.classList.remove('follow-btn');
+    button.textContent = 'Following';
+  }
+
   fetch(`/follow/${username}`)
     .then((response) => {
       if (response.status !== 200) {
         throw new Error(`Could't follow ${username}. Click their username to try again.`);
       }
 
-      btn.classList.replace('btn-primary', 'btn-secondary-outline');
-      btn.classList.remove('follow-btn');
-      btn.textContent = 'Following';
+      document.querySelectorAll(`.${username}-follow`).forEach((button) => {
+        updateButtonContent(button);
+      });
+
+      updateButtonContent(button);
     })
     .catch((error) => {
       console.error(error);
