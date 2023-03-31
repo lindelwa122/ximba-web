@@ -36,10 +36,7 @@ const startBtnLoadingAnimation = (event, index = 0) => {
 const stopBtnLoadingAnimation = () => {
   const index = localStorage.getItem('clickedButtonIndex');
   const allSubmitButtons = document.querySelectorAll('.submit-button');
-  const button = index ? allSubmitButtons[index] : document.querySelector('input[type="submit"]');
-
-  console.log(index);
-  console.log(button);
+  const button = parseInt(index) ? allSubmitButtons[parseInt(index)] : document.querySelector('input[type="submit"]');
 
   let spinner;
 
