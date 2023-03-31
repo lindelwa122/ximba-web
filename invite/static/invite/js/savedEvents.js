@@ -220,7 +220,7 @@ const followUserInSavedEvents = (btn, username) => {
         updateButtonContent(button);
       });
 
-      updateButtonContent(button);
+      updateButtonContent(btn);
     })
     .catch((error) => {
       console.error(error);
