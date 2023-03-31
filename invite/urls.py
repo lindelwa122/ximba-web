@@ -6,6 +6,7 @@ app_name = 'invite'
 
 urlpatterns = [
     path('', views.landing_page, name='landing_page'),
+    path('retrieve-api-key/<str:token_name>', views.get_API_key, name='retrieve_API_key'),
     path('waitlist/join', views.add_to_waiting_list, name='add_to_waiting_list'),
     path('home', views.index, name='index'),
     path('get-username', views.get_username, name='get_username'),

@@ -180,11 +180,12 @@ const renderUserInfo = async (user) => {
   return htmlString;
 }
 
-const mapboxAccessToken = 'pk.eyJ1IjoibnFhYmVuaGxlIiwiYSI6ImNsZXd6bjIwajBqdDUzb2tjY2lmamhqaWIifQ.3OexVyKsfjbGleSJhc3JxQ';
-
 const reverseGeocode = async (longitude, latitude) => {
-  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${mapboxAccessToken}`;
   try {
+    const response1 = await fetch('/retrieve-api-key/mapbox');
+    const { key } = await response1.json();
+
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${key}`;
     const response = await fetch(url);
     const data = await response.json();
   
@@ -193,7 +194,8 @@ const reverseGeocode = async (longitude, latitude) => {
     const city = data.features[1].text;
   
     return { suburb, city };
-  } catch {
+  } catch (error) {
+    console.error(error);
     console.error('Could\'t convert coordinates to an actual address');
     const suburb = 'Unknown';
     const city = null;
@@ -202,6 +204,8 @@ const reverseGeocode = async (longitude, latitude) => {
 };
 
 const getLocation = async (eventId, longitude, latitude) => {
+  localStorage.clear();
+
   // Convert eventId (number) to a string
   const eventIdAsString = `${eventId}`;
   const location = localStorage.getItem(eventIdAsString);
@@ -614,7 +618,11 @@ const getCookie = (name) => {
   return cookieValue;
 }
 
-mapboxgl.accessToken = 'pk.eyJ1IjoibnFhYmVuaGxlIiwiYSI6ImNsZXd6bjIwajBqdDUzb2tjY2lmamhqaWIifQ.3OexVyKsfjbGleSJhc3JxQ';
+fetch('/retrieve-api-key/mapbox')
+  .then((response) => response.json())
+  .then(({ key }) => {
+    mapboxgl.accessToken = key;
+  });
 
 const showMap = (long, lat) => {
   document.querySelector('#map').style.height = '300px';

@@ -116,6 +116,12 @@ EMAIL_HOST_USER = environ['USER']
 EMAIL_HOST_PASSWORD = environ['PASSWORD']
 EMAIL_USE_TLS = True
 
+# MapBox API Key
+MAPBOX_ACCESS_TOKEN = environ['MAPBOX_ACCESS_TOKEN']
+
+# OpenAI API Key
+OPENAI_ACCESS_TOKEN = environ['OPENAI_ACCESS_TOKEN']
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -140,5 +146,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Csrf settings
 CSRF_TRUSTED_ORIGINS = ['https://getvyt-web-production.up.railway.app', 'http://127.0.0.1:8000']
-
-MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibnFhYmVuaGxlIiwiYSI6ImNsZXd6bjIwajBqdDUzb2tjY2lmamhqaWIifQ.3OexVyKsfjbGleSJhc3JxQ'

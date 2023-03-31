@@ -1340,6 +1340,7 @@ def unfollow(request, username):
 def landing_page(request):
     return render(request, 'invite/landing-page.html')
 
+
 def add_to_waiting_list(request):
     email = request.GET.get('email')
     waiting = WaitingList.objects.filter(email=email)
@@ -1349,3 +1350,11 @@ def add_to_waiting_list(request):
     WaitingList.objects.create(email=email)
     return JsonResponse({}, status=200)
 
+from getvyt.settings import MAPBOX_ACCESS_TOKEN, OPENAI_ACCESS_TOKEN
+
+def get_API_key(request, token_name):
+    if token_name == 'mapbox':
+        return JsonResponse({'key': MAPBOX_ACCESS_TOKEN}, status=200)
+    
+    elif token_name == 'openai':
+        return JsonResponse({'key': OPENAI_ACCESS_TOKEN}, status=200)

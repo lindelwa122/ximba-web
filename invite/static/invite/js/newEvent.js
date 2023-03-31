@@ -1,32 +1,39 @@
-mapboxgl.accessToken = 'pk.eyJ1IjoibnFhYmVuaGxlIiwiYSI6ImNsZXd6bjIwajBqdDUzb2tjY2lmamhqaWIifQ.3OexVyKsfjbGleSJhc3JxQ';
-
 const retrieveEventLocation = () => {
   document.querySelector('#map').style.height = '300px';
 
-  getUserLocation((position) => {
-    const lat = position ? position.coords.latitude : 0;
-    const long = position ? position.coords.longitude : 0;
-
-    const map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [long, lat],
-      zoom: 7
+  try {
+    getUserLocation(async (position) => {
+      const lat = position ? position.coords.latitude : 0;
+      const long = position ? position.coords.longitude : 0;
+  
+      const response = await fetch('/retrieve-api-key/mapbox');
+      const { key } = await response.json();
+  
+      mapboxgl.accessToken = key;
+  
+      const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [long, lat],
+        zoom: 7
+      });
+  
+      const marker = new mapboxgl.Marker()
+        .setLngLat([long, lat])
+        .addTo(map);
+  
+      const locationInput = document.getElementById("location-input");
+  
+      locationInput.value = long + "," + lat;
+  
+      map.on('click', (event) => {
+        marker.setLngLat(event.lngLat);
+        locationInput.value = event.lngLat.lng + "," + event.lngLat.lat;
+      });
     });
-
-    const marker = new mapboxgl.Marker()
-      .setLngLat([long, lat])
-      .addTo(map);
-
-    const locationInput = document.getElementById("location-input");
-
-    locationInput.value = long + "," + lat;
-
-    map.on('click', (event) => {
-      marker.setLngLat(event.lngLat);
-      locationInput.value = event.lngLat.lng + "," + event.lngLat.lat;
-    });
-  });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const getUserLocation = (callback) => {
@@ -96,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tag.innerHTML = keyword;
         const xIcon = document.createElement('i');
         tag.appendChild(xIcon);
-        console.log(tagsArray);
         xIcon.classList = 'bi bi-x';
         tagsContainer.appendChild(tag);
       }
@@ -325,9 +331,11 @@ const generateIdeas = async (title) => {
   return ideas[ideaIndex];
 }
 
-const generateDescription = (title) => {
+const generateDescription = async (title) => {
   // Replace YOUR_API_KEY with your actual API key
-  const apiKey = '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';
+  const response = await fetch('/retrieve-api-key/openai');
+  const { key } = await response.json();
+
   const apiUrl = 'https://api.openai.com/v1/engines/text-davinci-003/completions';
 
   // Define your input prompt
@@ -344,7 +352,7 @@ const generateDescription = (title) => {
   // Define your API request headers
   const requestHeaders = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`
+    'Authorization': `Bearer ${key}`
   };
 
   // Send the API request
