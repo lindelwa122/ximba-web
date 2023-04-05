@@ -108,7 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Email configuration
 EMAIL_HOST = environ['HOST']
 EMAIL_PORT = environ['EMAIL_PORT']

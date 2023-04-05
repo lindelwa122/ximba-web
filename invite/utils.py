@@ -1,5 +1,6 @@
+from datetime import datetime, timedelta
+from math import radians, cos, sin, asin, sqrt
 from random import randint, choices, shuffle, random
-from django.db.models.functions import Random
 from string import hexdigits
 
 from .models import *
@@ -78,6 +79,136 @@ def convert_datetime_to_timestamp(datetime):
     timestamp = datetime.timestamp()
     return timestamp * 1000
 
+def haversine(lon1, lat1, lon2, lat2):
+    """
+    Calculate the great circle distance in kilometers between two points 
+    on the earth (specified in decimal degrees)
+    """
+    # convert decimal degrees to radians 
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+    # haversine formula 
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    r = 6371 
+    return c * r
+
+def order_events_by_relevance(events, target_user, longitude=0.0, latitude=0.0):
+    relevance_scores = {}
+
+    for event in events:
+        score = 0
+        publisher = event.user
+
+        # Priorize nearby events
+        event_location = event.location.split(',')
+        event_long, event_lat = event_location[0], event_location[1]
+        distance = haversine(float(event_long), float(event_lat), float(longitude), float(latitude))
+
+        if distance <= 10:
+            score += 500
+
+        elif distance <= 20:
+            score += 250
+
+        elif distance <= 30:
+            score += 125
+
+        # Collaborative filtering
+        target_user_categories = Personalization.objects.get(user=target_user).categories
+        target_user_tags = Personalization.objects.get(user=target_user).tags
+
+        users = User.objects.all()
+        for user in users:
+            if user == target_user:
+                continue  # Skip the target user
+
+            # Compute similarity score based on Jaccard similarity coefficient
+            user_categories = Personalization.objects.get(user=user).categories
+            user_tags = Personalization.objects.get(user=user).tags
+
+            try:
+                category_similarity = len(set(target_user_categories.keys()) & set(user_categories.keys())) / len(set(target_user_categories.keys()) | set(user_categories.keys()))
+            except ZeroDivisionError:
+                category_similarity = 1
+    
+            try:
+                tag_similarity = len(set(target_user_tags.keys()) & set(user_tags.keys())) / len(set(target_user_tags.keys()) | set(user_tags.keys()))
+            except ZeroDivisionError:
+                tag_similarity = 1
+
+            similarity_score = category_similarity * 0.5 + tag_similarity * 0.5  # Weighted average
+
+            # If similarity score is above a certain threshold, use collaborative filtering
+            if similarity_score > 0.3:
+                event_tags = event.keywords.split(',')
+                for keyword, value in user_tags.items():
+                    if keyword in event_tags:
+                        score += value * similarity_score       
+
+        # Check if user befriends publisher
+        friendship = Friend.objects.filter(user=target_user, friend=publisher, status=Friend.ACCEPTED)
+        if friendship.exists():
+            score += 300
+
+        # Check if user follows publisher
+        following = Following.objects.filter(user=target_user, following=publisher)
+        if following.exists():
+            score += 100
+
+        personalization = Personalization.objects.get(user=target_user)
+
+        # Score category
+        user_categories = personalization.categories
+        event_categories = event.category
+
+        for category, value in user_categories.items():
+            if category == event_categories:
+                score += value
+
+        # Score keywords
+        user_keywords = personalization.keywords
+        event_keywords = EventKeyword.objects.get(event=event).keywords
+        for keyword, value in user_keywords.items():
+            for k in event_keywords.keys():
+                if keyword == k:
+                    score += value
+
+        # Score using tags
+        user_tags = personalization.tags
+        event_tags = event.keywords.split(',')
+
+        for keyword, value in user_tags.items():
+            if keyword in event_tags:
+                score += value
+
+        # Get the current date and time
+        now = datetime.now().date()
+
+        # Define the time durations
+        three_days = timedelta(days=3)
+        five_days = timedelta(days=5)
+        seven_days = timedelta(days=7)
+
+        # Get the date of the event
+        event_date = event.datetime.date()
+
+        # Score using datetime
+        if (event_date - now) <= three_days:
+            score += 75
+        elif (event_date - now) <= five_days:
+            score += 50
+        elif (event_date - now) <= seven_days:
+            score += 25
+
+        relevance_scores[event.id] = score
+
+    size = events.count()
+    return dict_values(relevance_scores, size)
+
+
 def serialize_post(data, user):
     ls = []
 
@@ -102,10 +233,32 @@ def serialize_post(data, user):
             'saves': saved_count,
             'user_saved_event': saved_event,
             'attending': post.attendees.contains(user),
+            'category': post.category,
             'keywords': post.keywords,
             'more_info': event_more_info
         }
         ls.append(obj)
     
-    shuffle(ls)
+    return ls
+
+
+
+def find_biggest_value(dic: dict):
+    biggest = -1
+
+    for key, value in dic.items():
+        if value > biggest:
+            biggest = value
+            key_tracker = key
+
+    return key_tracker
+
+def dict_values(dic: dict, size: int = 1, order_by: str='high'):
+    ls = []
+    if order_by == 'high':
+        for _ in range(size):
+            biggest = find_biggest_value(dic)
+            dic.pop(biggest)
+            ls.append(biggest)
+
     return ls

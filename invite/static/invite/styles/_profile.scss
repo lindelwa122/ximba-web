@@ -4,10 +4,12 @@
   }
 }
 
+
 .count-group-container {
   .font-body-tiny {
     font-weight: 500;
   }
+
 
   img {
     aspect-ratio: 1;
@@ -22,7 +24,6 @@
 }
 
 .count-group-container > div {
-  // background-color: var(--background-color-lg);
   border: 1px solid var(--primary-color);
   border-radius: $border-radius;
   cursor: pointer;
@@ -48,6 +49,7 @@
 
 .event-post {
   padding: 10px 20px;
+
 
   .bi-three-dots-vertical {
     font-size: 20px;
@@ -91,12 +93,14 @@
     gap: 10px;
     margin-left: 10px;
 
+
     .bio {
       @include for-tablets {
         font-weight: 500;
         @include body;
       }
     }
+
 
     i {
       color: var(--secondary-color);
@@ -110,6 +114,7 @@
         font-size: 30px;
       }
     }
+
 
     .profile-ratings {
       display: flex;
@@ -132,6 +137,7 @@
   }
 }
 
+
 .user-events {
   flex: 1;
 
@@ -140,15 +146,18 @@
   }
 }
 
+
 .user-info {
   .counts {
     .count {
       margin-right: 5px;
     }
 
+
     .count-group:hover {
       cursor: pointer;
     }
+
 
     .normal-font-weight {
       font-weight: 400 !important;
@@ -163,6 +172,7 @@
     }
   }
 
+
   i {
     color: var(--secondary-color);
     font-size: 15px;
@@ -173,6 +183,7 @@
   gap: 5px;
   padding: $general-padding;
 
+
   .buttons-wrapper {
     gap: 20px !important;
 
@@ -181,6 +192,7 @@
     }
   }
 }
+
 
 .user-profile > div {
   gap: 3px;

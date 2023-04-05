@@ -3,9 +3,11 @@
   animation: disappear .5s ease-in-out forwards;
 }
 
+
 .search-container {
   height: 100%;
   position: relative;
+
 
   .account-container {
     border: 1px solid var(--primary-color);
@@ -15,15 +17,18 @@
     padding: 10px;
   }
 
+
   .illustration {
     height: auto;
     width: 60%;
   }
 
+
   img {
     aspect-ratio: 1;
     width: 50px;
   }
+
 
   .move-to-top {
     animation: move-up ease-in-out 1s forwards;
@@ -43,11 +48,13 @@
     }
   }
 
+
   .not-found {
     align-items: center;
     display: flex;
     flex-direction: column;
   }
+
 
   .search-icon-wrapper {
     align-items: center;
@@ -63,11 +70,13 @@
       cursor: pointer;
     }
 
+
     i {
       color: var(--primary-color); 
       font-size: 25px;
     }
   }
+
   
   .search-input {
     border-bottom-right-radius: 0;
@@ -75,6 +84,7 @@
     padding: 10px 8px;
     width: 90%;
   }
+
   
   .search-input-container {
     bottom: 10px;
@@ -87,11 +97,13 @@
     }
   }
 
+
   .search-recents {
     overflow-y: auto;
-    transition: all 0.3s ease-out;
+    transition: all .3s ease-out;
     width: 100%;
   }
+
 
   .skeleton-card {
     border-radius: $border-radius;
@@ -111,10 +123,12 @@
   }
 }
 
+
 .search-results {
   display: none;
   opacity: 0;
   padding-top: 65px;
+
 
   .content {
     align-items: center;
@@ -124,9 +138,11 @@
     padding-top: 10px;
     width: 100%;
 
+
     div {
       width: 100%;
     }
+
     
     .spinner {
       color: var(--primary-color);
@@ -134,39 +150,44 @@
     }
   }
 
+
   .nav {
     display: flex;
     justify-content: space-between;
 
-    span.active::after {
-      background-color: var(--secondary-text-color);
-      content: '';
-      display: block;
-      height: 1px;
-      width: 100%;
-    }
-    
-    span:hover {
-      cursor: pointer;
-    }
 
-    span::after {
-      background-color: var(--secondary-text-color);
-      content: '';
-      display: block;
-      height: 1px;
-      transition: width .3s;
-      -moz-transition: width .3s;
-      -o-transition: width .3s;
-      -webkit-transition: width .3s;
-      width: 0;
-    }
+    span {
+      &.active::after {
+        background-color: var(--secondary-text-color);
+        content: '';
+        display: block;
+        height: 1px;
+        width: 100%;
+      }
 
-    span:hover::after {
-      width: 100%;
+      &::after {
+        background-color: var(--secondary-text-color);
+        content: '';
+        display: block;
+        height: 1px;
+        transition: width .3s;
+        -moz-transition: width .3s;
+        -o-transition: width .3s;
+        -webkit-transition: width .3s;
+        width: 0;
+      } 
+
+      &:hover {
+        cursor: pointer;
+
+        &::after {
+          width: 100%;
+        }
+      }
     }
   }
 }
+
 
 .search-results.show {
   animation: appear 1s ease-in-out forwards;

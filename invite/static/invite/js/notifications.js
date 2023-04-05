@@ -3,7 +3,7 @@ document.querySelectorAll('.notification').forEach((el) => {
     document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
       icon.classList.remove('selected');
     });
-    
+
     document.querySelector('.notification').classList.add('selected');
 
     addToMainModalHistory('Notifications', () => {
@@ -20,7 +20,7 @@ document.querySelectorAll('.notification').forEach((el) => {
 
 const notificationsType = {
   friend_request: 'sent you a friend request',
-  new_follower: 'started following you'
+  new_follower: 'started following you',
 };
 
 const notificationsContainerLoadHandler = () => {
@@ -40,7 +40,7 @@ const fetchNotifications = () => {
   fetch('/notifications')
     .then((response) => {
       if (response.status !== 200) {
-        throw new Error('Couldn\'t fetch notifications try again later');
+        throw new Error("Couldn't fetch notifications try again later");
       }
       return response.json();
     })
@@ -53,26 +53,33 @@ const fetchNotifications = () => {
         fetch(`/check/friendship/${username}`)
           .then((response) => {
             if (response.status === 200) {
-              throw new Error(`Could\'t check friendship between the logged in user and ${username}`);
+              throw new Error(
+                `Could\'t check friendship between the logged in user and ${username}`
+              );
             }
             return response.json();
           })
           .then(({ answer }) => {
-            const btn = answer === 'YES'
-              ? `<button class='btn btn-secondary-outline btn-small disabled'>Friends</button>`
-              : `<button class='btn btn-primary btn-small follow-btn-sm accept-btn'>Accept</button>`;
-              el.innerHTML = btn;
+            const btn =
+              answer === 'YES'
+                ? `<button class='btn btn-secondary-outline btn-small disabled'>Friends</button>`
+                : `<button class='btn btn-primary btn-small follow-btn-sm accept-btn'>Accept</button>`;
+            el.innerHTML = btn;
           })
           .catch((error) => console.error(error));
-      })
+      });
     })
     .catch((error) => console.error(error));
-}
+};
 
 const renderNotifications = (data) => {
   document.querySelector('.notifications-container').innerHTML = `
-    ${data.map((user) => `
-      <div class='account-container d-flex justify-content-between align-items-center p-2' data-username='${user.origin}'>
+    ${data
+      .map(
+        (user) => `
+      <div class='account-container d-flex justify-content-between align-items-center p-2' data-username='${
+        user.origin
+      }'>
       <div class='d-flex'>
         <img class='skeleton profile-img' src='${user.image}'>
         <div class='ms-1'>
@@ -83,20 +90,21 @@ const renderNotifications = (data) => {
       <div class='btn-container'>
       </div>
     </div>
-    `).join('')}
-  `
-}
+    `
+      )
+      .join('')}
+  `;
+};
 
 const notificationsContainerClickHandler = () => {
   document
     .querySelector('.notifications-container')
     .addEventListener('click', (event) => {
-
       switch (event.target.tagName) {
         case 'DIV':
           // Get the clicked account container
           const accountContainer = event.target.closest('.account-container');
-          
+
           if (accountContainer) {
             const username = accountContainer.dataset.username;
             window.location.href = username;
@@ -115,7 +123,6 @@ const notificationsContainerClickHandler = () => {
           }
 
           break;
-      }      
-      
+      }
     });
 };

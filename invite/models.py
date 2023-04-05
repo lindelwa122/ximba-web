@@ -14,6 +14,27 @@ class User(AbstractUser):
   def __str__(self):
     return self.username
 
+class Personalization(models.Model):
+  def categories_dict():
+    return {
+      'education': 0,
+      'career_prospects': 0,
+      'social_connections': 0,
+      'personal_growth': 0,
+      'partylike': 0
+    }
+  
+  def empty_dict():
+    return {}
+
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_personalization')
+  categories = models.JSONField(default=categories_dict)
+  tags = models.JSONField(default=empty_dict)
+  keywords = models.JSONField(default=empty_dict)
+
+  def __str__(self):
+    return self.user.username
+
 class Event(models.Model):
   user = models.ForeignKey(User, models.CASCADE, related_name='user_event')
   title = models.CharField(max_length=50)
@@ -24,14 +45,15 @@ class Event(models.Model):
   public = models.BooleanField(default=True)
   ticket_access = models.BooleanField(default=False)
   attendees_allowed = models.IntegerField(null=True, blank=True)
-  attendees = models.ManyToManyField(User, related_name='attendees')
+  attendees = models.ManyToManyField(User, related_name='attendees', blank=True)
   ticket_price = models.FloatField(default=0)
   keywords = models.CharField(max_length=500)
+  category = models.CharField(max_length=30)
   currency_conversion = models.CharField(max_length=5, default='ZAR')
   draft = models.BooleanField(default=False)
 
   def __str__(self):
-    return f'{self.title} posted by {self.user.username}: Public => {self.public}'
+    return f'{self.title} posted by {self.user.username} ({self.category}): {"Public" if self.public else "Private"}'
   
 class EventMoreInfo(models.Model):
   event = models.ForeignKey(Event, models.CASCADE, related_name='more_info')
@@ -153,3 +175,9 @@ class Recent(models.Model):
 
 class WaitingList(models.Model):
   email = models.CharField(max_length=50)
+
+class EventKeyword(models.Model):
+  event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_keyword')
+  keywords = models.JSONField()
+  created_at = models.DateTimeField(auto_now_add=True)
+  

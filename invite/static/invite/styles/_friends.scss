@@ -1,91 +1,11 @@
-//MOBILE
-@media only screen and (max-width: 599px) {
-  .fgeneral {
-    width: 100%;
-    .fcard {
-      .flink {
-        font-size: 14px;
-      }
-      img {
-        width: 3em;
-        height: 3em;
-      }
-    }
-    .fbtn {
-      padding: 5px 10px !important;
-    }
-  }
-}
-//TABLET
-@include for-tablets {
-  .fgeneral {
-    width: 60%;
-    margin-left: 20%;
-    .fcard {
-      .flink {
-        font-size: 14px;
-        position: relative;
-        top: 0.5em;
-      }
-      .fname {
-        margin-top: 0.5em;
-        font-size: 12px;
-        margin-left: 1em;
-      }
-      img {
-        width: 5em;
-        height: 5em;
-      }
-    }
-  }
-}
-//DESKTOP
-@include for-desktops {
-  .fgeneral {
-    width: 40%;
-    margin-left: 30%;
-  }
-  .fcard {
-    padding: 1em;
-    .flink {
-      margin-top: 1em;
-      font-size: 16px;
-    }
-    .fname {
-      margin-top: 0.5em;
-      font-size: 12px;
-      margin-left: 1em;
-    }
-    img {
-      width: 5em;
-      height: 5em;
-    }
-  }
-}
-//GENERAL
-.fgeneral {
-  box-shadow: 2px 2px 5px 3px rgb(198, 198, 198);
-  border-radius: 1%;
-  .ftitle {
-    margin-top: 0.75em;
-    margin-left: 1em;
-  }
-}
-.fcard {
-  border-bottom: 1px solid black;
-  border-radius: 5%;
-  font-weight: 500;
-  .flink {
-    padding-top: 1em;
-    margin-left: 5%;
-    line-height: 20px;
-  }
-  .fname {
-    color: rgb(98, 98, 98);
-  }
+.empty-content-msg {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
-.suggested-friends-container, .friends-container {
+.friends-container, 
+.suggested-friends-container {
   .account-container {
     border: 1px solid var(--primary-color);
     border-radius: 10px;
@@ -94,10 +14,12 @@
     padding: 10px;
   }
 
+
   .illustration {
     height: auto;
     width: 60%;
   }
+
 
   img {
     aspect-ratio: 1;
@@ -105,15 +27,10 @@
   }
 }
 
+
 .friends-container {
   .btn-secondary {
     margin-bottom: 10px;
     width: 100%;
   }
-}
-
-.empty-content-msg {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }

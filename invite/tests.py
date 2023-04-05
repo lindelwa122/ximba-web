@@ -439,3 +439,11 @@ class InviteTestCase(TestCase):
         c.login(username='saradoe', password='Sara@0123')
         response = c.get('/unfollow/janedoe')
         self.assertEqual(response.status_code, 200)
+
+    def test_update_scores_1(self):
+        response = c.get('/personalization/increment-scores?action=save_event&related=event&event_id=1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_scores_2(self):
+        response = c.get('/personalization/increment-scores?action=save_event&related=person&related_name=saradoe')
+        self.assertEqual(response.status_code, 200)

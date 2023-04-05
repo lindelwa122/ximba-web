@@ -182,8 +182,12 @@ const searchContainerClickHandler = () => {
       if (accountContainer) {
         const username = accountContainer.dataset.username;
         // Add user to recent searches
-       addToRecentSearches(username);
-        window.location.href = username;
+        addToRecentSearches(username);
+
+        // Update recommendation scores
+        updateScore('search_user', 'person', null, username);
+
+        window.location.href = `/${username}`;
       }
     });
 };

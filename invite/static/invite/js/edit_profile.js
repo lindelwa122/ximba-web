@@ -21,7 +21,7 @@ const editProfileResponseHandler = (response) => {
 };
 
 const editProfileGetErrorHandler = (error) => {
-  console.log(error);
+  console.error(error);
   return 'Status code 404 (try reloading the page)';
 };
 

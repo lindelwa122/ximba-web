@@ -2,17 +2,18 @@
   box-sizing: border-box;
 }
 
+
 html, body {
   height: 100%;
-  min-width: 300px;
   max-width: 1400px;
+  min-width: 300px;
 }
+
 
 body {
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  // overflow-x: hidden;
 
   @include body;
 
@@ -21,12 +22,13 @@ body {
   }
 }
 
+
 /* For webkit-based browsers */
 html {
   /* For webkit-based browsers */
   &::-webkit-scrollbar {
-    width: 10px;
     border-radius: 10px;
+    width: 10px;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -44,17 +46,21 @@ html {
   }
 }
 
+
 a {
   @include body-tiny;
 }
+
 
 .display-error {
   color: var(--error-message-color);
 }
 
+
 .floating-input-placeholder {
   color: rgba(0, 0, 0, 0.5);
 }
+
 
 .form-floating>.form-control, .form-floating>.form-control-plaintext, .form-floating>.form-select {
   height: calc(3rem + 2px);
@@ -68,28 +74,34 @@ a {
   }
 }
 
+
 main {
   min-height: 100vh;
 }
 
+
 .profile-img {
   border-radius: 10px;
 }
+
 
 section {
   flex: 1;
   padding: $general-padding;
 }
 
+
 .tags-container {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 
+
   .bi {
     cursor: pointer;
   }
 
+  
   div {
     align-items: center;
     background: var(--bs-gray-400);

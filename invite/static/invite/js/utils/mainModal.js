@@ -91,7 +91,7 @@ const closeMainModal = () => {
   // Remove the select class name on the navigation bar
   document.querySelectorAll('.nav-icon-wrapper-lg').forEach((el) => {
     el.classList.remove('selected');
-    checkProfileAuthenticity();
+    highlightViewProfileButtonIfAuthenticated();
   })
 
   // Resetting modal history

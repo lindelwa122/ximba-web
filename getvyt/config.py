@@ -18,6 +18,9 @@ OPENAI_ACCESS_TOKEN = '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'
 # EMAIL_HOST_PASSWORD = config.EMAIL_HOST_PASSWORD
 # EMAIL_USE_TLS = True
 
+# MAPBOX_ACCESS_TOKEN = config.MAPBOX_ACCESS_TOKEN
+# OPENAI_ACCESS_TOKEN = config.OPENAI_ACCESS_TOKEN
+
 ### Import config: from . import config
 ### Remember to remove the import before committing your changes
 

@@ -375,6 +375,8 @@ const addFriend = (btn, username) => {
       // If the request is successful, update the button text
       if (response.status === 200) {
         btn.innerHTML = 'Request Sent';
+        // Update recommendation score
+        updateScore('add_new_friend', 'person', null, username);
       }
     })
     .catch((error) => {
@@ -424,7 +426,10 @@ const acceptFriendRequest = (btn, username) => {
           document.querySelector('.friends-text').innerHTML = 'friends';
         }
 
-      }, 3000)
+      }, 3000);
+
+      // Update recommendation score
+      updateScore('add_new_friend', 'person', null, username);
     })
     .catch((error) => {
       // If there's an error, log it to the console

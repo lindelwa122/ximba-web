@@ -1,9 +1,11 @@
 .auth-actions-container {
   margin: 20px 0 10px 20px;
 
+
   button:first-child {
     margin-right: 10px;
   }
+
 
   p {
     margin-bottom: 0;
@@ -11,10 +13,9 @@
 }
 
 
-
 .body {
   display: flex;
-  // height: 100%;
+
 
   main {
     min-height: 100%;
@@ -22,12 +23,15 @@
   }
 }
 
+
 body.modal-open {
   overflow: hidden;
 }
 
+
 .complete-setup-container {
   padding: 0 !important;
+
 
   div {
     &:hover {
@@ -36,6 +40,7 @@ body.modal-open {
     }
   }
 }
+
 
 main {
   width: 100%;
@@ -46,8 +51,9 @@ main {
   }
 }
 
+
 .modal-overlay.active {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, .5);
   height: 100%;
   position: fixed;
   right: 0;
@@ -55,6 +61,7 @@ main {
   width: 100%;
   z-index: 999;
 }
+
 
 .modal-page {
   background-color: var(--background-color);
@@ -84,9 +91,11 @@ main {
     width: 30%;
   }
 
+
   .bi-arrow-left:hover, .bi-x-lg:hover {
     cursor: pointer;
   }
+
 
   .header {
     display: none !important;
@@ -97,6 +106,7 @@ main {
     }
   }
 
+  
   .modal-page-content {
     height: calc(100% - 64px);
 
@@ -129,6 +139,7 @@ main {
     }
   }
 
+
   .modal-page-content > div {
     padding: 0 20px;
 
@@ -137,6 +148,7 @@ main {
     }
   }
 }
+
 
 .modal-page.show {
   height: calc(100% - 50px);
@@ -147,16 +159,19 @@ main {
   }
 }
 
+
 .nav-controller {
   align-items: center;
   display: flex;
   justify-content: center;
 }
 
+
 .nav-controller.rotate,
 .nav-controller-lg.rotate {
   animation: rotate 1s ease-in-out forwards;
 }
+
 
 .nav-controller.rotate-back,
 .nav-controller-lg.rotate-back {
@@ -183,6 +198,7 @@ main {
   }
 }
 
+
 .nav-controller-lg {
   margin-top: 20px;
   padding: 10px;
@@ -192,14 +208,16 @@ main {
   }
 }
 
+
 .nav-icon-wrapper-lg {
   @include for-tablets {
     padding: 10px;
   }
 }
 
+
 .nav-icon-wrapper.hide, .nav-icon-wrapper-lg.hide {
-  animation: hide-icon 0.12s forwards;
+  animation: hide-icon .12s forwards;
 }
 
 @keyframes hide-icon {
@@ -212,8 +230,9 @@ main {
   }
 }
 
+
 .nav-icon-wrapper.show, .nav-icon-wrapper-lg.show {
-  animation: show-icon 0.12s forwards;
+  animation: show-icon .12s forwards;
 }
 
 @keyframes show-icon {
@@ -226,13 +245,15 @@ main {
   }
 }
 
+
 .nav-icon-wrapper-lg:hover,
 .nav-icon-wrapper-lg.selected {
   @include for-tablets {
-    background-color: rgba(218, 218, 218, 0.5);
+    background-color: rgba(218, 218, 218, .5);
     cursor: pointer;
   }
 }
+
 
 .nav-lg {
   align-items: center;
@@ -252,7 +273,6 @@ main {
 
   div {
     border-radius: $border-radius;
-    // height: fit-content;
 
     .bi {
       color: var(--secondary-text-color);
@@ -260,6 +280,7 @@ main {
     }
   }
 }
+
 
 .nav-lg-wrapper {
   display: none;
@@ -315,6 +336,7 @@ main {
   }
 }
 
+
 .nav-sm {
   background-color: var(--primary-color);
   border-radius: $border-radius;
@@ -322,6 +344,7 @@ main {
   justify-content: space-between;
   padding: 10px;
   width: 100%;
+
 
   div {
     align-items: center;
@@ -331,12 +354,14 @@ main {
     justify-content: center;
     width: 40px;
 
+
     .bi {
       color: var(--background-color);
       font-size: 20px;
     }
   }
 }
+
 
 .nav-sm.expand {
   animation: expand 1.2s forwards;
@@ -352,6 +377,7 @@ main {
   }
 }
 
+
 .nav-sm.shrink {
   animation: shrink 1.2s forwards;
 }
@@ -366,6 +392,7 @@ main {
   }
 }
 
+
 .nav-sm-wrapper {
   bottom: 20px;
   display: flex;
@@ -379,6 +406,7 @@ main {
     display: none;
   }
 }
+
 
 .push-notification {
   align-items: center;
@@ -403,6 +431,7 @@ main {
   }
 }
 
+
 .top-nav {
   align-items: center;
   display: flex;
@@ -413,14 +442,17 @@ main {
     display: none;
   }
 
+
   .bi {
     font-size: 30px;
   }
+
 
   div:first-child {
     align-items: center;
     display: flex;
   }
+  
 
   span:first-child {
     margin-right: 5px;

@@ -1,5 +1,4 @@
 const username = window.location.pathname.split('/')[1];
-
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
     icon.classList.remove('selected');
@@ -242,6 +241,9 @@ const followUser = (username) => {
 
         // Add new event handler
         followBtn.addEventListener('click', unfollowHandler);
+
+        // Update recommendation score
+        updateScore('new_follow', 'person', null, username);
       } else {
         throw new Error('Request Failed, try again later!');
       }
