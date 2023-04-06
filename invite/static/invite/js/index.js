@@ -216,8 +216,9 @@ const filterEvents = async (filterMethod) => {
   // Display events placeholder
   eventsSkeleton();
 
+  let longitude = 0.0;
+  let latitude =0.0;
   try {
-    let longitude, latitude;
     if (navigator.geolocation) {
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -227,22 +228,24 @@ const filterEvents = async (filterMethod) => {
     } else {
       // Handle error if geolocation is not supported
       console.error('Geolocation is not supported');
-      longitude = 0.0;
-      latitude = 0.0;
     }
-
-    // Fetch events based on the given filter method
-    const url = `/events/get/filter/${filterMethod}?longitude=${longitude}&latitude=${latitude}`;
-    const response = await fetch(url);
-    const { events } = await response.json();
-
-    // Render the filtered events on the page
-    renderEvents(events, 'index-events-container');
   } catch (error) {
-    // Display error message if events could not be fetched
-    document.querySelector('.index-events-container').innerHTML =
-      "Sorry, we couldn't fetch events. Please try again later.";
     console.error(error);
+  } finally {
+    try {
+      // Fetch events based on the given filter method
+      const url = `/events/get/filter/${filterMethod}?longitude=${longitude}&latitude=${latitude}`;
+      const response = await fetch(url);
+      const { events } = await response.json();
+  
+      // Render the filtered events on the page
+      renderEvents(events, 'index-events-container');
+    } catch (error) {
+      // Display error message if events could not be fetched
+      document.querySelector('.index-events-container').innerHTML =
+      "Sorry, we couldn't fetch events. Please try again later.";
+      console.error(error);
+    }
   }
 };
 
@@ -282,8 +285,9 @@ const getEvents = async () => {
     eventsSkeleton(true);
   }
 
+  let longitude = 0.0
+  let latitude = 0.0;
   try {
-    let longitude, latitude;
     if (navigator.geolocation) {
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -293,10 +297,11 @@ const getEvents = async () => {
     } else {
       // Handle error if geolocation is not supported
       console.error('Geolocation is not supported');
-      longitude = 0.0;
-      latitude = 0.0;
     }
 
+  } catch (error) {
+    console.error(error);
+  } finally {
     // If start is bigger or equal to totalEvents remove scroll event listener
     if (start + 5 >= totalEvents) {
       window.removeEventListener('scroll', getEventsPaginationHandler);
@@ -305,16 +310,19 @@ const getEvents = async () => {
     const url = `/events/get?longitude=${longitude}&latitude=${latitude}&start=${start}&end=${
       start + 5
     }`;
-    const response = await fetch(url);
-    const { events, end, total_events } = await response.json();
-    start = end;
-    totalEvents = total_events;
 
-    renderEvents(events, 'index-events-container');
-  } catch (error) {
-    document.querySelector('.index-events-container').innerHTML =
+    try {
+      const response = await fetch(url);
+      const { events, end, total_events } = await response.json();
+      start = end;
+      totalEvents = total_events;
+  
+      renderEvents(events, 'index-events-container');
+    } catch (error) {
+      document.querySelector('.index-events-container').innerHTML =
       "Sorry, we couldn't fetch nearby events. Please try again later.";
-    console.error(error);
+      console.error(error);
+    }
   }
 };
 
