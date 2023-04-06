@@ -32,12 +32,12 @@ const fetchSavedEvents = () => {
     .catch((error) => console.error(error));
 }
 
-
 const renderSavedEventsImage = (image) => {
   return image ? `<div class='img-cover me-2'><img src='${image}' alt='event-cover'></div>` : '';
 }
 
 const eventsContainerClickHandler = (containerClassName) => {
+  console.log(containerClassName);
   const container = document.querySelector(`.${containerClassName}`);
   container.addEventListener('click', (event) => {
     if (event.target.tagName === 'BUTTON') {
@@ -80,6 +80,7 @@ const eventsContainerClickHandler = (containerClassName) => {
 
     if (event.target.classList.contains('see-more')) {
       const post = event.target.closest('.post');
+      updateScore('see_more', 'event', post.dataset.eventid);
       showHideEventInfoToggle(post);
       return;
     }
@@ -146,9 +147,10 @@ const savedEventsContainerClickHandler = (e, events) => {
       const eventsContainer = document.createElement('div');
       eventsContainer.className = 'events-container';
       return eventsContainer;
-    }, [{ func: renderEvents, values: [[event], 'events-container'] }]);
-
-    eventsContainerClickHandler('events-container');
+    }, [
+      { func: renderEvents, values: [[event], 'events-container'] },
+      { func: eventsContainerClickHandler, values: ['events-container'] }
+    ]);
 
     return;
   }
@@ -164,6 +166,45 @@ const savedEventsContainerClickHandler = (e, events) => {
       `;
       return containerDiv;
     }, [{ func: fetchTicketData, values: [eventId] }]);
+  }
+
+  if (e.target.classList.contains('remove-event')) {
+    const event = e.target.closest('.event');
+    const eventId = parseInt(event.dataset.id);
+    removeEventFromSavedList(event, eventId);
+  }
+}
+
+const removeEventFromSavedList = async (event, eventId) => {
+  try {
+    const response = await fetch('/saved-event/delete', {
+      method: 'DELETE',
+      body: JSON.stringify({ eventId: eventId }),
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+    });
+
+    switch (response.status) {
+      case 200:
+        event.classList.add('disappear');
+        event.addEventListener('transitionend', () => {
+          event.remove();
+        });
+        break;
+
+      case 400:
+        alert(
+          "You can't remove this event because you already own the ticket. Try removing the ticket by pressing the attendees icon (person icon)."
+        );
+        break;
+
+      default:
+        throw new Error('An error occurred, try removing this event later.');
+    }
+  } catch (error) {
+    alert(error);
+    console.error(error);
   }
 }
 
@@ -186,7 +227,7 @@ const renderSavedEvents = (events) => {
         </div>
         <div class='d-flex align-items-center'>
           ${renderTicket(event.with_ticket, event.ticket_secured)}
-          <i class='bi bi-x'></i>
+          <i class='remove-event bi bi-x'></i>
         </div>
       </div>
     `).join('')}

@@ -1955,9 +1955,7 @@ section.new-event .amount-container {
   background-color: var(--bs-gray-400);
   border-radius: 10px;
   display: flex;
-  height: 0;
   overflow: hidden;
-  transition: height 0.5s ease-in-out;
 }
 section.new-event .buttons-container {
   gap: 10px;
@@ -2043,6 +2041,9 @@ section.new-event #map {
   transition: height 1s ease-in-out;
   width: 100%;
 }
+section.new-event .immediate-option-selected,
+section.new-event .later-option-selected,
+section.new-event .paid-access-view,
 section.new-event .paid-options {
   height: 0;
   overflow: hidden;
@@ -2076,6 +2077,10 @@ section.new-event .paid-options {
   border: 1px solid var(--primary-color);
   border-radius: 10px;
   padding: 10px;
+  transition: all 1s ease-in-out;
+}
+.saved-events-container .event.disappear {
+  opacity: 0;
 }
 .saved-events-container img {
   height: 100%;

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   eventsContainerLoadHandler();
   eventsContainerClickHandler('index-events-container');
+  startPagination();
   getEvents();
 
   // EVENTS FILTER
@@ -42,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     eventsSkeleton();
 
     // Retrieve events
+    startPagination();
     getEvents();
   });
 });
@@ -250,7 +252,6 @@ const getEventsPaginationHandler = () => {
     window.innerHeight + window.scrollY >=
     document.documentElement.scrollHeight
   ) {
-    console.log(requestInProgress);
     if (!requestInProgress && start < totalEvents) {
       requestInProgress = true;
 
@@ -269,7 +270,9 @@ const resetPagination = () => {
   start = 0;
 };
 
-window.addEventListener('scroll', getEventsPaginationHandler);
+const startPagination = () => {
+  window.addEventListener('scroll', getEventsPaginationHandler);
+}
 
 let start = 0;
 let totalEvents;
@@ -801,6 +804,7 @@ const renderEvents = (posts, containerClassName) => {
       const { longitude, latitude } = getMapCoordinates(event.location);
       const { suburb, city } = await getLocation(event.id, longitude, latitude);
       const datetime = formattedDateTime(event.timestamp);
+      const duration = eventDuration(event.timestamp, event.ticket_deadline);
       return `
         <div class='post post-wp border-bottom border-dark' data-time-spent='0' data-eventid=${
           event.id
@@ -872,7 +876,7 @@ const renderEvents = (posts, containerClassName) => {
               </div>
               <div>
                 <i class='bi bi-clock'></i>
-                <span class='ms-2 datetime'>${datetime}</span>
+                <span class='ms-2 datetime'>${datetime} (${duration})</span>
               </div>
               ${
                 event.more_info
@@ -1226,3 +1230,11 @@ const getCookie = (name) => {
   }
   return cookieValue;
 };
+
+const eventDuration = (start, end) => {
+  const different =  end - start;
+
+  return different <= 3600000 ?
+    Math.round(different / (1000*60)) + ' Minutes Long' :
+    (different / (1000*60*60)).toFixed(1) + ' Hours Long';
+}

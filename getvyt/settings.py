@@ -108,18 +108,29 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Email configuration
-EMAIL_HOST = environ['HOST']
-EMAIL_PORT = environ['EMAIL_PORT']
-EMAIL_HOST_USER = environ['USER']
-EMAIL_HOST_PASSWORD = environ['PASSWORD']
+from . import config
+
+EMAIL_HOST = config.EMAIL_HOST
+EMAIL_PORT = config.EMAIL_PORT
+EMAIL_HOST_USER = config.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = config.EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = True
 
-# MapBox API Key
-MAPBOX_ACCESS_TOKEN = environ['MAPBOX_ACCESS_TOKEN']
+MAPBOX_ACCESS_TOKEN = config.MAPBOX_ACCESS_TOKEN
+OPENAI_ACCESS_TOKEN = config.OPENAI_ACCESS_TOKEN
 
-# OpenAI API Key
-OPENAI_ACCESS_TOKEN = environ['OPENAI_ACCESS_TOKEN']
+# Email configuration
+# EMAIL_HOST = environ['HOST']
+# EMAIL_PORT = environ['EMAIL_PORT']
+# EMAIL_HOST_USER = environ['USER']
+# EMAIL_HOST_PASSWORD = environ['PASSWORD']
+# EMAIL_USE_TLS = True
+
+# # MapBox API Key
+# MAPBOX_ACCESS_TOKEN = environ['MAPBOX_ACCESS_TOKEN']
+
+# # OpenAI API Key
+# OPENAI_ACCESS_TOKEN = environ['OPENAI_ACCESS_TOKEN']
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

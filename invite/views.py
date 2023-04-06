@@ -36,6 +36,7 @@ ACTIONS = {
     'attend_free_event': 400,
     'read_more_info': 280,
     'save_event': 330,
+    'see_more': 75,
     'share_event': 350,
     'see_exact_location': 260,
     'follow_organiser': 220,
@@ -234,6 +235,7 @@ def extract_keywords(event_id):
 def create_event(request):
     if request.method == 'POST':
 
+        # Validate form
         title = request.POST.get('title')
         if not title:
             return JsonResponse({'error_type': 'event_title_empty'}, status=400)
@@ -250,23 +252,31 @@ def create_event(request):
         if not datetimeInfo:
             return JsonResponse({'error_type': 'event_datetime_empty'}, status=400)
 
+        endingDatetimeInfo = request.POST.get('endingDatetime')
+        if not endingDatetimeInfo:
+            return JsonResponse({'error_type': 'event_ending_datetime_empty'}, status=400)
+
         selectedType = request.POST.get('selectedType')
-        if selectedType == 'null':
+        if selectedType == 'null' or selectedType == 'undefined':
             return JsonResponse({'error_type': 'event_selected_type_empty'}, status=400)
 
         selectedAccess = request.POST.get('selectedAccess')
-        if selectedAccess == 'null':
+        if selectedAccess == 'null' or selectedAccess == 'undefined':
             return JsonResponse({'error_type': 'event_selected_access_empty'}, status=400)
 
         selectedPaidOptions = request.POST.get('selectedPaidOptions')
         ticketPrice = request.POST.get('amount')
+        selectedPaymentOptions = request.POST.get('selectedPaymentOptions')
         if selectedAccess == 'with-access':
-            if selectedPaidOptions == 'null':
+            if selectedPaidOptions == 'null' or selectedPaidOptions == 'undefined':
                 return JsonResponse({'error_type': 'event_paid_options_empty'}, status=400)
 
             if selectedPaidOptions == 'paid':
+                if selectedPaymentOptions == 'null' or selectedPaymentOptions == 'undefined':
+                    return JsonResponse({'error_type': 'event_payment_options_empty'}, status=400)
+
                 try:
-                    if ticketPrice == 'null' or int(ticketPrice) <= 0:
+                    if ticketPrice == 'null' or ticketPrice == 'undefined' or int(ticketPrice) <= 0:
                         return JsonResponse({'error_type': 'event_ticket_price_invalid'}, status=400)
                 except ValueError:
                         return JsonResponse({'error_type': 'event_ticket_price_invalid'}, status=400)
@@ -276,6 +286,7 @@ def create_event(request):
             attendance_limit = 0
 
         datetime_obj = datetime.strptime(datetimeInfo, '%Y-%m-%dT%H:%M')
+        end_datetime_obj = datetime.strptime(endingDatetimeInfo, '%Y-%m-%dT%H:%M')
 
         public = False if selectedType == 'private' else True
 
@@ -296,6 +307,7 @@ def create_event(request):
             title=title,
             description=description,
             datetime=datetime_obj,
+            end_datetime=end_datetime_obj,
             location=location,
             public=public,
             ticket_access=ticket,
@@ -305,6 +317,16 @@ def create_event(request):
             keywords=keywords,
             draft=draft
         )
+
+        event.immediate_payment = True if selectedPaymentOptions == 'immediate' else False
+        event.save()
+
+        ticketDeadline = request.POST.get('ticketDeadline')
+
+        if ticketDeadline:
+            ticket_deadline_obj = datetime.strptime(ticketDeadline, '%Y-%m-%dT%H:%M')
+            event.ticket_purchase_deadline=ticket_deadline_obj
+            event.save()
 
         if draft:
             EventMoreInfo.objects.create(event=event)
@@ -650,12 +672,14 @@ EVENTS = []
 def get_events(request):
     username = request.GET.get('username')
     user = request.user
+    events_for = request.GET.get('events_for')
+
+    if events_for == 'profile':
+        events = Event.objects.filter(user=user)
+        return JsonResponse({'events': serialize_post(events, user)}, status=200) 
 
     start = int(request.GET.get('start'))
     end = int(request.GET.get('end'))
-
-    print('start', start)
-    print('end', end)
 
     if start == 0 or start >= len(EVENTS):
         EVENTS.clear()
@@ -678,8 +702,6 @@ def get_events(request):
             event = get_object_or_404(Event, id=num)
             EVENTS.append(event)
 
-        # print(serialize_post(EVENTS[:end], user))
-        # print(ordered_events)
         return JsonResponse(
             {
                 'events': serialize_post(EVENTS[:end], user), 
@@ -690,8 +712,6 @@ def get_events(request):
         )
     
     elif end >= len(EVENTS):
-        print('start', start)
-        print(len(serialize_post(EVENTS[start:], user)))
         return JsonResponse(
             {
                 'events': serialize_post(EVENTS[start:], user), 
@@ -702,9 +722,6 @@ def get_events(request):
         )
 
     else:
-        print('start', start)
-        print('end', end)
-        print(len(serialize_post(EVENTS[start:end], user)))
         return JsonResponse(
             {
                 'events': serialize_post(EVENTS[start:end], user), 
@@ -788,20 +805,10 @@ def get_events_nearby(request):
     # Get the user's current location using Mapbox's geocoding API
     location = request.GET.get('location')
 
-    geocoding_url = f'https://api.mapbox.com/geocoding/v5/mapbox.places/{location}.json?access_token={MAPBOX_ACCESS_TOKEN}'
-    response = requests.get(geocoding_url)
-    location_data = response.json()
-
-    # Extract the coordinates from the geocoding response
-    coordinates = location_data['features'][0]['geometry']['coordinates']
-    longitude = coordinates[0]
-    latitude = coordinates[1]
-
-    # Filter the events based on distance from the user's location
-    distance = request.GET.get('distance', 500)  # default to 10 kilometers
-    events = Event.objects.filter(
-        public=True,
-    )
+    allowed_private_events = PrivateEventViewers.objects.filter(viewers=user).values('event_id')
+    public_events = Event.objects.filter(public=True).exclude(user=user)
+    private_events = Event.objects.filter(public=False, id__in=allowed_private_events).exclude(user=user)
+    events = public_events.union(private_events)
 
     nearby_events = []
     for event in events:
@@ -810,16 +817,21 @@ def get_events_nearby(request):
         event_latitude = float(event_latitude)
         event_longitude = float(event_longitude)
 
-        # Calculate the distance between the user's location and the event's location
-        distance_in_km = geodesic((latitude, longitude), (event_latitude, event_longitude)).km
+        # Parse the latitude and longitude values from the user location
+        user_longitude, user_latitude = location.split(',')
+        user_latitude = float(user_latitude)
+        user_longitude = float(user_longitude)
 
-        print(distance_in_km)
+        distance_in_km = haversine(event_longitude, event_latitude, user_longitude, user_latitude)
 
         # If the event is within the specified distance, add it to the nearby_events list
-        if distance_in_km <= float(distance):
+        if distance_in_km <= 10:
             nearby_events.append(event)
 
-    order = order_events_by_relevance(nearby_events, user)
+    events_ids = [obj.id for obj in nearby_events]
+    nearby_events = Event.objects.filter(id__in=events_ids)
+
+    order = order_events_by_relevance(nearby_events, user, user_longitude, user_latitude)
     ordered_events = []
     for num in order:
         event = get_object_or_404(Event, id=num)
@@ -1412,7 +1424,7 @@ def update_scores(request):
 
         # Update keywords
         personal_keywords = p.keywords
-        event_keywords = EventKeyword.objects.get(user=user)
+        event_keywords = EventKeyword.objects.get(event=event).keywords
         top_event_keywords = dict_values(event_keywords, 3)
 
         for keyword in top_event_keywords:

@@ -77,9 +77,18 @@
       <div class='mb-3' id='map'></div>
 
       <div class='mb-3'>
+        <label for='datetime'>When is your event starting?</label>
         <input class='datetime form-control input-frame' name='datetime' type='datetime-local' placeholder='Time'>
         <div class='error-message feedback-empty datetime-empty d-none'>
-          Please provide the date and time of your event.
+          Please provide the starting date and time of your event.
+        </div>
+      </div>
+
+      <div class='mb-3'>
+        <label for='datetime-ending'>When is your event ending? (Estimate)</label>
+        <input class='datetime-ending form-control input-frame' name='datetime-ending' type='datetime-local' placeholder='Time'>
+        <div class='error-message feedback-empty datetime-ending-empty d-none'>
+          Please provide the ending date and time of your event.
         </div>
       </div>
 
@@ -121,6 +130,11 @@
 
       <div class='mb-3'>
         <div class='paid-options'>
+          <div class='mb-3'>
+            <label for='datetime-ending'>Last day to purchase tickets (Optional)</label>
+            <input class='ticket-deadline form-control input-frame' name='ticket-deadline' type='datetime-local'>
+          </div>
+
           <div class='form-floating mb-3'>
             <input type='number' name='limit' class='attendees-limit form-control input-frame' placeholder='Attendees Limit (Optional)'>
             <label for='limit' class='floating-input-placeholder'>Attendees Limit (Optional)</label>
@@ -147,16 +161,49 @@
       </div>
 
       <div class='mb-3'>
-        <div class='amount-container'>
-          <div class='currency w-25'>R</div>
-          <div class='form-floating w-75'>
-            <input type='number' class='amount form-control input-frame' placeholder='Amount in Rands (ex. R25.50)'>
-            <label for='amount' class='floating-input-placeholder'>Amount in Rands (ex. R25)</label>
+        <div class='paid-access-view'>
+          <div class='amount-container mb-3'>
+            <div class='currency w-25'>R</div>
+            <div class='form-floating w-75'>
+              <input type='number' class='amount form-control input-frame' placeholder='Amount in Rands (ex. R25.50)'>
+              <label for='amount' class='floating-input-placeholder'>Amount in Rands (ex. R25)</label>
+            </div>
           </div>
+
+          <div>
+            <label for='payment-options'>When would you like to be paid?</label>
+            <div class='d-flex align-items-center mb-1'>
+              <div class='w-50 d-flex align-items-center'>
+                <input name='payment-options' class='paid-immediate' type='radio' value='immediate'>
+                <label class='ms-1' for='immediate'>Immediately</label>
+              </div>
+      
+              <div class='w-50 d-flex align-items-center'>
+                <input name='payment-options' class='paid-later' type='radio' value='later'>
+                <label class='ms-1' for='later'>Day of the event</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class='immediate-option-selected mb-1'>
+          <div>Service Fee: 4% / Ticket Sale</div>
+          <div>Bank Charges: 2%</div>
+          <div>You will make:<span class='immediate-sale-value ms-1 me-1'>X</span>per ticket sale.</div> 
+        </div>
+
+        <div class='later-option-selected mb-1'>
+          <div>Service Fee: 2,9% / Ticket Sale</div>
+          <div>Bank Charges: 2%</div>
+          <div>You will make:<span class='later-sale-value ms-1 me-1'>X</span>per ticket sale.</div>
         </div>
   
         <div class='error-message feedback-empty amount-invalid d-none'>
           The price of a ticket must be bigger than 0.
+        </div>
+
+        <div class='error-message feedback-empty payment-options-empty d-none'>
+          Select one of the available options.
         </div>
       </div>
 

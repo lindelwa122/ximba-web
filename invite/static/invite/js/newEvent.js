@@ -43,25 +43,50 @@ const retrieveEventLocation = () => {
   // Log any errors that occur.
   console.error(error);
   }
-  };
+};
   
-  // This function gets the user's location using the browser's geolocation API.
-  const getUserLocation = (callback) => {
-  if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-  (position) => {
-  callback(position);
-  },
-  (error) => {
-  callback(null);
-  }
-  );
-  } else {
-  callback(null);
-  }
-  };  
+// This function gets the user's location using the browser's geolocation API.
+const getUserLocation = (callback) => {
+if (navigator.geolocation) {
+navigator.geolocation.getCurrentPosition(
+(position) => {
+callback(position);
+},
+(error) => {
+callback(null);
+}
+);
+} else {
+callback(null);
+}
+};  
 
 // FORM VALIDATIONS
+
+const validateStartAndEndDate = () => {
+  const start = document.querySelector('.datetime');
+  const end = document.querySelector('.datetime-ending');
+
+  if (start.value > end.value) {
+    alert('Start and end time of your event is invalid');
+    return false;
+  }
+
+  return true;
+}
+
+const validateTicketPurchaseDeadline = () => {
+  const ticketDeadline = document.querySelector('.ticket-deadline');
+  const start = document.querySelector('.datetime');
+  const end = document.querySelector('.datetime-ending');
+
+  if (ticketDeadline.value > start.value && ticketDeadline.value < end.value) {
+    return true;
+  }
+
+  alert('Ticket deadline is invalid');
+  return false;
+}
 
 const validateDateTimeInput = () => {
   // Validate datetime input
@@ -69,6 +94,17 @@ const validateDateTimeInput = () => {
   if (datetimeInput.value.length === 0) {
     datetimeInput.classList.add('is-invalid');
     document.querySelector('.datetime-empty').classList.remove('d-none');
+    return false;
+  }
+
+  return true;
+}
+
+const validateDateTimeEndInput = () => {
+  const datetimeInput = document.querySelector('.datetime-ending');
+  if (datetimeInput.value.length === 0) {
+    datetimeInput.classList.add('is-invalid');
+    document.querySelector('.datetime-ending-empty').classList.remove('d-none');
     return false;
   }
 
@@ -188,6 +224,20 @@ const validateQRCodeRadioInput = () => {
       } else {
         amount = parseInt(price.value);
       }
+
+      let selectedPaymentOptionValue = null;
+      document.querySelectorAll('input[name="payment-options"]').forEach((option) => {
+        if (option.checked) {
+          selectedPaymentOptionValue = option.value;
+        }
+      });
+
+      if (!selectedPaymentOptionValue) {
+        document.querySelector('.payment-options-empty').classList.remove('d-none');
+        return false;
+      }
+
+      return true;
     }
   }
 
@@ -212,6 +262,8 @@ const cleanForm = () => {
 
 const getFormData = (draft, tags) => {
   const datetime = document.querySelector('.datetime').value;
+  const endingDatetime = document.querySelector('.datetime-ending').value;
+  const ticketDeadline = document.querySelector('.ticket-deadline').value;
   const description = document.querySelector('.description-input').value;
   const title = document.querySelector('.title').value;
   const keywords = tags.filter((el) => el !== null);
@@ -219,35 +271,47 @@ const getFormData = (draft, tags) => {
   const price = document.querySelector('.amount');
   const amount = parseInt(price.value);
 
-  let selectedEventTypeValue;
+  let selectedEventTypeValue = null;
   document.querySelectorAll('input[name="event-type"]').forEach((eventType) => {
     if (eventType.checked) {
       selectedEventTypeValue = eventType.value;
     }
   });
 
-  let selectedEventQRCodeValue;
+  let selectedEventQRCodeValue = null;
   document.querySelectorAll('input[name="access"]').forEach((access) => {
     if (access.checked) {
       selectedEventQRCodeValue = access.value;
     }
   });
 
-  let selectedPaidOptions;
+  let selectedPaidOptions = null;
   document.querySelectorAll('input[name="paid-options"]').forEach((input) => {
     if (input.checked) {
       selectedPaidOptions = input.value;
     }
   });
 
+  let selectedPaymentOptions = null;
+  document.querySelectorAll('input[name="payment-options"]').forEach((input) => {
+    if (input.checked) {
+      selectedPaymentOptions = input.value;
+    }
+  });
+
+
+
   return {
     title: title,
     description: description,
     location: location,
     datetime: datetime,
+    endingDatetime: endingDatetime,
     selectedType: selectedEventTypeValue,
     selectedAccess: selectedEventQRCodeValue,
     selectedPaidOptions: selectedPaidOptions,
+    selectedPaymentOptions: selectedPaymentOptions,
+    ticketDeadline: ticketDeadline,
     amount: amount,
     keywords: keywords,
     draft: draft,
@@ -263,20 +327,20 @@ const startEventPublishButtonLoading = (button, buttonType) => {
       '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Saving...';
   } else {
     prev = button.value;
-    prev.value = 'Publishing...';
+    button.value = 'Publishing...';
   }
 
   return prev;
-}
+};
 
-const stopEventPublishButtonLoading = (prev) => {
+const stopEventPublishButtonLoading = (prev, button, buttonType) => {
   if (buttonType === 'button') {
     button.innerHTML = prev;
   } else {
     button.value = prev;
   }
   button.disabled = false;
-} 
+};
 
 const validateNewEventForm = (btn, tags, draft, btnType) => {
   // Clean up form
@@ -288,6 +352,9 @@ const validateNewEventForm = (btn, tags, draft, btnType) => {
     validateEventDescription() &&
     validateLocationInput() &&
     validateDateTimeInput() &&
+    validateDateTimeEndInput() &&
+    validateTicketPurchaseDeadline() &&
+    validateStartAndEndDate() &&
     validateEventTypeRadioInput() &&
     validateQRCodeRadioInput() &&
     validateKeywords(tags);
@@ -300,6 +367,9 @@ const validateNewEventForm = (btn, tags, draft, btnType) => {
 };
 
 const publishNewEvent = async (button, buttonType, eventData) => {
+  // Start the loading animation on the publish button and save its previous text content
+  const previousButtonTextContent = startEventPublishButtonLoading(button, buttonType);
+
   // Get the event cover, x-axis, y-axis, width, height, and attendance limit from the page
   const eventCover = document.querySelector('#file-input').files[0];
   const xAxis = document.querySelector('#x-axis').value;
@@ -313,13 +383,16 @@ const publishNewEvent = async (button, buttonType, eventData) => {
     title, 
     description, 
     location, 
-    datetime, 
+    datetime,
+    endingDatetime,
     selectedType, 
     selectedAccess, 
     selectedPaidOptions, 
+    selectedPaymentOptions,
     amount, 
     keywords, 
-    draft 
+    draft,
+    ticketDeadline
   } = eventData;
 
   const category = await categorizeEvent(title, description, keywords);
@@ -337,10 +410,13 @@ const publishNewEvent = async (button, buttonType, eventData) => {
   form.append('height', height);
   form.append('location', location);
   form.append('datetime', datetime);
+  form.append('endingDatetime', endingDatetime);
   form.append('selectedType', selectedType);
   form.append('selectedAccess', selectedAccess);
   form.append('limit', attendanceLimit);
   form.append('selectedPaidOptions', selectedPaidOptions);
+  form.append('selectedPaymentOptions', selectedPaymentOptions);
+  form.append('ticketDeadline', ticketDeadline);
   form.append('amount', amount);
   form.append('keywords', keywords);
   form.append('draft', draft);
@@ -350,9 +426,6 @@ const publishNewEvent = async (button, buttonType, eventData) => {
   const csrfToken = document.querySelector(
     'input[name="csrfmiddlewaretoken"]'
   ).value;
-
-  // Start the loading animation on the publish button and save its previous text content
-  const previousButtonTextContent = startEventPublishButtonLoading(button, buttonType);
 
   try {
     const response = await fetch('/new-event/publish', {
@@ -369,7 +442,7 @@ const publishNewEvent = async (button, buttonType, eventData) => {
     }
 
     // Parse the JSON response and check if there is a "next_route" property
-    const { next_route } = await response.json();
+    const { next_route, error_type } = await response.json();
 
     if (next_route) {
       // Redirect the user to the specified URL
@@ -378,7 +451,6 @@ const publishNewEvent = async (button, buttonType, eventData) => {
     }
 
     // Handle the error with the formErrorHandler function
-    const { error_type } = await response.json();
     formErrorHandler(error_type);
 
   } catch (error) {
@@ -386,7 +458,7 @@ const publishNewEvent = async (button, buttonType, eventData) => {
     console.error(error);
 
   } finally {
-    stopEventPublishButtonLoading(previousButtonTextContent);
+    stopEventPublishButtonLoading(previousButtonTextContent, button, buttonType);
   }
 };
 
@@ -505,6 +577,21 @@ const generateDescription = async (title) => {
 
 // UTILS
 
+const appendTicketSale = (priceClassName, serviceFeePercentage) => {
+  const ticketPrice = document.querySelector('.amount').value;
+  if (ticketPrice) {
+    const priceContainer = document.querySelector(`.${priceClassName}`);
+    priceContainer.innerHTML = `R${calcTicketSaleProfit(ticketPrice, serviceFeePercentage)}`;
+  }
+}
+
+const calcTicketSaleProfit = (ticketPrice, serviceFeePercentage) => {
+  const serviceFee = ticketPrice * (serviceFeePercentage/100);
+  const bankCharges = ticketPrice * (2/100);
+  const sale = ticketPrice - serviceFee - bankCharges;
+  return sale.toFixed(2);
+}
+
 const clickEventHandler = () => {
   document
     .querySelector('#location-input')
@@ -595,20 +682,40 @@ const inputEventHandler = () => {
     const paidOptionsContainer = document.querySelector('.paid-options');
     paidOptionsContainer.style.height = 0;
 
-    const priceContainer = document.querySelector('.amount-container');
-    priceContainer.style.height = 0;
+    const paymentContainer = document.querySelector('.paid-access-view');
+    paymentContainer.style.height = 0;
 
     document.querySelector('.free-option').checked = true;
   });
 
   document.querySelector('.paid-option').addEventListener('input', () => {
-    const priceContainer = document.querySelector('.amount-container');
-    priceContainer.style.height = priceContainer.scrollHeight + 35 + 'px';
+    const paymentContainer = document.querySelector('.paid-access-view');
+    paymentContainer.style.height = paymentContainer.scrollHeight + 'px';
   });
 
   document.querySelector('.free-option').addEventListener('input', () => {
-    const priceContainer = document.querySelector('.amount-container');
+    const priceContainer = document.querySelector('.paid-access-view');
     priceContainer.style.height = 0;
+  });
+
+  document.querySelector('.paid-immediate').addEventListener('input', () => {
+    const immediate = document.querySelector('.immediate-option-selected');
+    immediate.style.height = immediate.scrollHeight + 'px';
+
+    const later = document.querySelector('.later-option-selected');
+    later.style.height = 0;
+
+    appendTicketSale('immediate-sale-value', 4);
+  });
+  
+  document.querySelector('.paid-later').addEventListener('input', () => {
+    const immediate = document.querySelector('.immediate-option-selected');
+    immediate.style.height = 0;
+
+    const later = document.querySelector('.later-option-selected');
+    later.style.height = immediate.scrollHeight + 'px';
+
+    appendTicketSale('later-sale-value', 2.9);
   });
 
   const title = document.querySelector('.title');
@@ -627,6 +734,12 @@ const setEventDateContraints = () => {
   const datetime = document.querySelector('.datetime');
   const now = new Date().toISOString().slice(0, 16);
   datetime.setAttribute('min', now);
+
+  const datetimeEnding = document.querySelector('.datetime-ending');
+  datetimeEnding.setAttribute('min', now);
+
+  const ticketDeadline = document.querySelector('.ticket-deadline');
+  ticketDeadline.setAttribute('min', now);
 }
 
 const submitEventHandler = () => {

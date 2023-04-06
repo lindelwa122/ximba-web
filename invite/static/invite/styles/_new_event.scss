@@ -7,9 +7,7 @@ section.new-event {
     background-color: var(--bs-gray-400);
     border-radius: 10px;
     display: flex;
-    height: 0;
     overflow: hidden;
-    transition: height .5s ease-in-out;
   }
   
 
@@ -113,6 +111,9 @@ section.new-event {
   }
 
   
+  .immediate-option-selected,
+  .later-option-selected, 
+  .paid-access-view, 
   .paid-options {
     height: 0;
     overflow: hidden;

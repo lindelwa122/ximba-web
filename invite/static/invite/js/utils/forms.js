@@ -180,6 +180,12 @@ const formErrorHandler = (errorType) => {
       formErrorRender(eventDatetimeInput, errorContainer);
       throw new Error('Datetime empty');
 
+    case 'event_ending_datetime_empty':
+      const eventEndingDatetimeInput = document.querySelector('.datetime-ending');
+      errorContainer = document.querySelector('.datetime-ending-empty');
+      formErrorRender(eventEndingDatetimeInput, errorContainer);
+      throw new Error('Datetime empty');
+
     case 'event_keywords_invalid':
       const keywordsInput = document.querySelector('.tags');
       errorContainer = document.querySelector('.tags-invalid');
@@ -201,6 +207,11 @@ const formErrorHandler = (errorType) => {
       errorContainer = document.querySelector('.paid-options-empty');
       errorContainer.classList.remove('d-none');
       throw new Error('Event paid options not selected');
+
+    case 'event_payment_options_empty':
+      errorContainer = document.querySelector('.payment-options-empty');
+      errorContainer.classList.remove('d-none');
+      throw new Error('Event payment options not selected');
 
     case 'event_ticket_price_invalid':
       errorContainer = document.querySelector('.amount-invalid');

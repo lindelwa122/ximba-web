@@ -224,6 +224,7 @@ def serialize_post(data, user):
             'description': post.description,
             'cover': get_img_url(post.cover) if post.cover else False,
             'timestamp': convert_datetime_to_timestamp(post.datetime),
+            'ticket_deadline': convert_datetime_to_timestamp(post.end_datetime),
             'publisher': serialize_data([post.user]),
             'with_ticket': post.ticket_access,
             'ticket_secured': Ticket.objects.filter(event=post, owner=user).exists(),

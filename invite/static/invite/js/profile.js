@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
     icon.classList.remove('selected');
   });
-  
+
   fetchCount(username);
   fetchBio(username);
   fetchProfileImage(username);
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const getPosts = () => {
   const username = window.location.pathname.replace('/', '');
   console.log(username);
-  fetch(`events/get?username=${username}`)
+  fetch(`events/get?username=${username}&events_for=profile`)
     .then((response) => {
       if (response.status !== 200) {
         throw new Error('Couldn\'t fetch posts. Try reloading the page and if this persist, contact support.');
@@ -143,7 +143,7 @@ const renderProfileEvents = (events) => {
           </div>
           <i class='bi bi-three-dots-vertical'></i>
         </div>`
-    ).join('')}
+  ).join('')}
   `
 }
 
@@ -167,7 +167,7 @@ const displayFollowingUsers = () => {
 
 const displayFollowers = () => {
   addToMainModalHistory('Followers', countGroupDisplay, [
-    { func: fetchFollowers, values: []}
+    { func: fetchFollowers, values: [] }
   ]);
 }
 
@@ -323,7 +323,7 @@ const clickEventHandlerInsideCountGroup = (btnClass, btnClickHandler) => {
       // If a matching container is found, navigate to the user's profile page
       if (container) {
         const username = container.dataset.username;
-        window.location.href =  `/${username}`;
+        window.location.href = `/${username}`;
       }
     }
   });
@@ -368,7 +368,7 @@ const renderUserData = (data) => {
   }, true);
 }
 
-const toggleFollowStatusForUser = (action, btn, username, newTextContentAfterFollowAction='Unfollow') => {
+const toggleFollowStatusForUser = (action, btn, username, newTextContentAfterFollowAction = 'Unfollow') => {
   // Disable the button while the follow/unfollow request is being made
   btn.setAttribute('disabled', true);
   let initialClassToken;
@@ -442,7 +442,7 @@ const fetchFollowingUsers = () => {
             });
           }
         });
-      
+
       // Add a click event handler to each "Unfollow" button
       const buttonClickedEventHandler = (btn) => {
         const username = btn.parentElement.parentElement.dataset.username;
@@ -463,7 +463,7 @@ const fetchFollowingUsers = () => {
 // Function to fetch the followers of the user
 const fetchFollowers = () => {
   // Send a GET request to the server to get the followers of the user with the given username
-  fetch(`/get/followers/${username}`) 
+  fetch(`/get/followers/${username}`)
     .then((response) => {
       if (response.status !== 200) {
         throw new Error('Request Failed, try again later');
@@ -504,6 +504,6 @@ const fetchFollowers = () => {
     })
     .catch((error) => {
       // Display an error message on the screen
-      displayError(error); 
+      displayError(error);
     });
 };
