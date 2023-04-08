@@ -1,26 +1,24 @@
+.amount-container {
+  align-items: center;
+  background-color: var(--bs-gray-400);
+  border-radius: 10px;
+  display: flex;
+  overflow: hidden;
+}
+
+.currency {
+  display: flex;
+  justify-content: center;
+  padding: $general-padding;
+  width: 20%;
+}
+
 section.new-event {
   margin-bottom: 100px;
-
-
-  .amount-container {
-    align-items: center;
-    background-color: var(--bs-gray-400);
-    border-radius: 10px;
-    display: flex;
-    overflow: hidden;
-  }
   
 
   .buttons-container {
     gap: 10px;
-  }
-
-
-  .currency {
-    display: flex;
-    justify-content: center;
-    padding: $general-padding;
-    width: 20%;
   }
 
 

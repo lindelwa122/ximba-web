@@ -99,14 +99,7 @@ const addAttendee = async (
 
       // If the user is required to pay for the ticket, redirect to the page to get a ticket
       case 400:
-        getTicket(
-          ticketButtonElement,
-          eventId,
-          savedIconElement,
-          savedCountElement,
-          attendeesIconElement,
-          attendeesCountElement
-        );
+        getTicket(eventId);
         break;
 
       // If the event has reached the maximum number of attendees
@@ -217,7 +210,7 @@ const filterEvents = async (filterMethod) => {
   eventsSkeleton();
 
   let longitude = 0.0;
-  let latitude =0.0;
+  let latitude = 0.0;
   try {
     if (navigator.geolocation) {
       const position = await new Promise((resolve, reject) => {
@@ -237,13 +230,13 @@ const filterEvents = async (filterMethod) => {
       const url = `/events/get/filter/${filterMethod}?longitude=${longitude}&latitude=${latitude}`;
       const response = await fetch(url);
       const { events } = await response.json();
-  
+
       // Render the filtered events on the page
       renderEvents(events, 'index-events-container');
     } catch (error) {
       // Display error message if events could not be fetched
       document.querySelector('.index-events-container').innerHTML =
-      "Sorry, we couldn't fetch events. Please try again later.";
+        "Sorry, we couldn't fetch events. Please try again later.";
       console.error(error);
     }
   }
@@ -275,7 +268,7 @@ const resetPagination = () => {
 
 const startPagination = () => {
   window.addEventListener('scroll', getEventsPaginationHandler);
-}
+};
 
 let start = 0;
 let totalEvents;
@@ -285,7 +278,7 @@ const getEvents = async () => {
     eventsSkeleton(true);
   }
 
-  let longitude = 0.0
+  let longitude = 0.0;
   let latitude = 0.0;
   try {
     if (navigator.geolocation) {
@@ -298,7 +291,6 @@ const getEvents = async () => {
       // Handle error if geolocation is not supported
       console.error('Geolocation is not supported');
     }
-
   } catch (error) {
     console.error(error);
   } finally {
@@ -316,11 +308,11 @@ const getEvents = async () => {
       const { events, end, total_events } = await response.json();
       start = end;
       totalEvents = total_events;
-  
+
       renderEvents(events, 'index-events-container');
     } catch (error) {
       document.querySelector('.index-events-container').innerHTML =
-      "Sorry, we couldn't fetch nearby events. Please try again later.";
+        "Sorry, we couldn't fetch nearby events. Please try again later.";
       console.error(error);
     }
   }
@@ -378,9 +370,13 @@ const removeAttendee = async (
         }
         break;
 
+      case 401:
+        getRefund(eventId);
+        break;
+
       default:
         // If there is an unexpected error, display an error message
-        alert("Sorry, couldn't ticket. Please try again later.");
+        alert("Sorry, couldn't remove your ticket. Please try again later.");
         break;
     }
   } catch (error) {
@@ -427,6 +423,62 @@ const saveEvent = async (id, btn, count) => {
     console.error(error);
   }
 };
+
+const shareEventModal = (eventId) => {
+  addToMainModalHistory('Share Event', () => {
+    const container = document.createElement('div');
+
+    container.innerHTML = `
+      <div class='mb-2'>Share this event with all of your friends</div>
+      <textarea class='form-control input-frame note mb-3' placeholder='Share this event with a note (Optional)'></textarea>
+      <button class='share-event-btn btn btn-primary w-100'>Share Event</button>
+    `; 
+
+    return container;
+  }, [{ func: (eventId) => {
+    document.querySelector('.share-event-btn').addEventListener('click', () => {
+      shareEvent(eventId);
+    })
+  }, values: [eventId] }])
+}
+
+const shareEvent = async (eventId) => {
+  const submitButton = document.querySelector('.share-event-btn');
+  submitButton.disabled = true;
+  submitButton.innerHTML = 'Sharing Event...';
+
+  const updateSharesCount = () => {
+    const post = document.querySelector(`#event-${eventId}`);
+    const sharesCount = post.querySelector('.shares-count');
+    sharesCount.textContent = parseInt(sharesCount.textContent) + 1;
+  }
+
+  try {
+    const response = await fetch(`/event/share/${eventId}`);
+
+    switch (response.status) {
+      case 200:
+        alert('The event has been successfully shared with all of your friends');
+        updateSharesCount();
+        updateScore('share_event', 'event', eventId);
+        break;
+
+      case 409:
+        alert('You have already shared this event with all of your friends.');
+        break;
+
+      default:
+        throw new Error('An error occurred, check your internet connection and try again later.');
+    }
+
+  } catch (error) {
+    alert(error);
+    console.error(error);
+  } finally {
+    submitButton.disabled = false;
+    submitButton.innerHTML = 'Share Event';
+  }
+}
 
 const showHideEventInfoToggle = (post) => {
   const moreInfo = post.querySelector('.event-more-info');
@@ -805,6 +857,49 @@ const keywordsDisplay = (keywords) => {
   return htmlStrings.join('');
 };
 
+const renderButtons = (
+  attendanceLimit,
+  attendeesCount,
+  isTicketRequired,
+  isTicketSecured,
+  price,
+  ticketDeadline
+) => {
+  let ticketButton;
+  let limit = parseInt(attendanceLimit);
+  const attendees = parseInt(attendeesCount);
+
+  // If ticket is not required
+  if (!isTicketRequired) {
+    ticketButton = '';
+  }
+
+  // If the deadline date has already past or
+  // If the event has reached the maximum number of attendees and limit is not zero
+  // If the limit is zero it indicates that there's not limit
+  else if (ticketDeadline === 'past' || (attendees >= limit && limit !== 0)) {
+    ticketButton =
+      "<button class='btn btn-primary btn-small'>Tickets No Longer Available</button>";
+  }
+
+  // Check if ticket is already secured and give the user an option to view it
+  // otherwise show the ticket price and give the user an option to get it
+  else {
+    ticketButton = isTicketSecured
+      ? `<button class='btn btn-primary btn-small view-ticket'>View Ticket</button>`
+      : `<button class='btn btn-secondary btn-small get-ticket'>Get Ticket (${
+          price === 0 ? 'Free' : `R${price}`
+        })</button>`;
+  }
+
+  const limitButton =
+    limit > 0
+      ? `<button class='btn btn-primary btn-small'>Limit: ${attendanceLimit}</button>`
+      : '';
+
+  return { ticketButton, limitButton };
+};
+
 const renderEvents = (posts, containerClassName) => {
   Promise.all(
     posts.map(async (event) => {
@@ -812,11 +907,21 @@ const renderEvents = (posts, containerClassName) => {
       const { longitude, latitude } = getMapCoordinates(event.location);
       const { suburb, city } = await getLocation(event.id, longitude, latitude);
       const datetime = formattedDateTime(event.timestamp);
-      const duration = eventDuration(event.timestamp, event.ticket_deadline);
+      const duration = eventDuration(event.timestamp, event.end_timestamp);
+      const ticketDeadline = ticketDeadlineHandler(event.ticket_deadline);
+      const { ticketButton, limitButton } = renderButtons(
+        event.attendance_limit,
+        event.attendees,
+        event.with_ticket,
+        event.ticket_secured,
+        event.ticket_price,
+        ticketDeadline
+      );
+
       return `
-        <div class='post post-wp border-bottom border-dark' data-time-spent='0' data-eventid=${
+        <div class='post post-wp border-bottom border-dark' id='event-${
           event.id
-        }>
+        }' data-time-spent='0' data-eventid=${event.id}>
           <div class='post-intro'>
             ${userInfo}
             <div class='post-head'>
@@ -830,26 +935,18 @@ const renderEvents = (posts, containerClassName) => {
                 }'>${suburb}, ${city}</span>
               </div>
             </div>
+            ${
+              ticketDeadline && ticketDeadline !== 'past'
+                ? `<div class='error-message mt-2'>${ticketDeadline}</div>`
+                : ''
+            }
           </div>
 
           ${
-            !event.cover
-              ? renderPostActions(
-                  event.with_ticket,
-                  event.ticket_secured,
-                  event.attendance_limit,
-                  event.ticket_price
-                )
-              : ''
+            event.cover
+              ? renderImage(event.cover, limitButton, ticketButton)
+              : renderPostActions(limitButton, ticketButton)
           }
-
-          ${renderImage(
-            event.cover,
-            event.with_ticket,
-            event.ticket_secured,
-            event.attendance_limit,
-            event.ticket_price
-          )}
 
           <div class='post-caption'>
             <div class='short-description'>${
@@ -864,8 +961,8 @@ const renderEvents = (posts, containerClassName) => {
                 <span class='ms-1 attendees-count'>${event.attendees}</span>
               </div>
               <div class='d-flex align-items-center'>
-                <i class='bi bi-repeat'></i>
-                <span class='ms-1'>37</span>
+                <i class='bi bi-repeat share-event'></i>
+                <span class='ms-1 shares-count'>${event.shares}</span>
               </div>
               <div class='d-flex align-items-center'>
                 <i class='bi ${
@@ -915,33 +1012,8 @@ const renderEvents = (posts, containerClassName) => {
   });
 };
 
-const renderImage = (
-  image,
-  ticket,
-  isTicketSecured,
-  attendanceLimit,
-  price
-) => {
-  if (image) {
-    const setTicket = ticket ? true : false;
-
-    let ticketBtn;
-    if (setTicket) {
-      ticketBtn = isTicketSecured
-        ? `<button class='btn btn-primary btn-small view-ticket'>View Ticket</button>`
-        : `<button class='btn btn-secondary btn-small get-ticket'>Get Ticket (${
-            price === 0 ? 'Free' : `R${price}`
-          })</button>`;
-    } else {
-      ticketBtn = '';
-    }
-
-    const attendanceLimitButton =
-      attendanceLimit > 0
-        ? `<button class='btn btn-secondary btn-small'>Limit: ${attendanceLimit}</button>`
-        : '';
-
-    return `
+const renderImage = (image, attendanceLimitButton, ticketButton) => {
+  return `
       <div class='img-cover'>
         <img src='${image}' class='skeleton' alt='Event Cover'>
         <div class='buttons-container'>
@@ -949,41 +1021,17 @@ const renderImage = (
             ${attendanceLimitButton}
           </div>
           <div class='d-flex justify-content-end'>
-            ${ticketBtn}
+            ${ticketButton}
           </div>
         </div>
       </div>
     `;
-  }
-
-  return '';
 };
 
-const renderPostActions = (
-  isTicketRequired,
-  isTicketSecured,
-  attendanceLimit,
-  price
-) => {
-  let ticketButton;
-  if (isTicketRequired) {
-    ticketButton = isTicketSecured
-      ? `<button class='btn btn-primary btn-small view-ticket'>View Ticket</button>`
-      : `<button class='btn btn-secondary btn-small get-ticket'>Get Ticket (${
-          price === 0 ? 'Free' : `R${price}`
-        })</button>`;
-  } else {
-    ticketButton = '';
-  }
-
-  const limitButton =
-    parseInt(attendanceLimit) > 0
-      ? `<button class='btn btn-secondary-outline btn-small'>Limit: ${attendanceLimit}</button>`
-      : '';
-
+const renderPostActions = (attendanceLimitButton, ticketButton) => {
   return `
     <div class='post-action'>
-      ${limitButton}
+      ${attendanceLimitButton}
       ${ticketButton}
     </div>
   `;
@@ -1026,6 +1074,60 @@ const renderUserInfo = async (user) => {
 
 // TICKET FUNCTIONALITIES
 
+const afterRefundIsProcessed = (eventId) => {
+  const post = document.querySelector(`#event-${eventId}`);
+
+  const attendeesIcon = post.querySelector('.bi-person-fill');
+  if (attendeesIcon) {
+    attendeesIcon.classList.replace('bi-person-fill', 'bi-person');
+  }
+
+  const attendeesCount = post.querySelector('.attendees-count');
+  attendeesCount.textContent = parseInt(attendeesCount.textContent) - 1;
+
+  const savedIcon = post.querySelector('.bi-bookmark-fill');
+  const savedCount = post.querySelector('.saves-count');
+  if (savedIcon) {
+    savedIcon.classList.replace('bi-bookmark-fill', 'bi-bookmark');
+    savedCount.textContent = parseInt(savedCount.textContent) - 1;
+  }
+
+  const button = post.querySelector('.view-ticket');
+  button.classList.replace('btn-primary', 'btn-secondary');
+  button.classList.replace('view-ticket', 'get-ticket');
+  button.innerHTML = 'Get Ticket';
+
+  closeMainModal();
+};
+
+const afterTicketIsBought = (eventId) => {
+  // Update recommendation scores
+  updateScore('buy_ticket', 'event', eventId);
+
+  const post = document.querySelector(`#event-${eventId}`);
+  const attendeesIcon = post.querySelector('.bi-person');
+  if (attendeesIcon) {
+    attendeesIcon.classList.replace('bi-person', 'bi-person-fill');
+  }
+
+  const attendeesCount = post.querySelector('.attendees-count');
+  attendeesCount.textContent = parseInt(attendeesCount.textContent) + 1;
+
+  const savedIcon = post.querySelector('.bi-bookmark');
+  const savedCount = post.querySelector('.saves-count');
+  if (savedIcon) {
+    savedIcon.classList.replace('bi-bookmark', 'bi-bookmark-fill');
+    savedCount.textContent = parseInt(savedCount.textContent) + 1;
+  }
+
+  const button = post.querySelector('.get-ticket');
+  button.classList.replace('btn-secondary', 'btn-primary');
+  button.classList.replace('get-ticket', 'view-ticket');
+  button.innerHTML = 'View Ticket';
+
+  closeMainModal();
+};
+
 const displayQRCode = (eventId, ticketIdentifier) => {
   const qrcode = document.querySelector('.qrcode');
   qrcode.contents = `/ticket/${eventId}/${ticketIdentifier}`;
@@ -1049,81 +1151,268 @@ const fetchTicketData = async (ticketId) => {
   }
 };
 
-const getTicket = async (
-  ticketButton,
-  eventId,
-  bookmarkElement,
-  savedCountElement,
-  attendeesIconElement,
-  attendeesCountElement
-) => {
-  const updateAttendeesCount = () => {
-    attendeesIconElement.classList.replace('bi-person', 'bi-person-fill');
-    attendeesCountElement.textContent =
-      parseInt(attendeesCountElement.textContent) + 1;
-    ticketButton.innerHTML = 'View Ticket';
-  };
-
-  const updateSavedCount = () => {
-    bookmarkElement.classList.replace('bi-bookmark', 'bi-bookmark-fill');
-    savedCountElement.textContent = parseInt(savedCountElement.textContent) + 1;
-  };
-
-  const updateTicketButton = () => {
-    ticketButton.classList.replace('btn-secondary', 'btn-primary');
-    ticketButton.classList.replace('get-ticket', 'view-ticket');
-  };
-
+const getRefund = async (eventId) => {
   try {
-    // Disable ticket buttom and start loading animation
-    ticketButton.disabled = true;
-    ticketButton.innerHTML =
-      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving your ticket...';
+    const response = await fetch(`/is-event-refundable/${eventId}`);
+    const { answer } = await response.json();
 
-    const id = parseInt(eventId);
-    const response = await fetch(`/event/ticket/get/${id}`);
-
-    switch (response.status) {
-      case 200:
-        alert('Ticket added to your saved events.');
-        updateTicketButton();
-
-        if (bookmarkElement) {
-          updateSavedCount();
-        }
-
-        updateAttendeesCount();
-
-        // Update recommendation scores
-        updateScore('buy_ticket', 'event', eventId);
-
-        break;
-
-      case 401:
-        alert('Sorry, this event has reached the maximum number of attendees.');
-        throw new Error('Maximum number of attendees reached');
-
-      case 404:
-        alert('Event not found.');
-        throw new Error('Event not found.');
-
-      case 409:
-        alert('This ticket is already saved.');
-        throw new Error('This ticket is already saved.');
-
-      default:
-        throw new Error(
-          'An error occurred! Please check your internet connection and try again later.'
-        );
+    if (answer === 'YES') {
+      refundAllowed(eventId);
+    } else {
+      refundNotAllowed();
     }
   } catch (error) {
-    ticketButton.innerHTML = prevInnerHTML;
-    alert(error);
     console.error(error);
-  } finally {
-    // Enable ticket button
-    ticketButton.disabled = false;
   }
+};
+
+const getTicket = (eventId) => {
+  addToMainModalHistory(
+    'Get Ticket',
+    () => {
+      const container = document.createElement('div');
+      container.className = 'get-ticket';
+
+      container.innerHTML = `
+      <div class='mb-1'>Your Balance: R<span class='balance'>--.--</span></div>
+      <div class='mb-1'>Ticket Price: R<span class='price'>--.--</span></div>
+      <div class='mb-1'>Number of People: <span class='people'>1</span></div>
+      <div class='mb-1'>Service Fee: 3%</div>
+      <div class='mb-1'>Total: R<span class='total'>--.--</span></div>
+
+      <div class='mt-1 mb-2 error-message non-refundable d-none'>NON-REFUNDABLE</div>
+
+      <form class='get-ticket-form'>
+        <div class='form-floating mb-3'>
+          <input type='number' class='people-count form-control input-frame' placeholder='Number of People'>
+          <label for='people' class='floating-input-placeholder'>Number of People</label>
+        </div>
+
+        <div class='form-floating mb-3'>
+          <input type='password' class='password form-control input-frame' placeholder='Type in your password'>
+          <label for='password' class='floating-input-placeholder'>Type in your password</label>
+        </div>
+
+        <div class='error-message get-ticket-error mb-3'></div>      
+
+        <input type='submit' class='btn btn-primary w-100 submit-get-ticket-form' value='Get Ticket'/>
+      </form>
+    `;
+
+      return container;
+    },
+    [
+      { func: getWalletBalance, values: [] },
+      { func: getTicketPrice, values: [eventId] },
+      { func: getTicketInputHandler, values: [] },
+      { func: isEventRefundable, values: [eventId] },
+      { func: getTicketSubmitHandler, values: [eventId] },
+    ]
+  );
+};
+
+const getTicketInputHandler = () => {
+  const peopleCount = document.querySelector('.people-count');
+  let count;
+  peopleCount.addEventListener('input', () => {
+    if (!(peopleCount.value > 1)) {
+      count = 1;
+    } else {
+      count = parseInt(peopleCount.value);
+    }
+
+    document.querySelector('.people').innerHTML = count;
+    const price = document.querySelector('.price').innerHTML;
+    const total = document.querySelector('.total');
+    const totalCost = parseFloat(price) * parseInt(count);
+    const charges = totalCost * (3 / 100);
+
+    total.innerHTML = (totalCost + charges).toFixed(2);
+  });
+};
+
+const getTicketPrice = async (eventId) => {
+  try {
+    const response = await fetch(`/event/stats/${eventId}`);
+    const { price } = await response.json();
+    const ticketPrice = parseFloat(price);
+    const charges = ticketPrice * (3 / 100);
+    document.querySelector('.price').innerHTML = ticketPrice.toFixed(2);
+    document.querySelector('.total').innerHTML = (
+      ticketPrice + charges
+    ).toFixed(2);
+  } catch (error) {
+    alert(
+      'There was an error retrieving the ticket price. Check your internet connection and try again later.'
+    );
+    console.error(error);
+  }
+};
+
+const getTicketSubmitHandler = (eventId) => {
+  document
+    .querySelector('.get-ticket-form')
+    .addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const errorContainer = document.querySelector('.get-ticket-error');
+      const submitButton = document.querySelector('.submit-get-ticket-form');
+      submitButton.value = 'Getting Ticket...';
+      submitButton.disabled = true;
+
+      // Clean up error container
+      errorContainer.innerHTML = '';
+
+      const attendeesCount = document.querySelector('.people-count').value;
+      const password = document.querySelector('.password').value;
+      try {
+        const response = await fetch('/ticket/new/add', {
+          method: 'POST',
+          body: JSON.stringify({
+            eventId: eventId,
+            attendees: attendeesCount,
+            password: password,
+          }),
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+        });
+
+        switch (response.status) {
+          case 200:
+            alert('Your ticket purchase was successful');
+            afterTicketIsBought(eventId);
+            break;
+
+          case 401:
+            errorContainer.innerHTML =
+              "Your password is incorrect. Press <a href='/reset_password'>here</a> to reset your password";
+            break;
+
+          case 400:
+            errorContainer.innerHTML =
+              "You don't afford the ticket. Press <a class='link' href='/wallet'>here</a> to deposit funds to your wallet.";
+            break;
+
+          default:
+            throw new Error();
+        }
+      } catch (error) {
+        alert(
+          "Sorry, we could't save your ticket. Check your internet connection and try again later."
+        );
+        console.error(error);
+      } finally {
+        submitButton.value = 'Get Ticket';
+        submitButton.disabled = false;
+      }
+    });
+};
+
+const getWalletBalance = async () => {
+  try {
+    const response = await fetch('/wallet/balance');
+    const { balance } = await response.json();
+
+    document.querySelector('.balance').innerHTML =
+      parseFloat(balance).toFixed(2);
+  } catch (error) {
+    alert(
+      'There was an error retrieving you balance. Check your internet connection and try again later.'
+    );
+    console.error(error);
+  }
+};
+
+const isEventRefundable = async (eventId) => {
+  try {
+    const response = await fetch(`/is-event-refundable/${eventId}`);
+    const { answer } = await response.json();
+
+    if (answer === 'NO') {
+      document.querySelector('.non-refundable').classList.remove('d-none');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const refundAllowed = async (eventId) => {
+  const response = await fetch(`/ticket/${eventId}`);
+  const { ticket_info } = await response.json();
+
+  const refundablePrice =
+    parseFloat(ticket_info.price) * parseInt(ticket_info.people);
+
+  addToMainModalHistory(
+    'Refund',
+    () => {
+      const container = document.createElement('div');
+
+      container.innerHTML = `
+      <form class='refund-form'>
+        <div class='mb-3'>R<span class='price'>${refundablePrice.toFixed(
+          2
+        )}</span> will be refunded to your wallet</div>
+        <div class='error-message mb-3'>Please be aware that invalidating your ticket is a permanent action and cannot be undone.</div>
+        <div class='error-message error-refund'></div>
+        <input type='submit' class='btn btn-primary w-100 refund-submit-btn' value='Get Refund'>
+      </form>
+    `;
+
+      return container;
+    },
+    [{ func: refundSubmitHandler, values: [eventId] }]
+  );
+};
+
+const refundNotAllowed = () => {
+  addToMainModalHistory('Refund', () => {
+    const container = document.createElement('div');
+
+    container.innerHTML = `
+      <div class='error-message'>NOT REFUNDABLE</div>
+    `;
+
+    return container;
+  });
+};
+
+const refundSubmitHandler = async (eventId) => {
+  document
+    .querySelector('.refund-form')
+    .addEventListener('click', async (event) => {
+      event.preventDefault();
+
+      const submitButton = document.querySelector('.refund-submit-btn');
+      submitButton.disabled = true;
+      submitButton.value = 'Processing...';
+
+      try {
+        const response = await fetch('event/refund', {
+          method: 'POST',
+          body: JSON.stringify({ eventId: eventId }),
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+        });
+
+        if (response.status === 200) {
+          alert('Your account has been refunded.');
+          afterRefundIsProcessed(eventId);
+        } else {
+          throw new Error();
+        }
+      } catch (error) {
+        alert(
+          "Sorry, we couldn't process your refund. Please check your internet connection and try again later."
+        );
+        console.error(error);
+      } finally {
+        submitButton.disabled = false;
+        submitButton.value = 'Get Refund';
+      }
+    });
 };
 
 const ticketPageHTML = async (ticket, error = false) => {
@@ -1224,25 +1513,40 @@ const userLogStatus = async () => {
 
 // UTILS
 
-const getCookie = (name) => {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === name + '=') {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
+const eventDuration = (start, end) => {
+  const difference = end - start;
+
+  return difference <= 3600000
+    ? Math.round(difference / (1000 * 60)) + ' Minutes Long'
+    : (difference / (1000 * 60 * 60)).toFixed(1) + ' Hours Long';
 };
 
-const eventDuration = (start, end) => {
-  const different =  end - start;
+const ticketDeadlineHandler = (deadline) => {
+  if (!deadline) {
+    return null;
+  }
 
-  return different <= 3600000 ?
-    Math.round(different / (1000*60)) + ' Minutes Long' :
-    (different / (1000*60*60)).toFixed(1) + ' Hours Long';
-}
+  const now = new Date().getTime();
+  // If we are past the deadline
+  if (now > deadline) {
+    return 'past';
+  }
+
+  const difference = deadline - now;
+
+  // If the difference is or less than 60 Minutes
+  if (difference <= 3600000) {
+    return Math.round(difference / (1000 * 60)) + ' Minutes Left';
+
+    // If the difference is or less than 24 hours
+  } else if (difference <= 86400000) {
+    return Math.round(difference / (1000 * 60 * 60)) + ' Hours Left';
+
+    // If the difference is or less than 10 days
+  } else if (difference <= 864000000) {
+    return Math.round(difference / (1000 * 60 * 60 * 24)) + ' Days Left';
+  }
+
+  // Difference bigger than 10 days
+  return null;
+};

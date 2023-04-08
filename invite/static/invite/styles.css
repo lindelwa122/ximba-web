@@ -579,6 +579,17 @@ main {
   }
 }
 
+.menu-container {
+  padding: 0 !important;
+}
+.menu-container div {
+  padding: 15px 10px;
+}
+.menu-container div:hover {
+  background-color: var(--bs-gray-100);
+  cursor: pointer;
+}
+
 .modal-overlay.active {
   background-color: rgba(0, 0, 0, 0.5);
   height: 100%;
@@ -1946,25 +1957,27 @@ section.home-page a, .events-container a {
   font-size: 15px;
 }
 
-section.new-event {
-  margin-bottom: 100px;
-  /* Hide the default radio input appearance */
-}
-section.new-event .amount-container {
+.amount-container {
   align-items: center;
   background-color: var(--bs-gray-400);
   border-radius: 10px;
   display: flex;
   overflow: hidden;
 }
-section.new-event .buttons-container {
-  gap: 10px;
-}
-section.new-event .currency {
+
+.currency {
   display: flex;
   justify-content: center;
   padding: 10px 20px;
   width: 20%;
+}
+
+section.new-event {
+  margin-bottom: 100px;
+  /* Hide the default radio input appearance */
+}
+section.new-event .buttons-container {
+  gap: 10px;
 }
 section.new-event input[type=radio] {
   appearance: none;
@@ -2648,6 +2661,48 @@ section.landing-page .waitlist-join-wrapper .bi {
 }
 section.landing-page .waitlist-join-wrapper .bi:hover {
   cursor: pointer;
+}
+
+section.wallet .header .bi {
+  font-size: 30px;
+}
+section.wallet .wrapper {
+  width: 100%;
+  height: 100%;
+}
+@media only screen and (min-width: 600px) {
+  section.wallet .wrapper {
+    background-color: var(--background-color);
+    border-radius: 10px;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.15);
+    padding: 50px 0;
+    width: 60%;
+  }
+}
+@media only screen and (min-width: 992px) {
+  section.wallet .wrapper {
+    width: 35%;
+  }
+}
+section.wallet .balance-wrapper {
+  font-family: "Roboto", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 20px;
+  font-weight: 900;
+  font-size: 40px !important;
+}
+@media only screen and (min-width: 600px) {
+  section.wallet .balance-wrapper {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  section.wallet .balance-wrapper {
+    font-size: 22px;
+    line-height: 28px;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

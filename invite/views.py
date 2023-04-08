@@ -494,6 +494,21 @@ def event_more_info_render(request, event_id):
     return render(request, 'invite/more-info-view.html')
 
 
+def event_shared_handler(request, event_id):
+    user = request.user
+    event = Event.objects.get(id=event_id)
+
+    contains = event.shares.contains(user)
+    if contains:
+        return JsonResponse({'message': 'user has already shared this event'}, status=409)
+
+    event.shares.add(user)
+
+    # TODO: Send notification to all user's friends
+
+    return JsonResponse({'message': 'event shared successfully'}, status=200)
+
+
 def edit_profile_img(request):
     if request.method == 'POST':
         x = 0 if (int(float(request.POST.get('x'))) < 0) else int(
@@ -557,6 +572,10 @@ def find_friends(request, username):
     friends_pending = list(FriendRequest.objects.filter(requester=user).values_list('receivers', flat=True))
     requests_pending = list(FriendRequest.objects.filter(receivers=user).values_list('requester', flat=True))
 
+    # Get similar users 
+    similar_users = find_similar_users(user)
+    similar_users_ids = [user.id for user in similar_users]
+
     # Get the friends of the user's friends, excluding the user's friends and the user themselves
     friend_friends = Friend.objects.filter(user__in=friends).exclude(user=user).exclude(friend__in=friends).values_list('friend', flat=True)
 
@@ -571,7 +590,8 @@ def find_friends(request, username):
         Q(id__in=friends) | 
         Q(id__in=friend_friends) | 
         Q(id__in=followers) | 
-        Q(id__in=recent_users)
+        Q(id__in=recent_users) |
+        Q(id__in=similar_users_ids)
     ).exclude(id__in=friends).exclude(id__in=friends_pending).exclude(id__in=requests_pending).exclude(id=user.id).distinct()
 
     # Sort potential friends by relevance, in descending order
@@ -667,8 +687,8 @@ def get_data(request, get_query):
     else:
         return JsonResponse({'error': 'User not authenticated'}, status=409)
 
-EVENTS = []
 
+EVENTS = []
 def get_events(request):
     username = request.GET.get('username')
     user = request.user
@@ -844,11 +864,13 @@ def get_event_stats(request, event_id):
     event = Event.objects.get(id=int(event_id))
     user_saved_event = SavedEvent.objects.filter(user=request.user, event=event).exists()
     event_saves_count = SavedEvent.objects.filter(event=event).count()
+
     return JsonResponse(
         {
-            'attendees': event.attendees, 
+            'attendees': [attendees.username for attendees in event.attendees.all()], 
             'saves': event_saves_count,
-            'userSavedEvent': user_saved_event
+            'userSavedEvent': user_saved_event,
+            'price': event.ticket_price
         }, 
         status=200
     )
@@ -954,6 +976,86 @@ def get_saved_events(request):
     return JsonResponse({'events': serialized_data}, status=200)
 
 
+def get_ticket(request):
+    if request.method == 'POST':
+        user = request.user
+
+        data = loads(request.body)
+        attendees = data.get('attendees')
+        event_id = data.get('eventId')
+        password = data.get('password')
+
+        authenticated = authenticate(request, username=user.username, password=password)
+        if not authenticated:
+            return JsonResponse({'message': 'credentials invalid'}, status=401)
+
+        event = get_object_or_404(Event, id=int(event_id))
+        price = event.ticket_price
+
+        wallet = Wallet.objects.get(user=user)
+        balance = wallet.balance
+        try:
+            attendees = int(attendees)
+        except ValueError:
+            attendees = 1
+        else:
+            if attendees < 1:
+                attendees = 1
+
+        total_ticket_price = price * attendees
+        charges = total_ticket_price * (3/100)
+        total = total_ticket_price + charges
+
+        if total > balance:
+            return JsonResponse({'message': 'insufficient funds'}, status=400)
+
+        # Deduct from user's wallet
+        wallet.balance = balance - (total_ticket_price+charges)
+        wallet.save()
+
+        # Create ticket
+        ticket_id = uuid4().hex
+        ticket = Ticket.objects.create(event=event, owner=user, people=attendees, identifier=ticket_id)
+
+        # Record transaction
+        ticket_sale_id = uuid4().hex
+        ticket_sale = TicketSale.objects.create(ticket=ticket, event=event, user=user, identifier=ticket_sale_id)
+
+        # Check if we have to pay organiser
+        if event.immediate_payment:
+            organiser = event.user
+            organiser_wallet = Wallet.objects.get(user=organiser)
+            organiser_balance = organiser_wallet.balance
+            payment = price - (price * (6/100))
+            organiser_wallet.balance = organiser_balance + payment
+            organiser_wallet.save()
+
+            ticket_sale.effective_date = now()
+            ticket_sale.status = TicketSale.COMPLETE
+            
+        else:
+            ticket_sale.effective_date = event.end_datetime
+            ticket_sale.status = TicketSale.PENDING
+
+        ticket_sale.save()
+
+        # Save Event
+        saved_event, created = SavedEvent.objects.get_or_create(user=user)
+        if created:
+            saved_event.event.set([event])
+        else:
+            saved_event.event.add(event)
+
+        # Add attendee
+        event.attendees.add(user)
+
+        # Add to revenue
+        sale_commission = total_ticket_price * (1/100)
+        Revenue.objects.create(amount=sale_commission, source=Revenue.TICKET_SALE)
+
+        return JsonResponse({'message': 'ticket successfully purchased'}, status=200)
+
+
 def get_ticket_info(request, event_id):
     user = request.user
     event = get_object_or_404(Event, id=event_id)
@@ -965,6 +1067,8 @@ def get_ticket_info(request, event_id):
         'title': serialized_event_data[0]['title'],
         'location': serialized_event_data[0]['location'],
         'timestamp': serialized_event_data[0]['timestamp'],
+        'price': serialized_event_data[0]['ticket_price'],
+        'people': ticket.people,
         'identifier': ticket.identifier,
         'expired': ticket.expired
     }
@@ -1018,6 +1122,14 @@ def get_username(request):
 
 def index(request):
     return render(request, 'invite/index.html')
+
+
+def is_event_refundable(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    answer = 'NO' if event.immediate_payment else 'YES'
+
+    return JsonResponse({'answer': answer}, status=200)
 
 
 def is_user_authenticated(request, username):
@@ -1221,6 +1333,43 @@ def recent_search(request):
         recent.append(obj)
 
     return JsonResponse({'recent': recent}, status=200)
+
+
+def refund_handler(request):
+    user = request.user
+    data = loads(request.body)
+
+    event_id = int(data.get('eventId'))
+    event = get_object_or_404(Event, id=event_id)
+
+    start_date = event.datetime
+    if now() >= start_date:
+        return JsonResponse({'message': "it's too late to get refund"}, status=400)
+
+    ticket = Ticket.objects.get(event=event, owner=user)
+
+    # Refund user
+    price = event.ticket_price
+    wallet = Wallet.objects.get(user=user)
+    balance = wallet.balance
+    wallet.balance = (balance + price) * ticket.people
+    wallet.save()
+
+    # Record refund
+    # There seem to be a bug here:
+    # Instead of this being updated it is deleted
+    # NOTE: FIX THIS WHEN YOU GET TIME
+    ticket_record = TicketSale.objects.get(event=event, user=user)
+    ticket_record.status = TicketSale.REFUNDED
+    ticket_record.save()
+
+    # Revoke ticket
+    ticket.delete()
+
+    # Remove user as attendee
+    event.attendees.remove(user)
+
+    return JsonResponse({'message': 'refund was successful'}, status=200)
 
 
 def register_view(request):
@@ -1520,3 +1669,60 @@ def view_more_info(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     additional_info = get_object_or_404(EventMoreInfo, event=event)
     return JsonResponse({'info': dumps(additional_info.html)}, status=200)
+
+
+def wallet_balance(request):
+    user = request.user
+
+    # Get balance
+    balance = Wallet.objects.get(user=user).balance
+
+    print('balance', balance)
+
+    return JsonResponse({'balance': balance}, status=200)
+
+
+def wallet_deposit(request):
+    if request.method == 'POST':
+        user = request.user
+        data = loads(request.body)
+
+        amount = data.get('amount')
+        amount = int(amount)
+
+        if amount < 20 or amount > 2000:
+            return JsonResponse({'message': 'amount_invalid'}, status=400)
+        
+        password = data.get('password')
+        authenticated = authenticate(request, username=user.username, password=password)
+
+        if not authenticated:
+            return JsonResponse({'message': 'incorrect_password'}, status=400)
+
+        # Update user's balance
+        deposit = amount - (amount * (4/100))
+        wallet = Wallet.objects.get(user=user)
+        wallet.balance = wallet.balance + deposit
+        wallet.save()
+
+        # Record transaction
+        bank_charges = amount * (2/100)
+        service_fees = amount * (2/100)
+
+        DepositRecord.objects.create(
+            user=user,
+            amount=amount,
+            transaction_fee=bank_charges,
+            transaction_percentage=2,
+            deposit_fee=service_fees,
+            deposit_percentage=2
+        )
+
+        # Update revenue
+        Revenue.objects.create(amount=service_fees, source=Revenue.DEPOSIT_FEE)
+
+        return JsonResponse({'message': 'deposit was successful'}, status=200)
+
+
+def wallet_view(request):
+    return render(request, 'invite/wallet.html')

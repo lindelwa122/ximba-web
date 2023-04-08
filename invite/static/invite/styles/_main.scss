@@ -52,6 +52,20 @@ main {
 }
 
 
+.menu-container {
+  padding: 0 !important;
+
+  div {
+    padding: 15px 10px;
+
+    &:hover {
+      background-color: var(--bs-gray-100);
+      cursor: pointer;
+    }
+  }
+}
+
+
 .modal-overlay.active {
   background-color: rgba(0, 0, 0, .5);
   height: 100%;

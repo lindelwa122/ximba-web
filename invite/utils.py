@@ -11,17 +11,20 @@ def check_upper(str):
             return True
     return False
 
+
 def check_lower(str):
     for char in str:
         if char.islower():
             return True
     return False
 
+
 def check_digit(str):
     for char in str:
         if char.isdigit():
             return True
     return False
+
 
 def check_friendship_status(request, username):
     # Check if friendship exists
@@ -42,8 +45,10 @@ def check_friendship_status(request, username):
 
     return 'no_relationship'
 
+
 def generate_code():
     return randint(100000, 999999)
+
 
 def generate_hash(n: int):
     hash_ls = choices(hexdigits, k=n)
@@ -51,6 +56,7 @@ def generate_hash(n: int):
     for char in hash_ls:
         hash += char
     return hash
+
 
 def get_img_url(image):
     # Create a list
@@ -62,6 +68,7 @@ def get_img_url(image):
 
     # Join the list
     return '/'.join(image_url_array)
+
 
 def serialize_data(data: list):
     ls = []
@@ -75,9 +82,11 @@ def serialize_data(data: list):
         ls.append(obj)
     return ls
 
+
 def convert_datetime_to_timestamp(datetime):
     timestamp = datetime.timestamp()
     return timestamp * 1000
+
 
 def haversine(lon1, lat1, lon2, lat2):
     """
@@ -94,6 +103,42 @@ def haversine(lon1, lat1, lon2, lat2):
     c = 2 * asin(sqrt(a)) 
     r = 6371 
     return c * r
+
+
+def find_similar_users(user):
+    similar_users = []
+
+    # Collaborative filtering
+    target_user_categories = Personalization.objects.get(user=user).categories
+    target_user_tags = Personalization.objects.get(user=user).tags
+
+    users = User.objects.all()
+    for other_user in users:
+        if user == user:
+            continue  # Skip the target user
+
+        # Compute similarity score based on Jaccard similarity coefficient
+        user_categories = Personalization.objects.get(user=other_user).categories
+        user_tags = Personalization.objects.get(user=other_user).tags
+
+        try:
+            category_similarity = len(set(target_user_categories.keys()) & set(user_categories.keys())) / len(set(target_user_categories.keys()) | set(user_categories.keys()))
+        except ZeroDivisionError:
+            category_similarity = 0
+
+        try:
+            tag_similarity = len(set(target_user_tags.keys()) & set(user_tags.keys())) / len(set(target_user_tags.keys()) | set(user_tags.keys()))
+        except ZeroDivisionError:
+            tag_similarity = 0
+
+        similarity_score = category_similarity * 0.5 + tag_similarity * 0.5  # Weighted average
+
+        # If similarity score is above a certain threshold, use collaborative filtering
+        if similarity_score > 1:
+            similar_users.append(other_user)
+
+    return similar_users
+
 
 def order_events_by_relevance(events, target_user, longitude=0.0, latitude=0.0):
     relevance_scores = {}
@@ -132,17 +177,17 @@ def order_events_by_relevance(events, target_user, longitude=0.0, latitude=0.0):
             try:
                 category_similarity = len(set(target_user_categories.keys()) & set(user_categories.keys())) / len(set(target_user_categories.keys()) | set(user_categories.keys()))
             except ZeroDivisionError:
-                category_similarity = 1
+                category_similarity = 0
     
             try:
                 tag_similarity = len(set(target_user_tags.keys()) & set(user_tags.keys())) / len(set(target_user_tags.keys()) | set(user_tags.keys()))
             except ZeroDivisionError:
-                tag_similarity = 1
+                tag_similarity = 0
 
             similarity_score = category_similarity * 0.5 + tag_similarity * 0.5  # Weighted average
 
             # If similarity score is above a certain threshold, use collaborative filtering
-            if similarity_score > 0.3:
+            if similarity_score > 1:
                 event_tags = event.keywords.split(',')
                 for keyword, value in user_tags.items():
                     if keyword in event_tags:
@@ -217,6 +262,9 @@ def serialize_post(data, user):
         saved_count = SavedEvent.objects.filter(event=post).count()
         event_more_info = EventMoreInfo.objects.filter(event=post).exists()
 
+        ticket_deadline = Event.objects.get(id=post.id).ticket_purchase_deadline
+        ticket_deadline = convert_datetime_to_timestamp(ticket_deadline) if ticket_deadline else False
+
         obj = {
             'id': post.id,
             'title': post.title,
@@ -224,13 +272,15 @@ def serialize_post(data, user):
             'description': post.description,
             'cover': get_img_url(post.cover) if post.cover else False,
             'timestamp': convert_datetime_to_timestamp(post.datetime),
-            'ticket_deadline': convert_datetime_to_timestamp(post.end_datetime),
+            'end_timestamp': convert_datetime_to_timestamp(post.end_datetime),
+            'ticket_deadline': ticket_deadline,
             'publisher': serialize_data([post.user]),
             'with_ticket': post.ticket_access,
             'ticket_secured': Ticket.objects.filter(event=post, owner=user).exists(),
             'ticket_price': post.ticket_price,
             'attendance_limit': post.attendees_allowed,
             'attendees': post.attendees.count(),
+            'shares': post.shares.count(),
             'saves': saved_count,
             'user_saved_event': saved_event,
             'attending': post.attendees.contains(user),
@@ -241,7 +291,6 @@ def serialize_post(data, user):
         ls.append(obj)
     
     return ls
-
 
 
 def find_biggest_value(dic: dict):

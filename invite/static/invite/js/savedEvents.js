@@ -58,7 +58,8 @@ const eventsContainerClickHandler = (containerClassName) => {
         const savedCount = post.querySelector('.saves-count');
         const attendeesIcon = post.querySelector('.bi-person');
         const attendeesCount = post.querySelector('.attendees-count');
-        getTicket(button, eventId, bookmarkIcon, savedCount, attendeesIcon, attendeesCount);
+        // getTicket(button, eventId, bookmarkIcon, savedCount, attendeesIcon, attendeesCount);
+        addAttendee(eventId, attendeesIcon, attendeesCount, bookmarkIcon, savedCount, button);
         return;
       }
 
@@ -105,6 +106,12 @@ const eventsContainerClickHandler = (containerClassName) => {
       const savedCount = post.querySelector('.saves-count');
       const savedIcon = post.querySelector('.bi-bookmark-fill');
       unsavedEvent(eventId, savedIcon, savedCount);
+    }
+
+    if (event.target.classList.contains('share-event')) {
+      const post = event.target.closest('.post');
+      const eventId = post.dataset.eventid;
+      shareEventModal(eventId);
     }
 
     if (event.target.classList.contains('bi-person')) {

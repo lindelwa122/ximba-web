@@ -49,6 +49,7 @@ class Event(models.Model):
   ticket_access = models.BooleanField(default=False)
   attendees_allowed = models.IntegerField(null=True, blank=True)
   attendees = models.ManyToManyField(User, related_name='attendees', blank=True)
+  shares = models.ManyToManyField(User, related_name='shares', blank=True)
   ticket_price = models.FloatField(default=0)
   keywords = models.CharField(max_length=500)
   category = models.CharField(max_length=30)
@@ -70,12 +71,33 @@ class EventMoreInfo(models.Model):
 class Ticket(models.Model):
   event = models.ForeignKey(Event, models.CASCADE, related_name='ticket')
   owner = models.ForeignKey(User, models.CASCADE, related_name='ticket_owner')
+  people = models.IntegerField(default=1)
   identifier = models.CharField(max_length=50)
   expired = models.BooleanField(default=False)
   datetime = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
     return f'{self.owner} has a ticket for {self.event.title}'
+
+class TicketSale(models.Model):
+  PENDING = 'pending'
+  REFUNDED = 'refunded'
+  COMPLETE = 'complete'
+
+  STATUS = (
+    (PENDING, 'pending'),
+    (REFUNDED, 'refunded'),
+    (COMPLETE, 'complete')
+  )
+
+  ticket = models.ForeignKey(Ticket, models.CASCADE, related_name='ticket')
+  event = models.ForeignKey(Event, models.CASCADE, related_name='event')
+  user = models.ForeignKey(User, models.CASCADE, related_name='user')
+  identifier = models.CharField(max_length=20)
+  issued_date = models.DateTimeField(auto_now_add=True)
+  effective_date = models.DateTimeField(null=True, blank=True)
+  status = models.CharField(max_length=20, choices=STATUS, default=PENDING)
+  
 
 class SavedEvent(models.Model):
   user = models.ForeignKey(User, models.CASCADE, related_name='user_saved')
@@ -178,6 +200,41 @@ class Recent(models.Model):
 
 class WaitingList(models.Model):
   email = models.CharField(max_length=50)
+
+class Wallet(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_wallet')
+  balance = models.FloatField(default=50)
+
+  def __str__(self):
+    return f'{self.user} (R{self.balance.__float__()})'
+
+class DepositRecord(models.Model):
+  user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_deposit_record')
+  amount = models.FloatField()
+  transaction_fee = models.FloatField()
+  transaction_percentage = models.FloatField()
+  deposit_fee = models.FloatField()
+  deposit_percentage = models.FloatField()
+  datetime = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f'{self.user} deposited {self.amount} on {self.datetime}'
+
+class Revenue(models.Model):
+  TICKET_SALE = 'ticket_sale'
+  DEPOSIT_FEE = 'deposit_fee'
+
+  REVENUE_FROM = (
+    (TICKET_SALE, 'Ticket Sale'),
+    (DEPOSIT_FEE, 'Deposit Fee'),
+  )
+
+  amount = models.FloatField()
+  source = models.CharField(max_length=20, choices=REVENUE_FROM)
+  received_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f'{self.amount} from {self.source}'
 
 class EventKeyword(models.Model):
   event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_keyword')

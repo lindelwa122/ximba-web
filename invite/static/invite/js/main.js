@@ -33,18 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Sets up event listener for the navigation controller for large devices
-  document.querySelector('.nav-controller-lg').addEventListener('click', () => {
-    // Runs rotation animation on navigation controller
-    rotateAnimation('lg');
-
-    // Toggles visibility of the navigation icons in the navigation bar for large devices
-    toggleShowAndHideIcons();
-
-    // Runs shrink/expand animation on the navigation bar for large devices
-    setTimeout(shrinkExpandAnimationForLargeDevices, 100);
-  });
-
   // Sets up event listener for all 'View Profile' buttons
   document.querySelectorAll('.view-profile-btn').forEach((el) => {
     el.addEventListener('click', () => {
@@ -67,7 +55,36 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.add-new-event').forEach((el) => {
     el.addEventListener('click', () => (window.location.href = '/new-event'));
   });
+
+  // Sets up event listener for all 'Menu' buttons
+  document.querySelectorAll('.menu-view').forEach((el) => {
+    el.addEventListener('click', viewMenu);
+  });
 });
+
+const viewMenu = () => {
+  addToMainModalHistory('Menu', () => {
+    const container = document.createElement('div');
+    container.classList.add('menu-container');
+
+    container.innerHTML = `
+      <div class='border-bottom border-dark scan-tickets'>Scan Tickets</div>
+      <div class='border-bottom border-dark wallet'>Wallet</div>
+    `;
+
+    return container;
+  }, [{ func: mainClickHandler, values: []}])
+}
+
+const mainClickHandler = () => {
+  document.querySelector('.wallet').addEventListener('click', () => {
+    window.location.href = '/wallet';
+  });D
+
+  document.querySelector('.scan-tickets').addEventListener('click', () => {
+    
+  })
+}
 
 // ANIMATION
 
@@ -118,37 +135,6 @@ const shrinkExpandAnimation = () => {
   } else {
     nav.classList.remove('expand');
     nav.classList.add('shrink');
-  }
-};
-
-// Shrinks/expands the navigation menu for large screens
-const shrinkExpandAnimationForLargeDevices = () => {
-  const nav = document.querySelector('.animated-nav-icons-lg');
-  if (nav.classList.contains('shrink-lg')) {
-    nav.classList.remove('shrink-lg');
-    nav.classList.add('expand-lg');
-  } else {
-    nav.classList.remove('expand-lg');
-    nav.classList.add('shrink-lg');
-  }
-};
-
-// Toggles the visibility of the navigation icons for large screens
-let iconVisibilityStatus = 'visible';
-const toggleShowAndHideIcons = () => {
-  const iconsWrappers = document.querySelectorAll('.nav-icon-wrapper-lg');
-  const navForLargeScreens = document.querySelector('.nav-lg');
-
-  if (iconVisibilityStatus === 'visible') {
-    hideIconsAnimations(iconsWrappers);
-    navForLargeScreens.style.height = '90px';
-    iconVisibilityStatus = 'hidden';
-  } else {
-    navForLargeScreens.style.height = '100%';
-    setTimeout(() => {
-      showIconsAnimations(iconsWrappers);
-    }, 200);
-    iconVisibilityStatus = 'visible';
   }
 };
 
@@ -544,6 +530,8 @@ const highlightViewProfileButtonIfAuthenticated = () => {
   }
 };
 
+// UTILS
+
 // Format date and time
 const formattedDateTime = (timestamp) => {
   const date = new Date(timestamp);
@@ -556,4 +544,19 @@ const formattedDateTime = (timestamp) => {
 
   const datetimeStr = `${dateStr}, ${timeStr}`;
   return datetimeStr;
+};
+
+const getCookie = (name) => {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + '=') {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
 };
