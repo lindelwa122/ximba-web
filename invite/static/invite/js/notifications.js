@@ -1,5 +1,13 @@
 document.querySelectorAll('.notification').forEach((el) => {
-  el.addEventListener('click', () => {
+  el.addEventListener('click', async () => {
+    // Check if the user is logged in
+    const answer = await userLogStatus()
+
+    if (answer === 'NO') {
+      notLoggedIn();
+      return false;
+    }
+
     document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
       icon.classList.remove('selected');
     });

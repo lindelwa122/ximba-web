@@ -37,6 +37,7 @@ class Personalization(models.Model):
 
 class Event(models.Model):
   user = models.ForeignKey(User, models.CASCADE, related_name='user_event')
+  identifier = models.CharField(max_length=30)
   title = models.CharField(max_length=50)
   description = models.CharField(max_length=500)
   cover = models.ImageField(upload_to='invite/static/invite/images/events/covers', null=True, blank=True)
@@ -200,6 +201,10 @@ class Recent(models.Model):
 
 class WaitingList(models.Model):
   email = models.CharField(max_length=50)
+  date = models.DateTimeField(auto_now_add=True)
+
+class LandingPageVisits(models.Model):
+  date = models.DateTimeField(auto_now_add=True)
 
 class Wallet(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_wallet')

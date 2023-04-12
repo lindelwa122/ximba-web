@@ -254,11 +254,21 @@ def order_events_by_relevance(events, target_user, longitude=0.0, latitude=0.0):
     return dict_values(relevance_scores, size)
 
 
-def serialize_post(data, user):
+def serialize_post(data, user=None):
     ls = []
 
     for post in data:
-        saved_event = SavedEvent.objects.filter(user=user, event=post).exists()
+
+        if user:    
+            saved_event = SavedEvent.objects.filter(user=user, event=post).exists()
+            is_ticket_secured = Ticket.objects.filter(event=post, owner=user).exists()
+            is_user_attending = post.attendees.contains(user)
+
+        else:
+            saved_event = False
+            is_ticket_secured = False
+            is_user_attending = False
+
         saved_count = SavedEvent.objects.filter(event=post).count()
         event_more_info = EventMoreInfo.objects.filter(event=post).exists()
 
@@ -276,14 +286,14 @@ def serialize_post(data, user):
             'ticket_deadline': ticket_deadline,
             'publisher': serialize_data([post.user]),
             'with_ticket': post.ticket_access,
-            'ticket_secured': Ticket.objects.filter(event=post, owner=user).exists(),
+            'ticket_secured': is_ticket_secured,
             'ticket_price': post.ticket_price,
             'attendance_limit': post.attendees_allowed,
             'attendees': post.attendees.count(),
             'shares': post.shares.count(),
             'saves': saved_count,
             'user_saved_event': saved_event,
-            'attending': post.attendees.contains(user),
+            'attending': is_user_attending,
             'category': post.category,
             'keywords': post.keywords,
             'more_info': event_more_info

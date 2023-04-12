@@ -50,37 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    const registerLoginBtnClickHandler = () => {
-      const registerBtn = document.querySelector('.register-btn');
-      registerBtn.addEventListener('click', () => {
-        window.location.href = '/register';
-      });
-
-      const loginBtn = document.querySelector('.login-btn');
-      loginBtn.addEventListener('click', () => {
-        window.location.href = '/login';
-      });
-    }
-
     // Convince the user to register/login if they are not logged in
     const convinceUserBtn = document.querySelectorAll('.convince-register');
     if (convinceUserBtn.length !== 0) {
       convinceUserBtn.forEach((btn) => {
         btn.addEventListener('click', () => {
-          addToMainModalHistory('Register', () => {
-            const container = document.createElement('div');
-            container.className = 'convince-user-container';
-
-            container.innerHTML = `
-              <img class='w-100' src='static/invite/images/illustrations/upgrade.gif' alt='upgrade-by-icons8' />
-              <div class='mb-2 text-center'>Unlock exclusive features and follow your favorite users by registering now.</div>
-              <button class='btn btn-primary w-100 register-btn'>Register</button>
-              <hr class='mb-3 w-100' />
-              <button class='btn btn-secondary w-50 login-btn'>Login</button>
-            `
-
-            return container;
-          }, [{ func: registerLoginBtnClickHandler, values: [] }])
+          notLoggedIn();
         })
       })
     }

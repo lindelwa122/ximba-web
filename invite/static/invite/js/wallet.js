@@ -30,7 +30,7 @@ const depositHandler = () => {
 
         <div class='error-message mb-3'></div>
 
-        <input type='submit' value='Deposit' class='submit-button form-control btn-primary input-frame'>
+        <input type='submit' value='Deposit' class='submit-button btn form-control btn-primary input-frame'>
       </form>
     `;
 
@@ -51,10 +51,10 @@ const formHandler = () => {
     const depositAmount = document.querySelector('.amount').value;
     const errorMessage = document.querySelector('.error-message');
 
-    // if (!(depositAmount >= 25 && depositAmount <= 2000)) {
-    //   errorMessage.innerHTML = 'Deposit amount must be between R25 and R2000';
-    //   return false;
-    // }
+    if (!(depositAmount >= 25 && depositAmount <= 2000)) {
+      errorMessage.innerHTML = 'Deposit amount must be between R25 and R2000';
+      return false;
+    }
 
     submitDepositForm();
   })
@@ -70,7 +70,7 @@ const getWalletBalance = async () => {
   } catch (error) {
     console.error(error);
     alert(
-      "Sorry, we couldn't fetch your wallet balance. Please check your internet connection and try again localStorage."
+      "Sorry, we couldn't fetch your wallet balance. Please check your internet connection and try again later."
     );
   }
 }

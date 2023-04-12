@@ -1,0 +1,30 @@
+{% extends 'invite/main.html' %}
+
+{% load static %}
+
+{% block title %} Scan Tickets {% endblock %}
+
+{% block head %}
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
+{% endblock %}
+
+{% block main %}
+
+<section class='wallet tickets-scanner p-3'>
+  <div class='header mb-3 d-flex align-items-center'>
+    <i class='bi bi-qr-code-scan'></i>
+    <div class='font-headline ms-2'>Scan Tickets</div>
+  </div>
+
+  <div class='main-content d-flex justify-content-center align-items-center'>
+    <div class='event-id d-none'>{{ event_id }}</div>
+    <div class='wrapper d-flex flex-column justify-content-center align-items-center'>
+      <video id='scanner'></video>
+    </div>
+  </div>
+</section>
+
+<script type='text/javascript' src='{% static "invite/js/scanTickets.js" %}'></script>
+
+{% endblock %}

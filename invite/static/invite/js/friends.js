@@ -50,7 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add click event listeners to all elements with the class 'friends-btn'
   document.querySelectorAll('.friends-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
+      // Check if the user is logged in
+      const answer = await userLogStatus()
+
+      if (answer === 'NO') {
+        notLoggedIn();
+        return false;
+      }
+
       document.querySelectorAll('.nav-icon-wrapper-lg').forEach((icon) => {
         icon.classList.remove('selected');
       });

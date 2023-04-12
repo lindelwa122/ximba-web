@@ -2705,4 +2705,48 @@ section.wallet .balance-wrapper {
   }
 }
 
+section.metrics {
+  height: 100vh;
+}
+section.metrics .stats {
+  width: 100%;
+  height: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  font-family: "Playfair", serif;
+  font-size: 18px;
+  line-height: 26px;
+}
+@media only screen and (min-width: 600px) {
+  section.metrics .stats {
+    font-size: 22px;
+    line-height: 30px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  section.metrics .stats {
+    font-size: 26px;
+    line-height: 34px;
+  }
+}
+section.metrics .numbers {
+  font-family: "Playfair", serif;
+  font-size: 26px;
+  line-height: 44px;
+}
+@media only screen and (min-width: 600px) {
+  section.metrics .numbers {
+    font-size: 35px;
+    line-height: 52px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  section.metrics .numbers {
+    font-size: 47px;
+    line-height: 64px;
+  }
+}
+
 /*# sourceMappingURL=styles.css.map */

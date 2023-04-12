@@ -1,0 +1,80 @@
+{% extends 'invite/main.html' %}
+
+{% load static %}
+
+{% block title %} Calendar {% endblock %}
+
+{% block head %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js'></script>
+{% endblock %}
+
+{% block main %}
+
+<section class='calendar-view'>
+  <div id='calendar'></div>
+</section>
+
+<script>
+
+const formatMonthForCalendar = (mon) => {
+    const newMon = mon + 1;
+    return newMon < 10 ? `0${newMon}` : newMon;
+  }
+
+  const formatForCalendar = (any) => {
+    return any < 10 ? `0${any}` : any;
+  }
+
+  const formatDateTimeForCalendar = (timestamp) => {
+    const d = new Date(timestamp);
+    const year = d.getFullYear();
+    const mon = formatMonthForCalendar(d.getMonth());
+    const date = formatForCalendar(d.getDate());
+    const h = formatForCalendar(d.getHours());
+    const m = formatForCalendar(d.getMinutes());
+
+    return `${year}-${mon}-${date}T${h}:${m}:00`;
+  }
+
+document.addEventListener('DOMContentLoaded', async function() {
+  var calendarEl = document.getElementById('calendar');
+
+  try {
+    const response = await fetch('/calendar/events');
+    const { events } = await response.json();
+
+    console.log(events);
+
+    const eventsArray = []
+    for (event of events) {
+      const obj = {
+        title: event.title,
+        start: formatDateTimeForCalendar(event.start),
+        end: formatDateTimeForCalendar(event.end),
+      }
+
+      eventsArray.push(obj);
+    }
+
+    console.log(eventsArray);
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    events: eventsArray
+  });
+
+  calendar.render();
+
+  } catch(error) {
+    alert("Sorry, an error occurred and we couldn't fetch your events. Please check your internet connection and try again later.");
+    console.error(error);
+  }
+});
+</script>
+
+{% endblock %}

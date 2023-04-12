@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from io import BytesIO
 from json import dumps, loads
 from tempfile import NamedTemporaryFile
@@ -19,16 +19,15 @@ from django.urls import reverse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.timezone import localtime, now
 from fuzzywuzzy import process
-from geopy.distance import geodesic
-from getvyt.settings import MAPBOX_ACCESS_TOKEN, OPENAI_ACCESS_TOKEN
 import nltk
 nltk.download('punkt')
 nltk.download('stopwords')
-import requests
 from sklearn.feature_extraction.text import TfidfVectorizer
+from urllib.parse import unquote
 
 
 from .models import *
+from getvyt.settings import MAPBOX_ACCESS_TOKEN, OPENAI_ACCESS_TOKEN
 from .utils import *
 
 ACTIONS = {
@@ -49,7 +48,7 @@ ACTIONS = {
     'search_user': 30,
 }
 
-
+@login_required(login_url='/login')
 def accept_friendship(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -87,6 +86,7 @@ def accept_friendship(request):
         return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def add_attendee(request):
     user = request.user
     data = loads(request.body)
@@ -114,6 +114,7 @@ def add_attendee(request):
     return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def add_friend(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -148,6 +149,7 @@ def add_to_waiting_list(request):
     return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def add_to_recent_searches(request, username):
     if request.method == 'POST':
         if not request.user.is_authenticated:
@@ -172,6 +174,28 @@ def add_to_recent_searches(request, username):
         return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
+def calendar_events(request):
+    user = request.user
+    attending = Event.objects.filter(attendees=user)
+    saved = SavedEvent.objects.filter(user=user).values('event')
+    print('saved', saved)
+    saved_events = Event.objects.filter(id__in=[e['event'] for e in saved])
+    combined = attending.union(saved_events)
+
+    events = []
+    for event in combined:
+        obj = {
+            'title': event.title,
+            'start': int(convert_datetime_to_timestamp(event.datetime)),
+            'end': int(convert_datetime_to_timestamp(event.end_datetime))
+        }
+        events.append(obj)
+
+    return JsonResponse({'events': events}, status=200)
+
+
+@login_required(login_url='/login')
 def confirm_email(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -232,6 +256,7 @@ def extract_keywords(event_id):
     return
 
 
+@login_required(login_url='/login')
 def create_event(request):
     if request.method == 'POST':
 
@@ -302,9 +327,13 @@ def create_event(request):
 
         category = request.POST.get('category')
 
+        generated_hash = generate_hash(5)
+        identifier = title.lower().replace(' ', '-')
+
         event = Event.objects.create(
             user=request.user,
             title=title,
+            identifier=f'{identifier}-{generated_hash}',
             description=description,
             datetime=datetime_obj,
             end_datetime=end_datetime_obj,
@@ -392,6 +421,7 @@ def create_event(request):
         return JsonResponse({'next_route': url}, status=200)
 
 
+@login_required(login_url='/login')
 def delete_friendship(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -416,6 +446,7 @@ def delete_friendship(request):
         return JsonResponse({'message': 'Friendship deleted successfully.'}, status=200)
 
 
+@login_required(login_url='/login')
 def edit_about(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -438,6 +469,7 @@ def edit_about(request):
         return JsonResponse({'message': about}, status=200)
 
 
+@login_required(login_url='/login')
 def edit_email(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -456,6 +488,7 @@ def edit_email(request):
         return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def edit_fullname(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -468,6 +501,7 @@ def edit_fullname(request):
         return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def edit_username(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -483,6 +517,7 @@ def edit_username(request):
         return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def edit_profile(request):
     return render(request, 'invite/edit_profile.html')
 
@@ -494,6 +529,7 @@ def event_more_info_render(request, event_id):
     return render(request, 'invite/more-info-view.html')
 
 
+@login_required(login_url='/login')
 def event_shared_handler(request, event_id):
     user = request.user
     event = Event.objects.get(id=event_id)
@@ -509,6 +545,7 @@ def event_shared_handler(request, event_id):
     return JsonResponse({'message': 'event shared successfully'}, status=200)
 
 
+@login_required(login_url='/login')
 def edit_profile_img(request):
     if request.method == 'POST':
         x = 0 if (int(float(request.POST.get('x'))) < 0) else int(
@@ -560,6 +597,7 @@ def edit_profile_img(request):
         return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def find_friends(request, username):
     # Get user
     if username == 'use-logged-in-user':
@@ -637,6 +675,7 @@ def find_users(query, threshold=80):
     return matching_users
 
 
+@login_required(login_url='/login')
 def follow(request, username):
     user = User.objects.get(username=request.user.username)
     following = User.objects.get(username=username.strip())
@@ -698,6 +737,13 @@ def get_events(request):
         events = Event.objects.filter(user=user)
         return JsonResponse({'events': serialize_post(events, user)}, status=200) 
 
+    print('auth', user.is_authenticated)
+
+    # If user is not logged in
+    if not user.is_authenticated:
+        public_events = Event.objects.filter(public=True)
+        return JsonResponse({'events': serialize_post(public_events)})
+
     start = int(request.GET.get('start'))
     end = int(request.GET.get('end'))
 
@@ -752,6 +798,7 @@ def get_events(request):
         )
 
 
+@login_required(login_url='/login')
 def get_event_access(request, event_id):
     ticket_id = uuid4().hex
     user = request.user
@@ -778,6 +825,7 @@ def get_event_access(request, event_id):
     return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def get_event_draft(request, event_id):
     user = request.user
     event = get_object_or_404(Event, id=event_id, user=user)
@@ -914,6 +962,7 @@ def get_friends(request, username):
     return JsonResponse({'friends': serialize_data([friend.friend for friend in friends])})
 
 
+@login_required(login_url='/login')
 def get_notifications(request):
     notifications = Notification.objects.filter(to=request.user)
     print(notifications)
@@ -933,6 +982,7 @@ def get_notifications(request):
     return JsonResponse({'notifications': data}, status=200)
 
 
+@login_required(login_url='/login')
 def get_pending_friends(request, username):
     user = User.objects.get(username=username.strip())
 
@@ -969,6 +1019,7 @@ def get_profile_count(request, username):
     return JsonResponse({'friendsCount': friends, 'followingCount': following, 'followersCount': followers}, status=200)
 
 
+@login_required(login_url='/login')
 def get_saved_events(request):
     user =  request.user
     events = SavedEvent.objects.get(user=user)
@@ -976,6 +1027,7 @@ def get_saved_events(request):
     return JsonResponse({'events': serialized_data}, status=200)
 
 
+@login_required(login_url='/login')
 def get_ticket(request):
     if request.method == 'POST':
         user = request.user
@@ -1056,6 +1108,7 @@ def get_ticket(request):
         return JsonResponse({'message': 'ticket successfully purchased'}, status=200)
 
 
+@login_required(login_url='/login')
 def get_ticket_info(request, event_id):
     user = request.user
     event = get_object_or_404(Event, id=event_id)
@@ -1158,6 +1211,7 @@ def is_user_logged_in(request):
 
 
 def landing_page(request):
+    LandingPageVisits.objects.create()
     return render(request, 'invite/landing-page.html')
 
 
@@ -1188,8 +1242,40 @@ def main(request):
     return render(request, 'invite/main.html')
 
 
+@login_required(login_url='/login')
+def metrics(request):
+    if request.user.is_superuser:
+        return render(request, 'invite/metrics.html')
+
+    else:
+        return HttpResponse('<h1>You are not authorized to access this page.</h1>')
+
+
+@login_required(login_url='/login')
+def metrics_stats(request):
+    timeframe = request.GET.get('timeframe')
+    now = datetime.now()
+
+    if timeframe == 'all':
+        waiting_list_count = WaitingList.objects.all().count()
+        landing_page_visits = LandingPageVisits.objects.all().count()
+        
+
+    elif timeframe == 'seven_days':
+        seven_days_ago = now - timedelta(days=7)
+        waiting_list_count = WaitingList.objects.filter(date__range=(seven_days_ago, now)).count()
+        landing_page_visits = LandingPageVisits.objects.filter(date__range=(seven_days_ago, now)).count()
+
+    elif timeframe == 'today':
+        today = date.today()
+        waiting_list_count = WaitingList.objects.filter(date__date=today).count()
+        landing_page_visits = LandingPageVisits.objects.filter(date__date=today).count()
+
+    return JsonResponse({'waitlist': waiting_list_count, 'landing_page': landing_page_visits}, status=200)
+
+
+@login_required(login_url='/login')
 def more_info(request, event_id):
-    from urllib.parse import unquote
     user = request.user
     if request.method == 'GET':
         try:
@@ -1225,10 +1311,12 @@ def more_info(request, event_id):
         return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def new_event(request):
     return render(request, 'invite/new_event.html')
 
 
+@login_required(login_url='/login')
 def new_password(request, username, access):
     if request.method == 'POST':
         data = loads(request.body)
@@ -1335,6 +1423,7 @@ def recent_search(request):
     return JsonResponse({'recent': recent}, status=200)
 
 
+@login_required(login_url='/login')
 def refund_handler(request):
     user = request.user
     data = loads(request.body)
@@ -1429,6 +1518,7 @@ def register_view(request):
         return render(request, 'invite/register.html')
 
 
+@login_required(login_url='/login')
 def remove_attendee(request):
     if request.method == 'DELETE':
         user = request.user
@@ -1512,6 +1602,7 @@ def reset_password(request):
         return render(request, 'invite/reset_password.html')
 
 
+@login_required(login_url='/login')
 def save_event(request):
     if request.method == 'POST':
         data = loads(request.body)
@@ -1530,6 +1621,38 @@ def save_event(request):
         return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
+def scan_tickets(request, event_id, ticket_id=None):
+    if ticket_id == None:
+        return render(request, 'invite/scan-tickets.html', { 'event_id': event_id })
+
+
+@login_required(login_url='/login')
+def validate_ticket(request, event_id, ticket_id):
+    try:
+        event = Event.objects.get(identifier=event_id)
+    except ObjectDoesNotExist:
+        return JsonResponse({'message': 'event does not exist'}, status=400)
+
+    try:
+        ticket = Ticket.objects.get(event=event, identifier=ticket_id)
+    except ObjectDoesNotExist:
+        return JsonResponse({'message': 'ticket does not exist'}, status=400)
+
+    if ticket.expired:
+        return JsonResponse({'message': 'ticket is expired'}, status=410)
+
+    ticket.expired = True
+    ticket.save()
+
+    ticket_data = {
+        'owner': ticket.owner.username,
+        'people': ticket.people
+    }
+
+    return JsonResponse({'message': 'ticket valid', 'ticket': ticket_data}, status=200)
+
+
 def search(request):
     query = request.GET.get('query')
     threshold = int(request.GET.get('threshold', 80))
@@ -1537,6 +1660,7 @@ def search(request):
     return JsonResponse({'users': matching_users})
 
 
+@login_required(login_url='/login')
 def unfollow(request, username):
     user = User.objects.get(username=request.user.username)
     following = User.objects.get(username=username.strip())
@@ -1553,6 +1677,7 @@ def unfollow(request, username):
     return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
 def update_scores(request):
     # Get parameters
     action = request.GET.get('action')
@@ -1645,6 +1770,7 @@ def update_scores(request):
     return JsonResponse({'message': 'scores updated successfully'}, status=200)
 
 
+@login_required(login_url='/login')
 def unsave_event(request):
     if request.method == 'DELETE':
         user = request.user
@@ -1665,23 +1791,28 @@ def unsave_event(request):
         return JsonResponse({}, status=200)
 
 
+@login_required(login_url='/login')
+def view_calendar(request):
+    return render(request, 'invite/calendar.html')
+
+
 def view_more_info(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     additional_info = get_object_or_404(EventMoreInfo, event=event)
     return JsonResponse({'info': dumps(additional_info.html)}, status=200)
 
 
+@login_required(login_url='/login')
 def wallet_balance(request):
     user = request.user
 
     # Get balance
     balance = Wallet.objects.get(user=user).balance
 
-    print('balance', balance)
-
     return JsonResponse({'balance': balance}, status=200)
 
 
+@login_required(login_url='/login')
 def wallet_deposit(request):
     if request.method == 'POST':
         user = request.user
@@ -1690,7 +1821,7 @@ def wallet_deposit(request):
         amount = data.get('amount')
         amount = int(amount)
 
-        if amount < 20 or amount > 2000:
+        if amount < 25 or amount > 2000:
             return JsonResponse({'message': 'amount_invalid'}, status=400)
         
         password = data.get('password')
@@ -1724,5 +1855,6 @@ def wallet_deposit(request):
         return JsonResponse({'message': 'deposit was successful'}, status=200)
 
 
+@login_required(login_url='/login')
 def wallet_view(request):
     return render(request, 'invite/wallet.html')

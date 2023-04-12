@@ -35,7 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sets up event listener for all 'View Profile' buttons
   document.querySelectorAll('.view-profile-btn').forEach((el) => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', async () => {
+      // Check if the user is logged in
+      const answer = await userLogStatus()
+
+      if (answer === 'NO') {
+        notLoggedIn();
+        return false;
+      }
+
       // Fetches the username of the currently logged-in user and redirects to their profile page
       fetch('/get-username')
         .then((response) => response.json())
@@ -53,7 +61,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sets up event listener for all 'Add New Event' buttons
   document.querySelectorAll('.add-new-event').forEach((el) => {
-    el.addEventListener('click', () => (window.location.href = '/new-event'));
+    el.addEventListener('click', async () => {
+      // Check if the user is logged in
+      const answer = await userLogStatus()
+
+      if (answer === 'NO') {
+        notLoggedIn();
+        return false;
+      }
+
+      window.location.href = '/new-event';
+    });
   });
 
   // Sets up event listener for all 'Menu' buttons
@@ -68,21 +86,58 @@ const viewMenu = () => {
     container.classList.add('menu-container');
 
     container.innerHTML = `
+      <div class='border-bottom border-dark calendar'>Calendar</div>
       <div class='border-bottom border-dark scan-tickets'>Scan Tickets</div>
       <div class='border-bottom border-dark wallet'>Wallet</div>
     `;
 
     return container;
-  }, [{ func: mainClickHandler, values: []}])
+  }, [{ func: menuClickHandler, values: []}])
 }
 
-const mainClickHandler = () => {
+const menuClickHandler = () => {
+  document.querySelector('.calendar').addEventListener('click', () => {
+    window.location.href = '/calendar';
+  });
+
   document.querySelector('.wallet').addEventListener('click', () => {
     window.location.href = '/wallet';
-  });D
+  });
 
   document.querySelector('.scan-tickets').addEventListener('click', () => {
-    
+    addToMainModalHistory('Scan Tickets', () => {
+      const container = document.createElement('div');
+
+      container.innerHTML = `
+        <form class='event-id-form'>
+          <div class='form-floating mb-3'>
+            <input type='text' class='event-id form-control input-frame' placeholder='Event ID'>
+            <label for='event-id' class='floating-input-placeholder'>Event ID</label>
+          </div>
+          <div class='error-message mb-3'></div>
+          <button class='btn btn-primary submit-event-id w-100'>Scan Tickets</button>
+        </form>
+      `;
+
+      return container;
+    }, [{ func: getTicketScannerReady, values: [] }]);
+  });
+};
+
+const getTicketScannerReady = () => {
+  document.querySelector('.event-id-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const eventIdentifier = document.querySelector('.event-id').value;
+    const errorMessage = document.querySelector('.error-message');
+    errorMessage.textContent = '';
+
+    if (!eventIdentifier) {
+      errorMessage.textContent = 'Please ensure ticket ID is not empty';
+      return false;
+    }
+
+    window.location.href = `/scan-tickets/${eventIdentifier}`;
   })
 }
 

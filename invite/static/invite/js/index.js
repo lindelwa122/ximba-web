@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   eventsContainerLoadHandler();
   eventsContainerClickHandler('index-events-container');
+
+
+  console.log('bbbg');
   startPagination();
   getEvents();
 
@@ -56,7 +59,6 @@ const addAttendee = async (
   attendeesCountElement,
   savedIconElement,
   savedCountElement,
-  ticketButtonElement,
   shouldUpdateSavedCount = false
 ) => {
   // Function to update the attendee count and icon
@@ -213,9 +215,9 @@ const filterEvents = async (filterMethod) => {
   let latitude = 0.0;
   try {
     if (navigator.geolocation) {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
+      // const position = await new Promise((resolve, reject) => {
+      //   navigator.geolocation.getCurrentPosition(resolve, reject);
+      // });
       longitude = position.coords.longitude;
       latitude = position.coords.latitude;
     } else {
@@ -274,6 +276,7 @@ let start = 0;
 let totalEvents;
 
 const getEvents = async () => {
+  console.log('Yes, yes. I run too.');
   if (start > 0) {
     eventsSkeleton(true);
   }
@@ -282,9 +285,9 @@ const getEvents = async () => {
   let latitude = 0.0;
   try {
     if (navigator.geolocation) {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
+      // const position = await new Promise((resolve, reject) => {
+      //   navigator.geolocation.getCurrentPosition(resolve, reject);
+      // });
       longitude = position.coords.longitude;
       latitude = position.coords.latitude;
     } else {
@@ -294,14 +297,14 @@ const getEvents = async () => {
   } catch (error) {
     console.error(error);
   } finally {
+    console.log('Yes, finally I run too.');
     // If start is bigger or equal to totalEvents remove scroll event listener
     if (start + 5 >= totalEvents) {
       window.removeEventListener('scroll', getEventsPaginationHandler);
     }
 
-    const url = `/events/get?longitude=${longitude}&latitude=${latitude}&start=${start}&end=${
-      start + 5
-    }`;
+    const url = `/events/get?longitude=${longitude}&latitude=${latitude}&start=${start}&end=${start + 5
+      }`;
 
     try {
       const response = await fetch(url);
@@ -432,14 +435,16 @@ const shareEventModal = (eventId) => {
       <div class='mb-2'>Share this event with all of your friends</div>
       <textarea class='form-control input-frame note mb-3' placeholder='Share this event with a note (Optional)'></textarea>
       <button class='share-event-btn btn btn-primary w-100'>Share Event</button>
-    `; 
+    `;
 
     return container;
-  }, [{ func: (eventId) => {
-    document.querySelector('.share-event-btn').addEventListener('click', () => {
-      shareEvent(eventId);
-    })
-  }, values: [eventId] }])
+  }, [{
+    func: (eventId) => {
+      document.querySelector('.share-event-btn').addEventListener('click', () => {
+        shareEvent(eventId);
+      })
+    }, values: [eventId]
+  }])
 }
 
 const shareEvent = async (eventId) => {
@@ -887,9 +892,8 @@ const renderButtons = (
   else {
     ticketButton = isTicketSecured
       ? `<button class='btn btn-primary btn-small view-ticket'>View Ticket</button>`
-      : `<button class='btn btn-secondary btn-small get-ticket'>Get Ticket (${
-          price === 0 ? 'Free' : `R${price}`
-        })</button>`;
+      : `<button class='btn btn-secondary btn-small get-ticket'>Get Ticket (${price === 0 ? 'Free' : `R${price}`
+      })</button>`;
   }
 
   const limitButton =
@@ -919,8 +923,7 @@ const renderEvents = (posts, containerClassName) => {
       );
 
       return `
-        <div class='post post-wp border-bottom border-dark' id='event-${
-          event.id
+        <div class='post post-wp border-bottom border-dark' id='event-${event.id
         }' data-time-spent='0' data-eventid=${event.id}>
           <div class='post-intro'>
             ${userInfo}
@@ -928,36 +931,31 @@ const renderEvents = (posts, containerClassName) => {
               <div class='font-title'>${event.title}</div>
               <div>
                 <i class='bi bi-geo-alt'></i>
-                <span class='ms-1' title='${
-                  !city
-                    ? 'The location of this event is unknown or unavailable at the moment'
-                    : ''
-                }'>${suburb}, ${city}</span>
+                <span class='ms-1' title='${!city
+          ? 'The location of this event is unknown or unavailable at the moment'
+          : ''
+        }'>${suburb}, ${city}</span>
               </div>
             </div>
-            ${
-              ticketDeadline && ticketDeadline !== 'past'
-                ? `<div class='error-message mt-2'>${ticketDeadline}</div>`
-                : ''
-            }
+            ${ticketDeadline && ticketDeadline !== 'past'
+          ? `<div class='error-message mt-2'>${ticketDeadline}</div>`
+          : ''
+        }
           </div>
 
-          ${
-            event.cover
-              ? renderImage(event.cover, limitButton, ticketButton)
-              : renderPostActions(limitButton, ticketButton)
-          }
+          ${event.cover
+          ? renderImage(event.cover, limitButton, ticketButton)
+          : renderPostActions(limitButton, ticketButton)
+        }
 
           <div class='post-caption'>
-            <div class='short-description'>${
-              event.description
-            } <span class='see-more show link font-body-tiny'>See more</span></div>
+            <div class='short-description'>${event.description
+        } <span class='see-more show link font-body-tiny'>See more</span></div>
 
             <div class='post-interactions d-flex align-items-center justify-content-between'>
               <div class='d-flex align-items-center'>
-                <i class='bi ${
-                  event.attending ? 'bi-person-fill' : 'bi-person'
-                }'></i>
+                <i class='bi ${event.attending ? 'bi-person-fill' : 'bi-person'
+        }'></i>
                 <span class='ms-1 attendees-count'>${event.attendees}</span>
               </div>
               <div class='d-flex align-items-center'>
@@ -965,9 +963,8 @@ const renderEvents = (posts, containerClassName) => {
                 <span class='ms-1 shares-count'>${event.shares}</span>
               </div>
               <div class='d-flex align-items-center'>
-                <i class='bi ${
-                  event.user_saved_event ? 'bi-bookmark-fill' : 'bi-bookmark'
-                } save-event'></i>
+                <i class='bi ${event.user_saved_event ? 'bi-bookmark-fill' : 'bi-bookmark'
+        } save-event'></i>
                 <span class='ms-1 saves-count'>${event.saves}</span>
               </div>
             </div>
@@ -975,27 +972,25 @@ const renderEvents = (posts, containerClassName) => {
             <div class='event-more-info'>
               <div>
                 <i class='bi bi-geo-alt'></i>
-                <span class='ms-2 exact-location link' data-location='${
-                  event.location
-                }'>See exact location</span>
+                <span class='ms-2 exact-location link' data-location='${event.location
+        }'>See exact location</span>
               </div>
               <div>
                 <i class='bi bi-clock'></i>
                 <span class='ms-2 datetime'>${datetime} (${duration})</span>
               </div>
-              ${
-                event.more_info
-                  ? `
+              ${event.more_info
+          ? `
                 <div>
                   <i class='bi bi-info-circle'></i>
                   <span class='ms-2 link more-info' data-id='${event.id}'>More info</a></span>
                 </div>
               `
-                  : ''
-              }
+          : ''
+        }
               <div class='tags-container'>${keywordsDisplay(
-                event.keywords
-              )}</div>
+          event.keywords
+        )}</div>
             </div>
           </div>
         </div>
@@ -1128,9 +1123,9 @@ const afterTicketIsBought = (eventId) => {
   closeMainModal();
 };
 
-const displayQRCode = (eventId, ticketIdentifier) => {
+const displayQRCode = (ticketIdentifier) => {
   const qrcode = document.querySelector('.qrcode');
-  qrcode.contents = `/ticket/${eventId}/${ticketIdentifier}`;
+  qrcode.contents = ticketIdentifier;
   qrcode.moduleColor = '#3b44f6';
   qrcode.positionCenterColor = '#3b44f6';
   qrcode.positionRingColor = '#3ec70b';
@@ -1352,8 +1347,8 @@ const refundAllowed = async (eventId) => {
       container.innerHTML = `
       <form class='refund-form'>
         <div class='mb-3'>R<span class='price'>${refundablePrice.toFixed(
-          2
-        )}</span> will be refunded to your wallet</div>
+        2
+      )}</span> will be refunded to your wallet</div>
         <div class='error-message mb-3'>Please be aware that invalidating your ticket is a permanent action and cannot be undone.</div>
         <div class='error-message error-refund'></div>
         <input type='submit' class='btn btn-primary w-100 refund-submit-btn' value='Get Refund'>
@@ -1448,7 +1443,7 @@ const ticketPageHTML = async (ticket, error = false) => {
   }
 
   document.querySelector('.ticket-container').innerHTML = htmlString;
-  displayQRCode(ticket.event_id, ticket.identifier);
+  displayQRCode(ticket.identifier);
 };
 
 // USER
@@ -1550,3 +1545,32 @@ const ticketDeadlineHandler = (deadline) => {
   // Difference bigger than 10 days
   return null;
 };
+
+const registerLoginBtnClickHandler = () => {
+  const registerBtn = document.querySelector('.register-btn');
+  registerBtn.addEventListener('click', () => {
+    window.location.href = '/register';
+  });
+
+  const loginBtn = document.querySelector('.login-btn');
+  loginBtn.addEventListener('click', () => {
+    window.location.href = '/login';
+  });
+}
+
+const notLoggedIn = () => {
+  addToMainModalHistory('Register', () => {
+    const container = document.createElement('div');
+    container.className = 'convince-user-container';
+  
+    container.innerHTML = `
+      <img class='w-100' src='static/invite/images/illustrations/upgrade.gif' alt='upgrade-by-icons8' />
+      <div class='mb-2 text-center'>Unlock exclusive features and follow your favorite users by registering now.</div>
+      <button class='btn btn-primary w-100 register-btn'>Register</button>
+      <hr class='mb-3 w-100' />
+      <button class='btn btn-secondary w-50 login-btn'>Login</button>
+    `
+  
+    return container;
+  }, [{ func: registerLoginBtnClickHandler, values: [] }])
+}

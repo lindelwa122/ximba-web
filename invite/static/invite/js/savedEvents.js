@@ -39,10 +39,18 @@ const renderSavedEventsImage = (image) => {
 const eventsContainerClickHandler = (containerClassName) => {
   console.log(containerClassName);
   const container = document.querySelector(`.${containerClassName}`);
-  container.addEventListener('click', (event) => {
+  container.addEventListener('click', async (event) => {
     if (event.target.tagName === 'BUTTON') {
       let button = event.target.closest('.follow-btn');
       if (button) {
+        // Check if the user is logged in
+        const answer = await userLogStatus()
+
+        if (answer === 'NO') {
+          notLoggedIn();
+          return false;
+        }
+
         const post = event.target.closest('.post');
         const eventId = post.dataset.eventid;
         const username = button.parentElement.parentElement.dataset.username;
@@ -52,6 +60,14 @@ const eventsContainerClickHandler = (containerClassName) => {
 
       button = event.target.closest('.get-ticket');
       if (button) {
+        // Check if the user is logged in
+        const answer = await userLogStatus()
+
+        if (answer === 'NO') {
+          notLoggedIn();
+          return false;
+        }
+
         const post = event.target.closest('.post');
         const eventId = post.dataset.eventid;
         const bookmarkIcon = post.querySelector('.bi-bookmark');
@@ -65,6 +81,14 @@ const eventsContainerClickHandler = (containerClassName) => {
 
       button = event.target.closest('.view-ticket');
       if (button) {
+        // Check if the user is logged in
+        const answer = await userLogStatus()
+
+        if (answer === 'NO') {
+          notLoggedIn();
+          return false;
+        }
+
         const post = event.target.closest('.post');
         const eventId = parseInt(post.dataset.eventid);
         addToMainModalHistory('Ticket', () => {
@@ -93,6 +117,14 @@ const eventsContainerClickHandler = (containerClassName) => {
     }
 
     if (event.target.classList.contains('bi-bookmark')) {
+      // Check if the user is logged in
+      const answer = await userLogStatus()
+
+      if (answer === 'NO') {
+        notLoggedIn();
+        return false;
+      }
+
       const post = event.target.closest('.post');
       const eventId = post.dataset.eventid;
       const savedCount = post.querySelector('.saves-count');
@@ -101,6 +133,14 @@ const eventsContainerClickHandler = (containerClassName) => {
     }
 
     if (event.target.classList.contains('bi-bookmark-fill')) {
+      // Check if the user is logged in
+      const answer = await userLogStatus()
+
+      if (answer === 'NO') {
+        notLoggedIn();
+        return false;
+      }
+
       const post = event.target.closest('.post');
       const eventId = post.dataset.eventid;
       const savedCount = post.querySelector('.saves-count');
@@ -109,12 +149,28 @@ const eventsContainerClickHandler = (containerClassName) => {
     }
 
     if (event.target.classList.contains('share-event')) {
+      // Check if the user is logged in
+      const answer = await userLogStatus()
+
+      if (answer === 'NO') {
+        notLoggedIn();
+        return false;
+      }
+
       const post = event.target.closest('.post');
       const eventId = post.dataset.eventid;
       shareEventModal(eventId);
     }
 
     if (event.target.classList.contains('bi-person')) {
+      // Check if the user is logged in
+      const answer = await userLogStatus()
+
+      if (answer === 'NO') {
+        notLoggedIn();
+        return false;
+      }
+
       const post = event.target.closest('.post');
       const eventId = post.dataset.eventid;
       const attendeesIcon = post.querySelector('.bi-person');
@@ -122,10 +178,18 @@ const eventsContainerClickHandler = (containerClassName) => {
       const savedIcon = post.querySelector('.bi-bookmark');
       const savedCount = post.querySelector('.saves-count');
       const ticketBtn = post.querySelector('.get-ticket');
-      addAttendee(eventId, attendeesIcon, attendeesCount, savedIcon, savedCount, ticketBtn, Boolean(savedIcon));
+      addAttendee(eventId, attendeesIcon, attendeesCount, savedIcon, savedCount, Boolean(savedIcon));
     }
 
     if (event.target.classList.contains('bi-person-fill')) {
+      // Check if the user is logged in
+      const answer = await userLogStatus()
+
+      if (answer === 'NO') {
+        notLoggedIn();
+        return false;
+      }
+      
       const post = event.target.closest('.post');
       const eventId = post.dataset.eventid;
       const attendeesIcon = post.querySelector('.bi-person-fill');
