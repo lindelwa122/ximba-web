@@ -1506,6 +1506,8 @@ def register_view(request):
         if not ProfileSetUp.objects.filter(user=user).exists():
             ProfileSetUp.objects.create(user=user)
 
+        Personalization.objects.create(user=user)
+
         login(request, user)
         
         request.session['username'] = username
