@@ -1834,7 +1834,7 @@ def wallet_deposit(request):
 
         # Update user's balance
         deposit = amount - (amount * (4/100))
-        wallet = Wallet.objects.get_or_create(user=user)
+        wallet = Wallet.objects.get(user=user)
         wallet.balance = wallet.balance + deposit
         wallet.save()
 
