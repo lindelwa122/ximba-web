@@ -1507,6 +1507,7 @@ def register_view(request):
             ProfileSetUp.objects.create(user=user)
 
         Personalization.objects.create(user=user)
+        Wallet.objects.create(user=user)
 
         login(request, user)
         
@@ -1807,7 +1808,8 @@ def wallet_balance(request):
     user = request.user
 
     # Get balance
-    balance = Wallet.objects.get(user=user).balance
+    wallet, _ = Wallet.objects.get_or_create(user=user)
+    balance = wallet.balance
 
     return JsonResponse({'balance': balance}, status=200)
 
@@ -1832,7 +1834,7 @@ def wallet_deposit(request):
 
         # Update user's balance
         deposit = amount - (amount * (4/100))
-        wallet = Wallet.objects.get(user=user)
+        wallet = Wallet.objects.get_or_create(user=user)
         wallet.balance = wallet.balance + deposit
         wallet.save()
 
