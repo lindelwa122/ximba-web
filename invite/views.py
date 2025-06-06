@@ -1498,18 +1498,8 @@ def register_view(request):
         except IntegrityError:
             return JsonResponse({'error_type': 'username_taken'}, status=409)
 
-        confirm_account_code = User.objects.get(username=username).email_code
-
         Profile.objects.create(user=User.objects.get(username=username))
         
-        send_mail(
-            'Welcome to GetVyt',
-            f'Hello, {username}. Use this code: {confirm_account_code} to confirm your email.',
-            'portfolio@livingdreams.com',
-            [data.get('email', '')],
-            fail_silently=False,
-        )
-
         request.session['username'] = username
 
         return JsonResponse({}, status=200)
