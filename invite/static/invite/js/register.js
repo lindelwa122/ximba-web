@@ -146,7 +146,7 @@ const validateForm = (e) => {
 
 
   startBtnLoadingAnimation(e.submitter);
-  sendFormDataToServer('/register', '/confirm');
+  sendFormDataToServer('/register', '/home');
 };
 
 const changeEventDescription = () => {

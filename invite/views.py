@@ -1499,6 +1499,14 @@ def register_view(request):
             return JsonResponse({'error_type': 'username_taken'}, status=409)
 
         Profile.objects.create(user=User.objects.get(username=username))
+
+        user.is_email_confirmed = True
+        user.save()
+
+        if not ProfileSetUp.objects.filter(user=user).exists():
+            ProfileSetUp.objects.create(user=user)
+
+        login(request, user)
         
         request.session['username'] = username
 
