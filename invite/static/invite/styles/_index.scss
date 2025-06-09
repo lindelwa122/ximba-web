@@ -99,6 +99,10 @@
     width: 40%;
   }
 
+  @include for-larger-devices {
+    width: 30%;
+  }
+
   .img-cover {
     max-height: 350px;
     overflow: hidden;
