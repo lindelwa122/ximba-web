@@ -1,0 +1,112 @@
+* {
+  box-sizing: border-box;
+}
+
+
+html, body {
+  height: 100%;
+  max-width: 1400px;
+  min-width: 300px;
+}
+
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+
+  @include body;
+
+  @include for-tablets {
+    background-color: var(--background-color-lg);
+  }
+}
+
+
+/* For webkit-based browsers */
+html {
+  /* For webkit-based browsers */
+  &::-webkit-scrollbar {
+    border-radius: 10px;
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    border-radius: 10px;
+    margin: 5px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-color);
+  }
+}
+
+
+a {
+  @include body-tiny;
+}
+
+
+.display-error {
+  color: var(--error-message-color);
+}
+
+
+.floating-input-placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+
+.form-floating>.form-control, .form-floating>.form-control-plaintext, .form-floating>.form-select {
+  height: calc(3rem + 2px);
+
+  @include for-tablets {
+    height: calc(3.3rem + 2px);
+  }
+
+  @include for-desktops {
+    height: calc(3.5rem + 2px);
+  }
+}
+
+
+main {
+  min-height: 100vh;
+}
+
+
+.profile-img {
+  border-radius: 10px;
+}
+
+
+section {
+  flex: 1;
+  padding: $general-padding;
+}
+
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+
+  .bi {
+    cursor: pointer;
+  }
+
+  
+  div {
+    align-items: center;
+    background: var(--bs-gray-400);
+    border-radius: 10px;
+    display: flex;
+    padding: 5px;
+  }
+}

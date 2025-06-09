@@ -1,0 +1,30 @@
+section.wallet {
+  .header {
+    .bi {
+      font-size: 30px;
+    }
+  }
+
+  .wrapper {
+    width: 100%;
+    height: 100%;
+    
+    @include for-tablets {
+      background-color: var(--background-color);
+      border-radius: $border-radius;
+      box-shadow: 2px 4px 4px rgba(0, 0, 0, .15);
+      padding: 50px 0;
+      width: 60%;
+    }
+
+    @include for-desktops {
+      width: 35%;
+    }
+  }
+
+  .balance-wrapper {
+    @include title;
+    font-weight: 900;
+    font-size: 40px !important;
+  }
+}

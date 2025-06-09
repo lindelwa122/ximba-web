@@ -1,0 +1,120 @@
+.amount-container {
+  align-items: center;
+  background-color: var(--bs-gray-400);
+  border-radius: 10px;
+  display: flex;
+  overflow: hidden;
+}
+
+.currency {
+  display: flex;
+  justify-content: center;
+  padding: $general-padding;
+  width: 20%;
+}
+
+section.new-event {
+  margin-bottom: 100px;
+  
+
+  .buttons-container {
+    gap: 10px;
+  }
+
+
+  /* Hide the default radio input appearance */
+  input[type=radio] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid var(--primary-color);
+    border-radius: 50%;
+    display: inline-block;
+    height: 16px;
+    outline: none;
+    position: relative;
+    width: 16px;
+
+    /* Set the background color of the radio input when not checked */
+    &::before {
+      content: "";
+      background-color: #fff;
+      border-radius: 50%;
+      display: block;
+      height: 10px;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform .2s ease-out;
+      width: 10px;
+    }
+
+    /* Set the background color of the radio input when checked */
+    &:checked::before {
+      background-color: blue;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Hide the label for the radio input */
+    & + label {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+  }
+
+  .link {
+    color: var(--secondary-color);
+    cursor: pointer;
+  }
+
+
+  .logo {
+    height: auto;
+    width: 20%;
+
+    @include for-tablets {
+      width: 10%;
+    }
+  }
+
+
+  .main-content {
+    display: flex;
+    justify-content: center;
+
+
+    form {
+      width: 100%;
+
+      @include for-tablets {
+        background-color: var(--background-color);
+        border-radius: $border-radius;
+        box-shadow: 2px 4px 4px rgba(0, 0, 0, .15);
+        padding: 10px;
+        width: 60%;
+      }
+
+      @include for-desktops {
+        width: 35%;
+      }
+    }
+  }
+
+
+  #map {
+    height: 0;
+    transition: height 1s ease-in-out;
+    width: 100%;
+  }
+
+  
+  .immediate-option-selected,
+  .later-option-selected, 
+  .paid-access-view, 
+  .paid-options {
+    height: 0;
+    overflow: hidden;
+    transition: height .5s ease-in-out;
+  }
+}

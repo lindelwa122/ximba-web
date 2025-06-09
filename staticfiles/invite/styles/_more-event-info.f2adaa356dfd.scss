@@ -1,0 +1,76 @@
+.more-event-info {
+  height: 100%;
+  overflow: auto;
+
+
+  .edit-block {
+    border: 1px dotted var(--primary-color);
+    border-radius: $border-radius;
+    padding: 5px;
+    
+    &:focus-visible {
+      border: 1px solid var(--primary-color);
+      outline: none;
+    }
+  }
+
+
+  .logo {
+    width: 20%;
+    height: auto;
+
+    @include for-tablets {
+      width: 10%;
+    }
+  }
+  
+
+  .main-content {
+    background-color: var(--background-color);
+    border-radius: $border-radius;
+    margin-top: 20px;
+    width: 100%;
+
+    @include for-tablets {
+      padding: $general-padding;
+    }
+
+
+    .add {
+      border-radius: $border-radius;
+      padding: 3px;
+      transition: all .2s ease-in-out;
+      
+      &:hover {
+        background-color: var(--bs-gray-400);
+        cursor: pointer;
+      }
+
+
+      .bi {
+        font-size: 30px;
+      }
+    }
+
+
+    .prompt-type {
+      border: 1px solid var(--bs-black);
+      border-radius: $border-radius;
+      display: none;
+      margin-bottom: 10px;
+      overflow: hidden;
+      
+
+      >div {
+        background-color: var(--background-color);
+        padding: 5px;
+        transition: all .2s ease-in-out;
+        
+        &:hover {
+          background-color: var(--bs-gray-400);
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
