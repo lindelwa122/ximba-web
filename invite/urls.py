@@ -50,6 +50,7 @@ urlpatterns = [
     path('is-user-authenticated/<str:username>', views.is_user_authenticated, name='is_user_authenticated'),
     path('check/is-user-following/<str:other_user>', views.is_user_following, name='check_user_follow_status'),
     path('logged-in', views.is_user_logged_in, name='logged_in_status'),
+    path('login-with-dummy-account', views.login_with_dummy_account, name="dummy_login"),
     path('login', views.login_view, name='login'),
     path('logout', views.logout_view, name='logout'),
     path('main', views.main, name='main'),

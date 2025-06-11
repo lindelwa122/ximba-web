@@ -1234,6 +1234,12 @@ def login_view(request):
         return render(request, 'invite/login.html')
 
 
+def login_with_dummy_account(request):
+    user = authenticate(request, username="therealjohndoe", password="Aa@123456")
+    login(request, user)
+    return HttpResponseRedirect("/home")
+
+
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('invite:index'))
