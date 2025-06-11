@@ -734,6 +734,7 @@ def get_events(request):
     events_for = request.GET.get('events_for')
 
     if events_for == 'profile':
+        user = User.objects.get(username=username)
         events = Event.objects.filter(user=user)
         return JsonResponse({'events': serialize_post(events, user)}, status=200) 
 
