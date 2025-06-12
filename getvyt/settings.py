@@ -119,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 MAPBOX_ACCESS_TOKEN = environ['MAPBOX_ACCESS_TOKEN']
 
 # # OpenAI API Key
-OPENAI_ACCESS_TOKEN = environ['OPENAI_ACCESS_KEY']
+OPENAI_ACCESS_TOKEN = environ['OPENAI_ACCESS_TOKEN']
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
