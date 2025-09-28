@@ -904,7 +904,25 @@ const renderButtons = (
   return { ticketButton, limitButton };
 };
 
-const renderEvents = (posts, containerClassName) => {
+const getUsernameOfLoggedinUser = async () => {
+  const response = await fetch('/get-username');
+  return await response.json();
+}
+
+const getUserFriends = async (username) => {
+  const response = await fetch('/friends/' + username);
+  return await response.json();
+}
+
+const getEventStats = async (eventId) => {
+  const response = await fetch('/event/stats/' + eventId);
+  return await response.json();
+}
+
+const renderEvents = async (posts, containerClassName) => {
+  const { username } = await getUsernameOfLoggedinUser();
+  const { friends } = await getUserFriends(username);
+
   Promise.all(
     posts.map(async (event) => {
       const userInfo = await renderUserInfo(event.publisher[0]);
@@ -921,6 +939,32 @@ const renderEvents = (posts, containerClassName) => {
         event.ticket_price,
         ticketDeadline
       );
+
+      const { attendees } = await getEventStats(event.id);
+
+      const friendsAttending = [];
+      for (const friend of friends) {
+        console.log(friend.username)
+        if (attendees.includes(friend.username)) {
+          friendsAttending.push(friend.username);
+        }
+      }
+
+      console.log(friendsAttending);
+
+      let friendsMessage = ''
+      if (friendsAttending.length == 1) {
+        friendsMessage = 'Your friend, ' + friendsAttending[0] + ' is attending'
+      }
+      else if (friendsAttending.length == 2) {
+        friendsMessage = 'Your friends, ' + friendsAttending.join(' and ') + ' are attending'
+      }
+      else if (friendsAttending.length == 3) {
+        friendsMessage = `Your friends, ${friendsAttending[0]}, ${friendsAttending[1]}, and ${friendsAttending[2]} are attending`
+      }
+      else if (friendsAttending.length > 3) {
+        friendsMessage = `Your friends, ${friendsAttending.slice(3).join(', ')}, and ${friendsAttending.length-3} more are attending`
+      }
 
       return `
         <div class='post post-wp border-bottom border-dark' id='event-${event.id
@@ -939,8 +983,9 @@ const renderEvents = (posts, containerClassName) => {
             </div>
             ${ticketDeadline && ticketDeadline !== 'past'
           ? `<div class='error-message mt-2'>${ticketDeadline}</div>`
-          : ''
-        }
+          : '' }
+
+          <p><i>${friendsMessage}</i></p>
           </div>
 
           ${event.cover

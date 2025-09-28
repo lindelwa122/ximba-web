@@ -84,6 +84,8 @@ const validateTicketPurchaseDeadline = () => {
     return true;
   }
 
+  if (!ticketDeadline.value) return true
+
   alert('Ticket deadline is invalid');
   return false;
 }
@@ -469,7 +471,7 @@ const categorizeEvent = async (title, description, tags) => {
   const { key } = await response.json();
 
   // Set the API endpoint and request parameters
-  const apiUrl = 'https://api.openai.com/v1/engines/text-davinci-003/completions';
+  const apiUrl = 'https://api.openai.com/v1/chat/completions';
   const prompt = `Using the title, description and tags associated with an event, generate a category that best describes the event. Only return a one word answer. If the text is in another language translate it and try your best get the closest category that may describe that event.
 
     Title: ${title}
@@ -480,10 +482,13 @@ const categorizeEvent = async (title, description, tags) => {
   `;
 
   const requestBody = {
-    prompt: prompt,
-    max_tokens: 256,
-    n: 1,
-    temperature: 0.7,
+    model: "gpt-5 nano",
+    messages: [
+      {
+        role: "developer",
+        content: prompt
+      }
+    ]
   };
 
   // Set the API request headers with the API key
@@ -501,7 +506,11 @@ const categorizeEvent = async (title, description, tags) => {
     })
       .then((response) => response.json())
       .then(({ choices }) => {
-        const category = choices.map((choice) => choice.text);
+        if (!choices) {
+          resolve("micro")
+        }
+
+        const category = choices.map((choice) => choice.content);
         resolve(category[0]);
       })
       .catch((error) => {

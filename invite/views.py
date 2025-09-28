@@ -4,6 +4,8 @@ from json import dumps, loads
 from tempfile import NamedTemporaryFile
 from uuid import uuid4
 
+import requests
+
 from PIL import Image
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -27,7 +29,7 @@ from urllib.parse import unquote
 
 
 from .models import *
-from getvyt.settings import MAPBOX_ACCESS_TOKEN, OPENAI_ACCESS_TOKEN
+from getvyt.settings import MAPBOX_ACCESS_TOKEN, OPENAI_ACCESS_TOKEN, HOST_URL
 from .utils import *
 
 ACTIONS = {
@@ -110,6 +112,17 @@ def add_attendee(request):
         saved_events.event.set([event])
     else:
         saved_events.event.add(event)
+
+    # Notify the friends of the attendee
+    friends = Friend.objects.filter(user=user, status=status.ACCEPTED)
+
+    for friend in friends:
+        notification = Notification.objects.create(
+            origin=user,
+            to=friend.friend,
+            notification_type=notification_type.friend_attending
+        )
+        notification.save()
 
     return JsonResponse({}, status=200)
 
@@ -1867,3 +1880,65 @@ def wallet_deposit(request):
 @login_required(login_url='/login')
 def wallet_view(request):
     return render(request, 'invite/wallet.html')
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def checkout(request):
+    print('checkout is atleast getting here')
+    print(request.method)
+    if request.method == 'POST':
+        data = loads(request.body)
+        user = request.user
+
+        amount = int(data['amount']) * 100
+
+        url = 'https://payments.yoco.com/api/checkouts'
+        headers = {
+            'Authorization': 'Bearer sk_test_960bfde0VBrLlpK098e4ffeb53e1',
+            'Content-Type': 'application/json'
+        }
+        body = {
+            'amount': amount,
+            'currency': 'ZAR',
+            'successUrl': HOST_URL + '/wallet',
+            'cancelUrl': HOST_URL + '/wallet',
+            'failureUrl': HOST_URL + '/wallet',
+        }
+
+        response = requests.post(url, headers=headers, json=body)
+
+        print(response.json())
+
+        if response.status_code == 200:
+            # Update user's balance
+            amount = amount / 100
+            deposit = amount - (amount * (4/100))
+            wallet = Wallet.objects.get(user=user)
+            wallet.balance = wallet.balance + deposit
+            wallet.save()
+
+            # Record transaction
+            bank_charges = amount * (2/100)
+            service_fees = amount * (2/100)
+
+            DepositRecord.objects.create(
+                user=user,
+                amount=amount,
+                transaction_fee=bank_charges,
+                transaction_percentage=2,
+                deposit_fee=service_fees,
+                deposit_percentage=2
+            )
+
+            # Update revenue
+            Revenue.objects.create(amount=service_fees, source=Revenue.DEPOSIT_FEE)
+
+            return JsonResponse(response.json(), status=200)
+
+        else:
+            return JsonResponse({'message': 'couldn\'t complete payment'}, status=response.status_code)
+
+    else:
+        print('here here here')
+        return JsonResponse({'message': 'GET /checkout route not found'}, status=400)

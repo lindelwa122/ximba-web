@@ -13,6 +13,7 @@ urlpatterns = [
     path('search/recent/add/<str:username>', views.add_to_recent_searches, name='add_to_recent'),
     path('calendar', views.view_calendar, name='view_calendar'),
     path('calendar/events', views.calendar_events, name='calendar_events'),
+    path('checkout', views.checkout, name='checkout'),
     path('confirm', views.confirm_email, name='confirm_email'),
     path('new-event/publish', views.create_event, name='save_event'),
     path('friend/remove', views.delete_friendship, name='delete_friendship'),

@@ -160,7 +160,8 @@ class FriendRequest(models.Model):
 class Notification(models.Model):
   TYPE_CHOICES = [
     ('friend_request', 'Friend Request'),
-    ('new_follower', 'New Follower')
+    ('new_follower', 'New Follower'),
+    ('friend_attending', 'Friend Attending')
   ]
 
   origin = models.ForeignKey(User, models.CASCADE, related_name='notification_origin')

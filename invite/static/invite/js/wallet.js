@@ -18,11 +18,6 @@ const depositHandler = () => {
         </div>
         <div class='font-body-tiny mt-1 mb-3'>**Deposit between R25 and R2000</div>
 
-        <div class='form-floating'>
-          <input type='password' class='password form-control input-frame' placeholder='Password'>
-          <label for='password' class='floating-input-placeholder'>Password</label>
-        </div>
-
         <div class='font-body-tiny mt-1 mb-3'>
           <div>Bank Charges: 2%</div>
           <div>Deposit Fee: 2%</div>
@@ -56,7 +51,7 @@ const formHandler = () => {
       return false;
     }
 
-    submitDepositForm();
+    checkout();
   })
 }
 
@@ -75,14 +70,52 @@ const getWalletBalance = async () => {
   }
 }
 
-const submitDepositForm = async () => {
+const checkout = async () => {
   const depositAmount = document.querySelector('.amount').value;
-  const password = document.querySelector('.password').value;
   const submitButton = document.querySelector('.submit-button');
 
-  submitButton.value = 'Depositing...';
+  submitButton.value = "Depositing...";
   submitButton.disabled = true;
 
+  try {
+    const response = await fetch('/checkout', {
+      method: 'POST',
+      body: JSON.stringify({ amount: depositAmount }),
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'Content-Type': 'application/json',
+      }
+    });
+
+    const data = await response.json()
+
+    switch (response.status) {
+      case 200:
+        alert('Your deposit was successful');
+
+        window.location.assign(data.redirectUrl);
+
+        console.table(data)
+        break;
+
+      case 400:
+        document.querySelector('.error-message').innerHTML = 
+          message === 'amount_invalid' ? 'Invalid Deposit Amount' : 'Incorrect Password';
+        break;
+
+      default:
+        alert("Sorry, we couldn't process your transaction. Please try again later.");
+    }
+  } catch (error) {
+    alert("Sorry, we couldn't process your transaction. Please try again later.");
+    console.error(error);
+  } finally {
+    submitButton.value = 'Deposit';
+    submitButton.disabled = false;
+  };
+}
+
+const submitDepositForm = async (depositAmount, password) => {
   try {
     const response = await fetch('/wallet/deposit', {
       method: 'POST',
